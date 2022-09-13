@@ -1,0 +1,628 @@
+---
+site: workflowr::wflow_site
+title: "Metagenomic Analysis of Canine gut microbiome in Leishmaniasis"
+author: "Marc Noguera-Julian, PhD. TreeTopUnder"
+date: "`r format(Sys.time(), '%Y-%m-%d')`"
+header-includes:
+- \usepackage{fancyhdr}
+- \usepackage{lipsum}
+- \pagestyle{fancy}
+- \fancyhead[CO,CE]{2022-PurinaLeish-WMGS}
+- \fancyfoot[LO,RE]{Marc Noguera-Julian, TreeTopUnder}
+- \fancyhead[LE,RO]{\thepage}
+- \fancyfoot[CO,CE]{}
+- \usepackage[default]{sourcesanspro}
+- \usepackage[T1]{fontenc}
+- \usepackage{eso-pic,graphicx,transparent}
+mainfont: Helvetica
+output:
+  workflowr::wflow_html:
+    toc: false
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=T}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = here::here())
+```
+
+## Quality & Throughput
+
+```{r init variables, echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F}
+suppressMessages(require(phyloseq))
+suppressWarnings(require(dplyr))
+suppressWarnings(require(xlsx))
+final_metadata<-xlsx::read.xlsx("output/Deliverables/FinalMetadata.xlsx",sheetIndex = 1)
+min_throughput<-min(final_metadata$QFPassReads)
+max_throughput<-max(final_metadata$QFPassReads)
+median_throughput<-median(final_metadata$QFPassReads)
+```
+
+A total of 46 samples have been analysed, one of them being a positive mock control. Median throughput is around `r median_throughput` reads/sample (max: `r max_throughput`, min:`r min_throughput`), after quality filters. This is adequate for metagenomic analysis. No differences are observed between timepoints(p=0.89), the main variable assocaited with the goals of this analysis. This coverage depth allows us to keep all samples in this analysis. 
+
+*Deliverables: ThroughputByGroup_treatment_wet_dry_neutered.pdf, SequenceThroughput.xls*
+
+```{r Quality Control, echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F}
+
+suppressWarnings(require(ggpubr))
+suppressWarnings(require(patchwork))
+mock_samples<-c("MOCKCOMMUNITY")
+metadata_df<-xlsx::read.xlsx("output/Deliverables/FinalMetadata.xlsx",sheetIndex = 1)
+metadata_df[metadata_df$SampleID %in% mock_samples,"sample_type"]<-"mock"
+
+# my_datatable<-readRDS("data/raw/CatalogMapping/IGC/dataTable.rds")
+# 
+# metadata_df<-my_datatable %>%
+#   dplyr::select(SampleID,InitialReads) %>%
+#   dplyr::distinct() %>%
+#   dplyr::left_join(metadata_df) %>%
+#   dplyr::rename(QFPassReads=InitialReads)
+
+p0.treatment<-metadata_df%>%
+  ggstatsplot::ggbetweenstats(x=Timepoint,y=QFPassReads,title = "Throughput vs Timepoint",
+                              type="nonparametric",bf.message = F,
+                              outlier.tagging = T,outlier.label = SampleID)
+p0.treatment
+
+```
+
+### Sequencing effort
+
+*Deliverables: GeneRichness_Estimation.xls, RarefactionCurve_timepoint.pdf*
+
+Since we are treating with shotgun data, that captures total bacterial DNA, in order to asses whether our sequencing effort is adequate to capture sample's microbiome diversity we'll assess it by plotting rarefaction curves of the number of detected genes vs the number of sequences obtained from the sample. Since, with these data we are detecting bacterial genes, the depth needed to fully saturate gene richnes is very high and corresponds to the number of different species * the number of genes in each of these species' genome. Thus, there is a trend to plateu we are not reaching it with the available depth of coverage. However, available depth is sufficient o describe taxonomical and functional composition of these samples. We can also see that there is no difference in the rarefaction cruve trend vs the timepoint of the sample, although richness values at similar depths seem to differ.
+
+
+```{r Rarefaction curves chunk1, message=FALSE, warning=FALSE, warning=F, paged.print=FALSE,echo=F, results='hide',fig.keep='all',fig.cap="Rarefaction curve showing number of different IGC genes detected vs number of reads"}
+suppressMessages(require(microbiome))
+suppressMessages(require(vegan))
+suppressMessages(require(picante))
+suppressMessages(require(dplyr))
+### Load data and create MRE Object
+devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")
+my_datatable<-readRDS("data/raw/CatalogMapping/IGC/dataTable.rds")
+
+myMREObject<-readRDS("data/mreObject_feces.rds")
+xlsx::write.xlsx(my_datatable,file="output/Deliverables/GeneRichness_Estimation.xls")
+
+# myMREObject %>% 
+#   metar::igc_rarefaction()
+
+
+p0<-my_datatable %>% 
+  dplyr::left_join(metar::get_meta(myMREObject) %>% 
+                     dplyr::select(SampleID,Host_name,Timepoint)) %>% 
+  ggplot(.,aes(x=ReadCountReal,y=GeneNumber,group=SampleID))+
+        geom_line(aes(color=Timepoint))+
+        geom_point(aes(color=Timepoint))+
+        ggtitle("Rarefaction Curve - Gene Richness")+
+        theme(legend.position="bottom")+
+        theme(legend.title = element_text( size=6, 
+                                      face="bold"))
+
+ggsave(plot = p0,filename = "output/Deliverables/RarefactionCurve_timepoint.pdf")
+p0
+
+
+# myColors<-(RColorBrewer::brewer.pal(name = "Accent",n=2))
+# rarecurve(data.frame(t(otu_table(x.2.0))),step=200,col=myColors[as.factor(sampleData$sample_type)],label=F,main="Observed Species vs Sequencing Depth vs Sample type")
+```
+
+## Data Export to Standard Formats
+
+In order to be able to use these data in future analysis we need to export it in several formats.
+
+### Total and Relative Abundances.
+
+*Deliverables: SpeciesAbundance_counts.xls, SpeciesAbundance_RA.xls, PhylumAbundance_counts.xls, PhylumAbundance_RA.xls y SpeciesData.biom*
+
+Results are exported as excel table. This table contains estimated counts for each of the bacterial species that have been detected. In the same way, for each sample, animal id and other analysis related variables (*Timepoint*, *Sex*) are included to facilitate analysis by third parties. Four tables are created, both at the Species and the phylum level, and total counts and relative abundance. Taxonomic data is also exported in the BIOM standard. \[BIOM.(<https://biom-format.org/>)\] (<https://biom-format.org/>)
+
+```{r Obtencion y exportacion de resultados, echo=F, warning=F,results='hide',fig.keep='all'}
+suppressWarnings(require(dplyr))
+### Use Metaphlan3 counts
+### Load data and create MRE Object
+devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")
+myMREObject<-readRDS("data/processed/mreObject.rds")
+x.1.0 <- myMREObject@taxa@metaphlan@phyloseq_sec
+x.1.0.species<-x.1.0
+x.1.0.phylum<-phyloseq::tax_glom(x.1.0,taxrank="Phylum",NArm = F)
+x.1.0.species.ra<-phyloseq::transform_sample_counts(x.1.0.species, function(x) ((x/sum(x))))
+x.1.0.phylum.ra<-phyloseq::transform_sample_counts(x.1.0.phylum, function(x) ((x/sum(x))))
+
+phyloseq::psmelt(x.1.0.species) %>%
+  # select(SampleID,Phylum,Class,Order,Family,species,Especie,ID,,Abundance)%>%
+  xlsx::write.xlsx(file="output/Deliverables/SpeciesAbundance_counts.xls")
+phyloseq::psmelt(x.1.0.species.ra) %>%
+  # select(SampleID,Phylum,Class,Order,Family,species,Especie,Sexo,Edad,Edad_2020,Edad_2021,Region,Code,Year,Abundance)%>%
+  dplyr::rename(`Relative Abundance`=Abundance)%>%
+  xlsx::write.xlsx(file="output/Deliverables/SpeciesAbundance_RA.xls")
+
+phyloseq::psmelt(x.1.0.phylum) %>%
+  # select(SampleID,Phylum,Especie,Sexo,Edad,Edad_2020,Edad_2021,Region,Code,Year,Abundance)%>%
+  xlsx::write.xlsx(file="output/Deliverables/PhylumAbundance_counts.xls")
+phyloseq::psmelt(x.1.0.phylum.ra) %>%
+  # select(SampleID,Phylum,Especie,Sexo,Edad,Edad_2020,Edad_2021,Region,Code,Year,Abundance)%>%
+  dplyr::rename(`Relative Abundance`=Abundance)%>%
+  xlsx::write.xlsx(file="output/Deliverables/PhylumAbundance_RA.xls")
+
+biomformat::write_biom(biomformat::make_biom(phyloseq::otu_table(x.1.0),phyloseq::sample_data(x.1.0),phyloseq::tax_table(x.1.0)),biom_file="output/Deliverables/ps_metaphlan3.biom")
+```
+
+
+## Clustering
+
+### Abundancias relativas de géneros bacterianos por grupos.
+
+Para representar gráficamente la composición del microbioma correspondiente a las muestras, se eliminan los géneros bacterianos que no están presente en al menos dos muestras y se representan solamente los 40 géneros mas abundantes en el dataset completo. de los taxones se representan las mismas en gráficos tipo *stacked barplots*.
+
+*Deliverables: StackedBarplots_Species.pdf and DendrogramClustering.pdf*
+
+```{r Graphical representation of species abundance, echo=F,message=FALSE, results='hide',fig.keep='all',warning=FALSE, paged.print=FALSE, fig.cap="Relative abudnance for the 30 most abundance bacterial species, segregated by Timepoint and Host_name."}
+suppressWarnings(require(phyloseq))
+suppressWarnings(require(phylosmith))
+suppressWarnings(require(dplyr))
+suppressWarnings(require(patchwork))
+suppressWarnings(require(ggplot2))
+suppressWarnings(require(ggthemes))
+### Load data and create MRE Object
+devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")
+myMREObject<-readRDS("data/processed/mreObject.rds")
+x.2.0 <- myMREObject@taxa@metaphlan@phyloseq_sec
+x.2.0.species<-x.2.0
+wh0=genefilter_sample(x.2.0.species,filterfun_sample(function(x) x>1), A=2) # Remove singletons
+x.2.0.species<-prune_taxa(wh0,x.2.0.species)
+x.2.0.species = transform_sample_counts(x.2.0.species, function(x) ((x/sum(x))))
+
+ps.melt.x.2.0.species<-x.2.0.species %>%
+  phyloseq::psmelt()
+
+species_for_order<-ps.melt.x.2.0.species %>% 
+  dplyr::select(Species,Abundance) %>% 
+  dplyr::group_by(Species) %>% 
+  summarise_at(vars(Abundance),list(mean_abundance=mean)) %>% 
+  arrange(.,desc(mean_abundance)) %>% 
+  dplyr::slice(1) %>% 
+  select(Species) 
+myOrder<-reorder(ps.melt.x.2.0.species[ps.melt.x.2.0.species$Species==species_for_order$Species,"SampleID"],ps.melt.x.2.0.species[ps.melt.x.2.0.species$Species==species_for_order$Species,"Abundance"])
+
+sampleData<-data.frame(phyloseq::sample_data(x.2.0))
+sampleData$SampleID<-factor(sampleData$SampleID,levels=levels(myOrder),ordered = T)
+rownames(sampleData)<-sampleData$SampleID
+sample_data(x.2.0.species)<-sampleData
+### Keep the most abundant Species
+meanBySpecies<-aggregate(ps.melt.x.2.0.species$Abundance,list(ps.melt.x.2.0.species$Species),mean)
+colnames(meanBySpecies)<-c("Species","meanAbundance")
+meanBySpecies<-meanBySpecies[with(meanBySpecies, order(-meanAbundance, Species)), ]
+SpeciesToInclude<-meanBySpecies[1:30,"Species"]
+
+p1<-phylosmith::phylogeny_profile(phyloseq::subset_taxa(x.2.0.species,Species%in% SpeciesToInclude),classification="Species",relative_abundance=F,treatment="Timepoint",sample_labels = NULL,)+
+ theme( panel.grid = element_blank(),axis.title= element_blank(), axis.text= element_blank())+
+  theme(axis.title.x=element_blank(),axis.text.x=element_blank(),axis.ticks.x=element_blank())+
+  theme(legend.position = "none")+ theme(plot.title = element_text(size=8))
+
+
+### Barplot for animals with longitufinal follow-up
+aux_DF<-table(get_meta(myMREObject) %>% 
+               dplyr::select(Host_name,Timepoint)) %>% 
+  as.data.frame() %>% 
+  dplyr::group_by(Host_name) %>% 
+  dplyr::summarise(counts=sum(Freq)) %>% 
+  dplyr::filter(counts==4)
+
+p2<-phylosmith::phylogeny_profile(phyloseq::subset_taxa(x.2.0.species,Species%in% SpeciesToInclude) %>% phyloseq::subset_samples(Host_name %in% aux_DF$Host_name),classification="Species",relative_abundance=F,treatment="Host_name",sample_labels = NULL,)+
+ theme( panel.grid = element_blank(),axis.title= element_blank(), axis.text= element_blank())+
+  theme(axis.title.x=element_blank(),axis.text.x=element_blank(),axis.ticks.x=element_blank())+
+        theme(legend.position="bottom")+
+        theme(legend.title = element_text( size=6, 
+                                      face="bold"))+
+        guides(fill=guide_legend(nrow=6,byrow=TRUE))
+
+
+p2
+pT <-p2/p1
+ggsave(pT,filename="output/Deliverables/StackedBarplots_Species.pdf",width=15,height=20)
+
+
+```
+
+### Dendrograms & *Heatmap*
+
+Tsxonomical relative abundance can also be used to calculate similarity between samples. We will use Bray-Curtis distance method. These distance can, in turn, be used to cluster samples that are more similar among them from those that are less similar. For that, we will use hierarchical bottom-up Ward.D2 hierarchical clustering. In this way, in the resulting dendrogram, the similarity between any two samples is inversely proportional to the distance that has to be covered within the dendrogram, between these two samples. 
+
+*Deliverables: BrayCurtis_Distances.xls and ExploratoryHeatmap_allSamples.pdf*
+
+There is no apparent *clustering* observed in relationhip to *Lifestyle, Sex, or LeishVet stage.* Some clustering is observed from in some animals samples (*Host_name*). This is expected, and in fact, a higher degree of clustering would be expected from sampling the same animals at different timepoints even if months apart.
+
+```{R Dendrograms based on WUnifrac, message=FALSE, warning=FALSE, results='hide',fig.keep='all',echo=F,fig.cap="Dendrogram based on pairwise Bray-Curtis distance, considering taxonomical composition."}
+suppressPackageStartupMessages(require(ComplexHeatmap))
+require(phyloseq)
+suppressPackageStartupMessages(require(RColorBrewer))
+suppressPackageStartupMessages(require(dplyr))
+### Load data and create MRE Object
+devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")
+### Create Dendrograms based on WUnifrac Distance
+myMREObject<-readRDS("data/processed/mreObject.rds")
+x.2.0 <- myMREObject@taxa@metaphlan@phyloseq_sec
+x.2.0 = transform_sample_counts(x.2.0, function(x) ((x/sum(x))))
+### Store WUnifrac distance from low-level ASV
+myDistance<-phyloseq::distance(x.2.0,"bray")
+myDist<-reshape2::melt(as.matrix(myDistance))
+colnames(myDist)<-c("Sample1","Sample2","BrayCurtisDistance")
+xlsx::write.xlsx(file="output/Deliverables/BrayCurtis_Distances.xls",myDist)
+
+# myMREObject<-myMREObject %>% 
+#   metaphlan_heatmap(save_files = F,top_n=30)
+# 
+# myMREObject@taxa@metaphlan@heatmaps
+# hclust(myDistance,method = "ward.D2")
+### Prepare data for heatmap & dendrogram plot
+x.2.0.species<-x.2.0
+ps.melt.x.2.0.species<-x.2.0.species %>%
+  phyloseq::psmelt()
+meanByspecies<-aggregate(ps.melt.x.2.0.species$Abundance,list(ps.melt.x.2.0.species$Species),mean)
+colnames(meanByspecies)<-c("species","meanAbundance")
+meanByspecies<-meanByspecies[with(meanByspecies, order(-meanAbundance, species)), ]
+speciesToInclude<-meanByspecies[1:90,"species"]
+
+
+## Prepare Metadata
+metadata_df<-sample_data(x.2.0.species) %>% data.frame() %>% dplyr::select(Timepoint,Host_name,Lifestyle,Sex,LeishVet_Stage_strat)
+# one_sample<-metadata_df %>% dplyr::select(dog_name) %>% dplyr::group_by(dog_name) %>% dplyr::summarise(n=n()) %>% dplyr::filter(n<=2) 
+# metadata_df[metadata_df$Individuo %in% one_sample$Individuo,"Individuo"]<- "Otros"
+
+### Additional high-contrast palette
+c25 <- c(
+  "dodgerblue2", "#E31A1C", # red
+  "green4",
+  "#6A3D9A", # purple
+  "#FF7F00", # orange
+  "black", "gold1",
+  "skyblue2", "#FB9A99", # lt pink
+  "palegreen2",
+  "#CAB2D6", # lt purple
+  "#FDBF6F", # lt orange
+  "gray70", "khaki2",
+  "maroon", "orchid1", "deeppink1", "blue1", "steelblue4",
+  "darkturquoise", "green1", "yellow4", "yellow3",
+  "darkorange4", "brown"
+)
+
+### FActorize for plotting in controlled palette
+metadata_df$treatment<-as.factor(metadata_df$Timepoint)
+metadata_df$dry_wet<-as.factor(metadata_df$Host_name)
+metadata_df$neutered<-as.factor(metadata_df$Lifestyle)
+metadata_df$dog_name<-as.factor(metadata_df$Sex)
+metadata_df$time_point<-as.factor(metadata_df$LeishVet_Stage_strat)
+## Prepare color-scales for each variable
+Timepoint_col<-colorRampPalette(brewer.pal(5,"Set1"))(length(levels(metadata_df$Timepoint)))
+names(Timepoint_col)<-levels(metadata_df$Timepoint)
+Host_name_col<-colorRampPalette(c25[1:11])(length(levels(metadata_df$Host_name)))
+names(Host_name_col)<-levels(metadata_df$Host_name)
+Lifestyle_col<-colorRampPalette(brewer.pal(3,"Paired"))(length(levels(metadata_df$Lifestyle)))
+names(Lifestyle_col)<-levels(metadata_df$Lifestyle)
+Sex_col<-colorRampPalette(brewer.pal(2,"Dark2"))(length(levels(metadata_df$Sex)))
+names(Sex_col)<-levels(metadata_df$Sex)
+LeishVet_Stage_strat_col<-colorRampPalette(brewer.pal(7,"Accent"))(length(levels(metadata_df$LeishVet_Stage_strat)))
+names(LeishVet_Stage_strat_col)<-levels(metadata_df$LeishVet_Stage_strat)
+
+ha <- ComplexHeatmap::HeatmapAnnotation(Timepoint=metadata_df$Timepoint,
+                                        Host_name=metadata_df$Host_name,
+                                        Lifestyle=metadata_df$Lifestyle,
+                                        Sex=metadata_df$Sex,
+                                        LeishVet_Stage_strat=metadata_df$LeishVet_Stage_strat,
+                                        annotation_name_side = "left",
+                                        annotation_legend_param = list(Timepoint = list(direction = "horizontal"),
+                                                                       Host_name=list(direction="horizontal",ncol=3),
+                                                                       Lifestyle=list(direction="horizontal"),
+                                                                       Sex=list(direction="horizontal"),
+                                                                       LeishVet_Stage_strat=list(direction="horizontal",ncol=2)),
+                                        col=list(Timepoint=Timepoint_col,
+                                                 Host_name=Host_name_col,
+                                                 Lifestyle=Lifestyle_col,
+                                                 Sex=Sex_col,
+                                                 LeishVet_Stage_strat=LeishVet_Stage_strat_col))
+## Prepare Heatmap Viz
+suppressPackageStartupMessages(library(circlize))
+col_fun = colorRamp2(c(0, 0.05, 1), c("steelblue", "white", "darkred"))
+
+data_df<-(phyloseq::otu_table(phyloseq::subset_taxa(x.2.0.species,Species%in% speciesToInclude)))
+taxa_df<-phyloseq::tax_table(phyloseq::subset_taxa(x.2.0.species,Species%in% speciesToInclude)) %>% data.frame() %>%  dplyr::select(Species)
+rownames(data_df)<-taxa_df$Species
+
+ht_list<-ComplexHeatmap::Heatmap(data_df,
+                        cluster_columns = hclust(myDistance,method = "ward.D2"), cluster_rows = T,
+                        column_title = NULL,row_title = "Taxa/Species",
+                        show_row_names = T, show_column_names = F, show_row_dend = F,
+                        row_names_gp = gpar(fontsize=6),
+                        rect_gp = gpar(col = "white", lwd = 0.2),
+                        top_annotation = ha, col=col_fun,
+                        heatmap_legend_param = list(
+                          title="relative abundance",
+                          legend_height=unit(4,"cm"),
+                          title_position="lefttop-rot",
+                          direction="vertical",
+                          legend_side="right"
+                        ))
+draw(ht_list,annotation_legend_side="bottom")
+pdf("output/Deliverables/ExploratoryHeatmap_allSamples.pdf",width=9,height=9)
+draw(ht_list,annotation_legend_side="bottom")
+dev.off()
+```
+
+### Global Beta-Diversity Analysis (Ordination)
+
+*Deliverables: NMDS_StressPlot.pdf, Adonis.xls y Ordination_AllSamples.pdf*
+
+In order to be able to detect structural changes in the overall composition of the gut microbiome of these samples, and its relationship with primary or secondary variables, we will perform a NMDS ordination analysis (*Non-metric dimensional scaling*). Purpose of this analysis is to be able to visualize in a 2-dimensional space, the existing variability in microbiome composition. In this way, each point in the plot represents a single sample microbiome composition, while its position in relation with the position of other samples is related to similarity between each pair of samples. Two points at a distance d1, that are far away from other two points at a smaller distance d2, will have more different microbiome composition if d1 > d2 or more similar if d1 < d2. Primary or secondary variables values are projected post-hoc onto this ordination space to be able to visually inspect their association with overall microbiome structure. Ordination analysis is based on NMDS algorithm, which iteratively tries to reduce the difference between projected distances and real distances. Good convergence is reflected in the so-called *Stress Plot*
+
+In the same way, we evaluate the effect of each of the considered variable on microbiome composition using a permutational anova or PERMANOVA. This test provides a statistic value that determines if this effect is significant (*Pr(>F)*) and a numerical 0-1-ranged value that estimates the magnitude of thi association (*R2*). The test is performed for each variable separately and, finally, a multivariate test is performed on significant co-variates.
+
+Results shown a non-significant effect of the timepoint variable
+
+En el análisis multivariado, se observa una influencia del factor *Host_name* (R2=0.52, p=.001)  en la composición del microbioma, para el que según el test estadístico PERMANOVA estas dos variables explicarían conjuntamente un efecto del 17% de la composición de las muestras analizadas, apuntando a un efecto significativo de la intervención dietética en el microbioma.
+
+```{r Ordination Analisis, echo=FALSE, results='hide',fig.keep='all',fig.cap="Análisis de ordenacion NMDS/WUnifrac. En color se representa el punto temporal de la muestra.", message=FALSE, warning=FALSE, paged.print=FALSE,fig.keep='all'}
+suppressWarnings(require(phyloseq))
+suppressWarnings(require(phylosmith))
+suppressWarnings(require(patchwork))
+suppressWarnings(require(vegan))
+### Load data and create MRE Object
+devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")
+myMREObject<-readRDS("data/mreObject_feces.rds")
+x.2.0<-myMREObject@taxa@metaphlan@phyloseq_sec
+set.seed(1234)
+x.2.0.species<-x.2.0
+x.2.0.species<-transform_sample_counts(x.2.0.species, function(x) ((x/sum(x))))
+sampleData<-data.frame(sample_data(x.2.0.species))
+rownames(sampleData)<-sampleData$SampleID
+sample_data(x.2.0.species)<-sampleData
+(myOrd<-phyloseq::ordinate(x.2.0.species,method="NMDS",distance="bray",trymax=100))
+
+pdf("output/Deliverables/NMDS_StressPlot.pdf")
+vegan::stressplot(myOrd)
+dev.off()
+
+#### PERMUTATIONAL ANOVA (adonis()) on WUnifrac distance
+x.6.0.explanatory<-sampleData[,c("Timepoint","Host_name","Lifestyle","Sex","LeishVet_Stage_strat")]
+x.6.0.response<-phyloseq::distance((x.2.0.species),method="bray")
+myAdonis<-vegan::adonis2(x.6.0.response~Timepoint,data=x.6.0.explanatory)
+file.remove("output/Deliverables/Adonis.xls")
+xlsx::write.xlsx(file = "output/Deliverables/Adonis.xls",sheetName = "Timepoint",vegan::adonis2(x.6.0.response~Timepoint,data=x.6.0.explanatory))
+### Perform ANOVA for non-NA in treatment
+xlsx::write.xlsx(file = "output/Deliverables/Adonis.xls",sheetName = "Host_name",vegan::adonis2(x.6.0.response~Host_name,data=x.6.0.explanatory),append=T)
+
+### These variables are missing and need to be tested when data is available for all animals
+# xlsx::write.xlsx(file = "output/Deliverables/Adonis.xls",sheetName = "Lifestyle",vegan::adonis2(x.6.0.response~Lifestyle,data=x.6.0.explanatory),append=T)
+# xlsx::write.xlsx(file = "output/Deliverables/Adonis.xls",sheetName = "Sex",vegan::adonis2(x.6.0.response~Sex,data=x.6.0.explanatory),append=T)
+# xlsx::write.xlsx(file = "output/Deliverables/Adonis.xls",sheetName = "LeishVet_Stage_strat",vegan::adonis2(x.6.0.response~LeishVet_Stage_strat,data=x.6.0.explanatory),append=T)
+
+x.6.0.explanatory<-sampleData[,c("Host_name","Timepoint")]
+xlsx::write.xlsx(file = "output/Deliverables/Adonis.xls",sheetName = "multivariate",vegan::adonis2(x.6.0.response~.,data=x.6.0.explanatory),append=T)
+### treatment and time_point have a significant effect on the fecal microbiome (~10%)
+### Note that treatment and dry_wet variables are colinear/embedded. 
+suppressMessages(require(mmtable2))
+suppressMessages(require(tidyr))
+vegan::adonis2(x.6.0.response~.,data=x.6.0.explanatory) %>% broom::tidy() %>% gridExtra::tableGrob() %>% grid::grid.draw()
+
+p.4.0.samples=plot_ordination(x.2.0.species,myOrd)
+
+### By treatment
+require(ggplot2)
+require(ggforce)
+p0<-p.4.0.samples  + geom_point(aes(color=Timepoint)) +ggtitle("Unconstrained NMDS(WUnifrac) by Timepoint")+
+  theme(panel.border=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line=element_line(colour="black"),axis.text.x=element_text(size=16),axis.text.y=element_text(size=16))+
+  theme(axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))+
+  theme(legend.text=element_text(size=12,face="italic"),legend.title=element_text(size=12))+
+  theme(plot.title=element_text(lineheight=1,face="bold",size=15))+stat_ellipse(alpha=1,mapping=aes(color=Timepoint))+
+  theme_classic() + theme(axis.line.x = element_line(colour = "black", 
+                                    size = 1, linetype = "solid"), axis.line.y = element_line(colour = "black", 
+                                    size = 1, linetype = "solid"), axis.text.x = element_text(size = 10), 
+                                    axis.text.y = element_text(size = 10),
+                                    axis.title.x = element_text(size = 10, 
+                                        face = "bold"), axis.title.y = element_text(size = 10, 
+                                        face = "bold"), legend.title = element_text(size = 10, 
+                                        face = "bold"), legend.text = element_text(size = 8), 
+                                        legend.spacing.x = unit(0.005, "npc"), 
+                                        legend.key.size = unit(4,"mm"), legend.background = element_rect(fill = (alpha = 0))) + 
+        labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2") + scale_fill_brewer(palette="Set1")+scale_color_brewer(palette="Set1")+
+        guides(fill = guide_legend(override.aes = list(size = 4)))
+
+p1<-p.4.0.samples  + geom_point(aes(color=Host_name)) +ggtitle("Unconstrained NMDS(WUnifrac) by Host_name")+
+  theme(panel.border=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line=element_line(colour="black"),axis.text.x=element_text(size=16),axis.text.y=element_text(size=16))+
+  theme(axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))+
+  theme(legend.text=element_text(size=12,face="italic"),legend.title=element_text(size=12))+
+  theme(plot.title=element_text(lineheight=1,face="bold",size=15))+stat_ellipse(alpha=1,aes(color=Host_name))+
+  theme_classic() + theme(axis.line.x = element_line(colour = "black", 
+                                    size = 1, linetype = "solid"), axis.line.y = element_line(colour = "black", 
+                                    size = 1, linetype = "solid"), axis.text.x = element_text(size = 10), 
+                                    axis.text.y = element_text(size = 10), axis.title.x = element_text(size = 10, 
+                                    face = "bold"), axis.title.y = element_text(size = 10, 
+                                    face = "bold"), legend.title = element_text(size = 10, 
+                                    face = "bold"), legend.text = element_text(size = 8), 
+                                     legend.spacing.x = unit(0.005, "npc"), legend.key.size = unit(4,"mm"), legend.background = element_rect(fill = (alpha = 0))) + 
+        labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2") + scale_fill_brewer(palette="Set1")+scale_color_brewer(palette="Set1")+
+        guides(fill = guide_legend(override.aes = list(size = 4)))
+
+p2<-p.4.0.samples  + geom_point(aes(color=Lifestyle)) +ggtitle("Unconstrained NMDS(WUnifrac) by Lifestyle")+
+  theme(panel.border=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line=element_line(colour="black"),axis.text.x=element_text(size=16),axis.text.y=element_text(size=16))+
+  theme(axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))+
+  theme(legend.text=element_text(size=12,face="italic"),legend.title=element_text(size=12))+
+  theme(plot.title=element_text(lineheight=1,face="bold",size=15))+stat_ellipse(alpha=1,aes(color=Lifestyle))+
+  theme_classic() + theme(axis.line.x = element_line(colour = "black", 
+                                    size = 1, linetype = "solid"), axis.line.y = element_line(colour = "black", 
+                                    size = 1, linetype = "solid"), axis.text.x = element_text(size = 10), 
+                                    axis.text.y = element_text(size = 10), axis.title.x = element_text(size = 10, 
+                                    face = "bold"), axis.title.y = element_text(size = 10, 
+                                    face = "bold"), legend.title = element_text(size = 10, 
+                                    face = "bold"), legend.text = element_text(size = 8), 
+                                     legend.spacing.x = unit(0.005, "npc"), legend.key.size = unit(4,"mm"), legend.background = element_rect(fill = (alpha = 0))) + 
+        labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2") + scale_fill_brewer(palette="Paired")+scale_color_brewer(palette="Paired")+
+        guides(fill = guide_legend(override.aes = list(size = 4)))
+
+p3<-p.4.0.samples  + geom_point(aes(color=Sex)) +ggtitle("Unconstrained NMDS(WUnifrac) by Sex")+
+  theme(panel.border=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line=element_line(colour="black"),axis.text.x=element_text(size=16),axis.text.y=element_text(size=16))+
+  theme(axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))+
+  theme(legend.text=element_text(size=12,face="italic"),legend.title=element_text(size=12))+
+  theme(plot.title=element_text(lineheight=1,face="bold",size=15))+stat_ellipse(alpha=1,aes(color=Sex))+
+  theme_classic() + theme(axis.line.x = element_line(colour = "black", 
+                                    size = 1, linetype = "solid"), axis.line.y = element_line(colour = "black", 
+                                    size = 1, linetype = "solid"), axis.text.x = element_text(size = 10), 
+                                    axis.text.y = element_text(size = 10), axis.title.x = element_text(size = 10, 
+                                    face = "bold"), axis.title.y = element_text(size = 10, 
+                                    face = "bold"), legend.title = element_text(size = 10, 
+                                    face = "bold"), legend.text = element_text(size = 8), 
+                                     legend.spacing.x = unit(0.005, "npc"), legend.key.size = unit(4,"mm"), legend.background = element_rect(fill = (alpha = 0))) + 
+        labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2")  + scale_fill_brewer(palette="Dark2")+scale_color_brewer(palette="Dark2")+
+        guides(fill = guide_legend(override.aes = list(size = 4)))
+
+p4<-p.4.0.samples  + geom_point(aes(color=LeishVet_Stage_strat)) +ggtitle("Unconstrained NMDS(WUnifrac) by LeishVet_Stage_strat")+
+  theme(panel.border=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line=element_line(colour="black"),axis.text.x=element_text(size=16),axis.text.y=element_text(size=16))+
+  theme(axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))+
+  theme(legend.text=element_text(size=12,face="italic"),legend.title=element_text(size=12))+
+  theme(plot.title=element_text(lineheight=1,face="bold",size=15))+stat_ellipse(alpha=1,aes(color=LeishVet_Stage_strat))+
+  theme_classic() + theme(axis.line.x = element_line(colour = "black", 
+                                    size = 1, linetype = "solid"), axis.line.y = element_line(colour = "black", 
+                                    size = 1, linetype = "solid"), axis.text.x = element_text(size = 10), 
+                                    axis.text.y = element_text(size = 10), axis.title.x = element_text(size = 10, 
+                                    face = "bold"), axis.title.y = element_text(size = 10, 
+                                    face = "bold"), legend.title = element_text(size = 10, 
+                                    face = "bold"), legend.text = element_text(size = 8), 
+                                     legend.spacing.x = unit(0.005, "npc"), legend.key.size = unit(4,"mm"), legend.background = element_rect(fill = (alpha = 0))) + 
+        labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2")+ scale_fill_brewer(palette="Dark2")+scale_color_brewer(palette="Dark2")+ 
+        guides(fill = guide_legend(override.aes = list(size = 4)))
+
+ p0
+pT<-p0 / p1 | p2 / p4
+
+
+ggsave(pT,filename = "output/Deliverables/Ordination_AllSamples.pdf",width=15,height=15)
+
+```
+
+```{r ordination at BL, echo=FALSE, results='hide',fig.keep='all',fig.cap="Análisis de ordenacion NMDS/WUnifrac para muestras basales. En color se representa la especie del individuo.", message=FALSE, warning=FALSE, paged.print=FALSE,results='hide',fig.keep='all', eval=F}
+suppressWarnings(require(phyloseq))
+suppressWarnings(require(phylosmith))
+suppressWarnings(require(patchwork))
+suppressWarnings(require(vegan))
+x.2.0<-readRDS("data/ps_silva.rds")
+
+set.seed(1234)
+x.2.0.species<-tax_glom(x.2.0,taxrank="species",NArm = F) %>% 
+  microbiome::transform(.,transform="compositional") %>% 
+  phyloseq::subset_samples(.,time_point=="t0")
+
+sampleData<-data.frame(sample_data(x.2.0.species))
+rownames(sampleData)<-sampleData$SampleID
+sample_data(x.2.0.species)<-sampleData
+(myOrd<-ordinate(x.2.0.species,method="NMDS",distance="wunifrac"))
+
+pdf("output/Deliverables/NMDS_StressPlot_BL.pdf")
+vegan::stressplot(myOrd)
+dev.off()
+
+
+#### PERMUTATIONAL ANOVA (adonis()) on WUnifrac distance (BL Samples)
+x.6.0.explanatory<-sampleData[,c("treatment","dry_wet","neutered","dog_name")]
+x.6.0.response<-phyloseq::distance((x.2.0.species),method="wunifrac")
+myAdonis<-vegan::adonis2(x.6.0.response~treatment,data=x.6.0.explanatory)
+file.remove("output/Deliverables/Adonis_BL.xls")
+xlsx::write.xlsx(file = "output/Deliverables/Adonis_BL.xls",sheetName = "treatment",vegan::adonis2(x.6.0.response~treatment,data=x.6.0.explanatory))
+### Perform ANOVA for non-NA in treatment
+xlsx::write.xlsx(file = "output/Deliverables/Adonis_BL.xls",sheetName = "dry_wet",vegan::adonis2(x.6.0.response~dry_wet,data=x.6.0.explanatory),append=T)
+xlsx::write.xlsx(file = "output/Deliverables/Adonis_BL.xls",sheetName = "neutered",vegan::adonis2(x.6.0.response~neutered,data=x.6.0.explanatory),append=T)
+xlsx::write.xlsx(file = "output/Deliverables/Adonis_BL.xls",sheetName = "dog_name",vegan::adonis2(x.6.0.response~dog_name,data=x.6.0.explanatory),append=T)
+### These variables are not significant at BL.
+
+p.4.0.samples=plot_ordination(x.2.0.species,myOrd)
+
+### By treatment
+require(ggplot2)
+require(ggforce)
+p0<-p.4.0.samples  + geom_point(aes(color=treatment)) +ggtitle("Unconstrained NMDS(WUnifrac) by treatment")+
+  theme(panel.border=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line=element_line(colour="black"),axis.text.x=element_text(size=16),axis.text.y=element_text(size=16))+
+  theme(axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))+
+  theme(legend.text=element_text(size=12,face="italic"),legend.title=element_text(size=12))+
+  theme(plot.title=element_text(lineheight=1,face="bold",size=15))+stat_ellipse(alpha=1,mapping=aes(color=treatment))+
+  theme_classic() + theme(axis.line.x = element_line(colour = "black", 
+                                    size = 1, linetype = "solid"), axis.line.y = element_line(colour = "black", 
+                                    size = 1, linetype = "solid"), axis.text.x = element_text(size = 10), 
+                                    axis.text.y = element_text(size = 10),
+                                    axis.title.x = element_text(size = 10, 
+                                        face = "bold"), axis.title.y = element_text(size = 10, 
+                                        face = "bold"), legend.title = element_text(size = 10, 
+                                        face = "bold"), legend.text = element_text(size = 8), 
+                                        legend.spacing.x = unit(0.005, "npc"), 
+                                        legend.key.size = unit(4,"mm"), legend.background = element_rect(fill = (alpha = 0))) + 
+        labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2") + 
+        guides(fill = guide_legend(override.aes = list(size = 4)))
+
+p1<-p.4.0.samples  + geom_point(aes(color=dry_wet)) +ggtitle("Unconstrained NMDS(WUnifrac) by dry_wet")+
+  theme(panel.border=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line=element_line(colour="black"),axis.text.x=element_text(size=16),axis.text.y=element_text(size=16))+
+  theme(axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))+
+  theme(legend.text=element_text(size=12,face="italic"),legend.title=element_text(size=12))+
+  theme(plot.title=element_text(lineheight=1,face="bold",size=15))+stat_ellipse(alpha=1,aes(color=dry_wet))+
+  theme_classic() + theme(axis.line.x = element_line(colour = "black", 
+                                    size = 1, linetype = "solid"), axis.line.y = element_line(colour = "black", 
+                                    size = 1, linetype = "solid"), axis.text.x = element_text(size = 10), 
+                                    axis.text.y = element_text(size = 10), axis.title.x = element_text(size = 10, 
+                                    face = "bold"), axis.title.y = element_text(size = 10, 
+                                    face = "bold"), legend.title = element_text(size = 10, 
+                                    face = "bold"), legend.text = element_text(size = 8), 
+                                     legend.spacing.x = unit(0.005, "npc"), legend.key.size = unit(4,"mm"), legend.background = element_rect(fill = (alpha = 0))) + 
+        labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2") + 
+        guides(fill = guide_legend(override.aes = list(size = 4)))
+
+p2<-p.4.0.samples  + geom_point(aes(color=neutered)) +ggtitle("Unconstrained NMDS(WUnifrac) by neutered")+
+  theme(panel.border=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line=element_line(colour="black"),axis.text.x=element_text(size=16),axis.text.y=element_text(size=16))+
+  theme(axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))+
+  theme(legend.text=element_text(size=12,face="italic"),legend.title=element_text(size=12))+
+  theme(plot.title=element_text(lineheight=1,face="bold",size=15))+stat_ellipse(alpha=1,aes(color=neutered))+
+  theme_classic() + theme(axis.line.x = element_line(colour = "black", 
+                                    size = 1, linetype = "solid"), axis.line.y = element_line(colour = "black", 
+                                    size = 1, linetype = "solid"), axis.text.x = element_text(size = 10), 
+                                    axis.text.y = element_text(size = 10), axis.title.x = element_text(size = 10, 
+                                    face = "bold"), axis.title.y = element_text(size = 10, 
+                                    face = "bold"), legend.title = element_text(size = 10, 
+                                    face = "bold"), legend.text = element_text(size = 8), 
+                                     legend.spacing.x = unit(0.005, "npc"), legend.key.size = unit(4,"mm"), legend.background = element_rect(fill = (alpha = 0))) + 
+        labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2") + 
+        guides(fill = guide_legend(override.aes = list(size = 4)))
+
+p3<-p.4.0.samples  + geom_point(aes(color=dog_name)) +ggtitle("Unconstrained NMDS(WUnifrac) by dog_name")+
+  theme(panel.border=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line=element_line(colour="black"),axis.text.x=element_text(size=16),axis.text.y=element_text(size=16))+
+  theme(axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))+
+  theme(legend.text=element_text(size=12,face="italic"),legend.title=element_text(size=12))+
+  theme(plot.title=element_text(lineheight=1,face="bold",size=15))+stat_ellipse(alpha=1,aes(color=dog_name))+
+  theme_classic() + theme(axis.line.x = element_line(colour = "black", 
+                                    size = 1, linetype = "solid"), axis.line.y = element_line(colour = "black", 
+                                    size = 1, linetype = "solid"), axis.text.x = element_text(size = 10), 
+                                    axis.text.y = element_text(size = 10), axis.title.x = element_text(size = 10, 
+                                    face = "bold"), axis.title.y = element_text(size = 10, 
+                                    face = "bold"), legend.title = element_text(size = 10, 
+                                    face = "bold"), legend.text = element_text(size = 8), 
+                                     legend.spacing.x = unit(0.005, "npc"), legend.key.size = unit(4,"mm"), legend.background = element_rect(fill = (alpha = 0))) + 
+        labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2") + 
+        guides(fill = guide_legend(override.aes = list(size = 4)))
+
+p4<-p.4.0.samples  + geom_point(aes(color=time_point)) +ggtitle("Unconstrained NMDS(WUnifrac) by time_point")+
+  theme(panel.border=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line=element_line(colour="black"),axis.text.x=element_text(size=16),axis.text.y=element_text(size=16))+
+  theme(axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))+
+  theme(legend.text=element_text(size=12,face="italic"),legend.title=element_text(size=12))+
+  theme(plot.title=element_text(lineheight=1,face="bold",size=15))+stat_ellipse(alpha=1,aes(color=time_point))+
+  theme_classic() + theme(axis.line.x = element_line(colour = "black", 
+                                    size = 1, linetype = "solid"), axis.line.y = element_line(colour = "black", 
+                                    size = 1, linetype = "solid"), axis.text.x = element_text(size = 10), 
+                                    axis.text.y = element_text(size = 10), axis.title.x = element_text(size = 10, 
+                                    face = "bold"), axis.title.y = element_text(size = 10, 
+                                    face = "bold"), legend.title = element_text(size = 10, 
+                                    face = "bold"), legend.text = element_text(size = 8), 
+                                     legend.spacing.x = unit(0.005, "npc"), legend.key.size = unit(4,"mm"), legend.background = element_rect(fill = (alpha = 0))) + 
+        labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2") + 
+        guides(fill = guide_legend(override.aes = list(size = 4)))
+
+
+pT<-p0 / p1 | p2 / p4
+ggsave(pT,filename = "output/Deliverables/Ordination_BLSamples.pdf",width=12,height=12)
+```
