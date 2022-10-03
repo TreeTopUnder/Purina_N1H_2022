@@ -1,0 +1,415 @@
+---
+site: workflowr::wflow_site
+title: "Effect of FortiFlora"
+author: "Marc Noguera-Julian, PhD. TreeTopUnder"
+date: "`r format(Sys.time(), '%Y-%m-%d')`"
+header-includes:
+- \usepackage{fancyhdr}
+- \usepackage{lipsum}
+- \pagestyle{fancy}
+- \fancyhead[CO,CE]{2022-PurinaLeish-WMGS}
+- \fancyfoot[LO,RE]{Marc Noguera-Julian, TreeTopUnder}
+- \fancyhead[LE,RO]{\thepage}
+- \fancyfoot[CO,CE]{}
+- \usepackage[default]{sourcesanspro}
+- \usepackage[T1]{fontenc}
+- \usepackage{eso-pic,graphicx,transparent}
+mainfont: Helvetica
+output: html_document
+---
+
+```{r setup, include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_knit$set(root.dir = here::here())
+bifido_animals<-c("RUDDY","NANI","LEO","BALOO")
+```
+
+
+The goal of this part of the analysis is to assess the effect of supplementing dogs’ diet with probiotics, after GlucanTime treatment interruption, at the taxonomic and functional level. For that, only M1 and M4 samples will be used, in a animal paired manner, to characterized differences at the taxonomical and functional level, separately for the Probiotic and Placebo groups. Note: sample sizes for each of the groups (n=5) are very low and have limited statistical power due to under-recruitment at the clinical stage. _Results may be affected_.
+
+
+## Alpha Diversity
+
+We want to see if alpha-diversity is differentially affected in those dog within the Fortiflora group with respect to those dogs receiving placebo. For that we will use gene richness parameter. First we want to see if there is any overall trend in changes of alpha-diversity parameters, using all dogs, between M4 and M1. Results indicate that there is no significant increase or decrease, although it seems that there is a in increase trend that consistently affects all three parameters.
+
+*Deliverables: AlphaDiversity_Timepoint_goal2_all_samples.pdf*
+
+```{r alpha diversity chunk1, include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F}
+suppressMessages(require(phyloseq))
+suppressMessages(require(patchwork))
+suppressMessages(require(dplyr))
+### Load data and create MRE Object
+devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")### Change to require/library/load local package
+
+myMREObject<-readRDS("data/mreObject_goal2.rds")
+my_datatable<-readRDS("data/raw/CatalogMapping/IGC/dataTable.rds")
+mymin<-min(my_datatable$NumberMappedReads) #
+my_datatable<-my_datatable %>% 
+  dplyr::filter(ReadCountReal==6000000) %>% 
+  dplyr::filter(SampleID %in% get_meta(myMREObject)$SampleID) %>% 
+  dplyr::select(SampleID,GeneNumber)
+
+x.2.0 <- myMREObject@taxa@metaphlan@phyloseq_sec
+x.2.0.species<-x.2.0
+# x.2.0.species = transform_sample_counts(x.2.0.species, function(x) ((x/sum(x))))
+
+# get_meta(myMREObject) %>% 
+#   dplyr::select(Timepoint,Host_name) %>% table()
+
+plot_data<-phyloseq::estimate_richness(x.2.0.species) %>% 
+  tibble::rownames_to_column() %>% 
+  dplyr::mutate(rowname=gsub("X","",rowname)) %>% 
+  dplyr::left_join(get_meta(myMREObject),by=c("rowname"="SampleID")) %>% 
+  dplyr::rename(SampleID=rowname) %>% 
+  dplyr::select(SampleID, Timepoint, Host_name, Chao1,Shannon) %>% 
+  dplyr::left_join(my_datatable,by="SampleID") %>% 
+  reshape2::melt() 
+
+p0<-
+  plot_data %>% 
+  dplyr::arrange(Host_name) %>% 
+  dplyr::group_by(Host_name,variable) %>% 
+  ggstatsplot::grouped_ggwithinstats(x=Timepoint,y=value,grouping.var = variable,type="non-parametric",centrality.plotting=F,
+                                      annotation.args = list(title = "M4 vs M1 | All Samples",
+                                                         theme = ggplot2::theme(
+                                                                plot.subtitle = ggplot2::element_text(size = 13),
+                                                                plot.title = ggplot2::element_text(size = 14)
+                                                                )
+                                                         ),
+                                  plotgrid.args = list(nrow = 3))
+p0
+# pT<- p0 / p1 / p2
+ggplot2::ggsave(p0,filename="output/Deliverables/Goal2/AlphaDiversity/AlphaDiversity_Timepoint_goal2_all_samples.pdf",height=15,width=7)
+# ggplot2::ggsave(p1,filename="output/Deliverables/AlphaDiversity_treatment_w1_only.pdf",height=15,width=7)
+# ggplot2::ggsave(p2,filename="output/Deliverables/AlphaDiversity_treatment_w2_only.pdf",height=15,width=7)
+# ggplot2::ggsave(pT,filename="output/Deliverables/AlphaDiversity_treatment.pdf",height=15,width=7)
+```
+
+### Fortiflora vs Placebo
+
+We are interested in knowing whether changes in alpha-diversity exist in any of the Fortiflora/Placebo groups, separately. REsults indicate that there are no significant changes in Chao1, Shannon or Gene Richness in any of the groups, with similar trend than in the global analysis.
+
+*Deliverables: AlphaDiversity_Timepoint_goal2_Fortiflora_samples.pdf, AlphaDiversity_Timepoint_goal2_Placebo_samples.pdf*
+
+```{r alpha diversity chunk2, include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F}
+suppressMessages(require(phyloseq))
+suppressMessages(require(patchwork))
+suppressMessages(require(dplyr))
+### Load data and create MRE Object
+devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")### Change to require/library/load local package
+
+myMREObject<-readRDS("data/mreObject_goal2.rds")
+my_datatable<-readRDS("data/raw/CatalogMapping/IGC/dataTable.rds")
+mymin<-min(my_datatable$NumberMappedReads) #
+my_datatable<-my_datatable %>% 
+  dplyr::filter(ReadCountReal==6000000) %>% 
+  dplyr::filter(SampleID %in% get_meta(myMREObject)$SampleID) %>% 
+  dplyr::select(SampleID,GeneNumber)
+
+x.2.0 <- myMREObject@taxa@metaphlan@phyloseq_sec
+x.2.0.species<-x.2.0
+# x.2.0.species = transform_sample_counts(x.2.0.species, function(x) ((x/sum(x))))
+
+# get_meta(myMREObject) %>% 
+#   dplyr::select(Timepoint,Host_name) %>% table()
+
+plot_data<-phyloseq::estimate_richness(x.2.0.species) %>% 
+  tibble::rownames_to_column() %>% 
+  dplyr::mutate(rowname=gsub("X","",rowname)) %>% 
+  dplyr::left_join(get_meta(myMREObject),by=c("rowname"="SampleID")) %>% 
+  dplyr::mutate(Treatment=ifelse(grepl(848590,Product),"FortiFlora","Placebo")) %>% 
+  dplyr::rename(SampleID=rowname) %>% 
+  dplyr::select(SampleID, Timepoint, Treatment,Host_name, Chao1,Shannon) %>% 
+  dplyr::left_join(my_datatable,by="SampleID") %>% 
+  reshape2::melt() 
+
+p0<-
+  plot_data %>% 
+  dplyr::filter(Treatment=="FortiFlora") %>% 
+  dplyr::arrange(Host_name) %>% 
+  dplyr::group_by(Host_name,variable) %>% 
+  ggstatsplot::grouped_ggwithinstats(x=Timepoint,y=value,grouping.var = variable,type="non-parametric",centrality.plotting=F,
+                                      annotation.args = list(title = "M4 vs M1 | Fortiflora Samples",
+                                                         theme = ggplot2::theme(
+                                                                plot.subtitle = ggplot2::element_text(size = 13),
+                                                                plot.title = ggplot2::element_text(size = 14)
+                                                                )
+                                                         ),
+                                  plotgrid.args = list(nrow = 3))
+
+p1<-
+  plot_data %>% 
+  dplyr::filter(Treatment=="Placebo") %>% 
+  dplyr::arrange(Host_name) %>% 
+  dplyr::group_by(Host_name,variable) %>% 
+  ggstatsplot::grouped_ggwithinstats(x=Timepoint,y=value,grouping.var = variable,type="non-parametric",centrality.plotting=F,
+                                      annotation.args = list(title = "M4 vs M1 | Placebo Samples",
+                                                         theme = ggplot2::theme(
+                                                                plot.subtitle = ggplot2::element_text(size = 13),
+                                                                plot.title = ggplot2::element_text(size = 14)
+                                                                )
+                                                         ),
+                                  plotgrid.args = list(nrow = 3))
+p0
+# pT<- p0 / p1 / p2
+ggplot2::ggsave(p0,filename="output/Deliverables/Goal2/AlphaDiversity/AlphaDiversity_Timepoint_goal2_Fortiflora_samples.pdf",height=15,width=7)
+ggplot2::ggsave(p1,filename="output/Deliverables/Goal2/AlphaDiversity/AlphaDiversity_Timepoint_goal2_Placebo_samples.pdf",height=15,width=7)
+# ggplot2::ggsave(p1,filename="output/Deliverables/AlphaDiversity_treatment_w1_only.pdf",height=15,width=7)
+# ggplot2::ggsave(p2,filename="output/Deliverables/AlphaDiversity_treatment_w2_only.pdf",height=15,width=7)
+# ggplot2::ggsave(pT,filename="output/Deliverables/AlphaDiversity_treatment.pdf",height=15,width=7)
+```
+## Beta Diversity
+
+Aside from alpha-diversity we are interested in changes in the composition of the dog's gut microbiome after Fortiflora/Placebo treatment. Of course, there is some degree of change in the compisition, but we are interested if these changes are significantly different when comparing Fortiflora and Placebo group.
+
+### Ordination Analysis
+
+We will use the same ordination method than in previous exploratory section but, in this case, only applied to M1 and M4 samples to detect significant changes related to the effect of Allopurinol + Glucantime treatment, discarding the effect of other variables that may act as confounders.
+
+*Deliverables: Goal2/BetaDiversity/NMDS_Ordination_vs_Timepoint.pdf Goal2/BetaDiversity/Goal2_Adonis.xls*
+
+Results: There is no apparent clustering among M1 or M4 samples,  nor among samples from dogs receiving fortiflora or Placebo. Here, we are assuming product "848590" is the one receiving Fortiflora, according to the findings of the exploratory results on *E. faecium*. PERMANOVA results also indicate no significant effect of Timepoint or treatment in this dataset while, as expected, dog identity variable explains more than 70% of microbiome composition on this subset of samples.
+
+```{r Global Ordination Beta Diversity chunk 3, include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F}
+suppressWarnings(require(phyloseq))
+suppressWarnings(require(dplyr))
+suppressWarnings(require(ggplot2))
+suppressWarnings(require(ggforce))
+suppressWarnings(require(patchwork))
+set.seed(1234)
+
+devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")
+myMREObject<-readRDS("data/mreObject_goal2.rds")
+x.2.0<-myMREObject@taxa@metaphlan@phyloseq_sec
+set.seed(1234)
+x.2.0.species<-x.2.0
+x.2.0.species<-transform_sample_counts(x.2.0.species, function(x) ((x/sum(x))))
+sampleData<-data.frame(sample_data(x.2.0.species))
+rownames(sampleData)<-sampleData$SampleID
+sampleData<-sampleData %>% 
+  dplyr::mutate(Treatment=ifelse(grepl(848590,Product),"Fortiflora","Placebo"))  
+sample_data(x.2.0.species)<-sampleData
+suppressWarnings(myOrd<-phyloseq::ordinate(x.2.0.species,method="NMDS",distance="bray",trymax=100))
+
+pdf("output/Deliverables/Goal2/BetaDiversity/NMDS_Goal2_StressPlot.pdf")
+vegan::stressplot(myOrd)
+dev.off()
+
+#### PERMUTATIONAL ANOVA (adonis()) on Bray-Curtus distance
+x.6.0.explanatory<-sampleData[,c("Timepoint","SampleID","Host_name","Treatment")]
+x.6.0.response<-phyloseq::distance((x.2.0.species),method="bray")
+myAdonis<-vegan::adonis2(x.6.0.response~Treatment,data=x.6.0.explanatory)
+file.remove("output/Deliverables/Goal2/BetaDiversity/Goal2_Adonis.xls")
+xlsx::write.xlsx(file = "output/Deliverables/Goal2/BetaDiversity/Goal2_Adonis.xls",sheetName = "Timepoint",vegan::adonis2(x.6.0.response~Timepoint,data=x.6.0.explanatory))
+### Perform ANOVA for non-NA in treatment
+xlsx::write.xlsx(file = "output/Deliverables/Goal2/BetaDiversity/Goal2_Adonis.xls",sheetName = "Host_name",vegan::adonis2(x.6.0.response~Host_name,data=x.6.0.explanatory),append=T)
+### Perform ANOVA for non-NA in treatment
+xlsx::write.xlsx(file = "output/Deliverables/Goal2/BetaDiversity/Goal2_Adonis.xls",sheetName = "Treatment",vegan::adonis2(x.6.0.response~Treatment,data=x.6.0.explanatory),append=T)
+
+p.4.0.samples=plot_ordination(x.2.0.species,myOrd)
+
+### By Timepoint
+p0<-p.4.0.samples  + geom_point(aes(color=Timepoint,shape=Treatment,group=Treatment),size=4) +ggtitle("Unconstrained NMDS(Bray) by Timepoint | Goal2")+
+  theme(panel.border=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line=element_line(colour="black"),axis.text.x=element_text(size=16),axis.text.y=element_text(size=16))+
+  theme(axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))+
+  theme(legend.text=element_text(size=12,face="italic"),legend.title=element_text(size=12))+
+  theme(plot.title=element_text(lineheight=1,face="bold",size=15))+stat_ellipse(alpha=1,mapping=aes(color=Timepoint))+
+  theme_classic() + theme(axis.line.x = element_line(colour = "black", 
+                                    size = 1, linetype = "solid"), axis.line.y = element_line(colour = "black", 
+                                    size = 1, linetype = "solid"), axis.text.x = element_text(size = 10), 
+                                    axis.text.y = element_text(size = 10),
+                                    axis.title.x = element_text(size = 10, 
+                                        face = "bold"), axis.title.y = element_text(size = 10, 
+                                        face = "bold"), legend.title = element_text(size = 10, 
+                                        face = "bold"), legend.text = element_text(size = 8), 
+                                        legend.spacing.x = unit(0.005, "npc"), 
+                                        legend.key.size = unit(4,"mm"), legend.background = element_rect(fill = (alpha = 0))) + 
+        labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2") + scale_fill_brewer(palette="Set1")+scale_color_brewer(palette="Set1")+
+        guides(fill = guide_legend(override.aes = list(size = 4)))
+p0
+ggsave(plot=p0,filename="output/Deliverables/Goal2/BetaDiversity/NMDS_Ordination_vs_Timepoint_and_treatment.pdf",height=5,width=5)
+
+```
+
+In order to have some more granular view of differences, at the ordination level, we'll check if paired Beta-Diversity  between M1 and M4 samples from the same animals are differen between the Fortiflora and Placebo treatment groups. Results indicate no differential change between Fortiflore and Placebo groups.
+
+*Deliverables: Goal2/BetaDiversity/BrayDistance_by_Treatment_goal2.pdf*
+```{r Global Ordination Beta Diversity chunk 4, include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F}
+suppressWarnings(require(phyloseq))
+suppressWarnings(require(dplyr))
+suppressWarnings(require(ggplot2))
+suppressWarnings(require(ggforce))
+suppressWarnings(require(patchwork))
+set.seed(1234)
+
+devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")
+myMREObject<-readRDS("data/mreObject_goal2.rds")
+x.2.0<-myMREObject@taxa@metaphlan@phyloseq_sec
+set.seed(1234)
+x.2.0.species<-x.2.0
+x.2.0.species<-transform_sample_counts(x.2.0.species, function(x) ((x/sum(x))))
+sampleData<-data.frame(sample_data(x.2.0.species))
+rownames(sampleData)<-sampleData$SampleID
+sampleData<-sampleData %>% 
+  dplyr::mutate(Treatment=ifelse(grepl(848590,Product),"Fortiflora","Placebo"))  
+sample_data(x.2.0.species)<-sampleData
+suppressWarnings(myOrd<-phyloseq::ordinate(x.2.0.species,method="NMDS",distance="bray",trymax=100))
+
+p0<-phyloseq::distance(x.2.0.species,method = "bray") %>% 
+  as.matrix() %>% reshape::melt() %>% 
+  dplyr::rename(Sample1=X1,Sample2=X2) %>% 
+  dplyr::left_join(sampleData %>% dplyr::select(SampleID,Host_name),by=c("Sample1"="SampleID")) %>% 
+  dplyr::rename(Host_name1=Host_name) %>% 
+  dplyr::left_join(sampleData %>% dplyr::select(SampleID,Host_name),by=c("Sample2"="SampleID")) %>% 
+  dplyr::rename(Host_name2=Host_name) %>% 
+  dplyr::filter(Host_name1==Host_name2) %>% 
+  dplyr::filter(Sample1 != Sample2) %>% 
+  dplyr::select(-Sample1, -Sample2, -Host_name2) %>%
+  dplyr::rename(Host_name=Host_name1) %>% 
+  dplyr::left_join(sampleData %>% ungroup() %>%  dplyr::select(Host_name,Treatment)) %>% 
+  unique() %>% 
+  dplyr::rename(Distance=value) %>% 
+  ggstatsplot::ggbetweenstats(Treatment, Distance, title="Fortiflora: Paired Distance vs Treatment",bf.message=F,type="np")
+p0
+ggsave(p0,filename = "output/Deliverables/Goal2/BetaDiversity/BrayDistance_by_Treatment_goal2.pdf")
+```
+
+## Differential Abundance
+
+We are interested in seeing whether there is any differentially abundant species between M4 and M1 in any of the groups. Low group sizes (n=5 for Fortiflora and n=5 for Placebo) greatly reduce the statistical power to detect any, but we'll try anyway. We will use both LefseR and MaasLin models. 
+
+### Lefse
+
+LEFsE results shows for the Fortflora group, an increase in M4, of three different species:  *Blautia*, *Clostridium* and *Dorea* CAGs. A CAG is a co-abundant-group that has been obtained from metagnomic data, not from and whose taxonomical annotation is limited in resolution and in reliability.
+In teh Placebo Group, there are also two species that show to be significantly more abundant in Month4, although they received no Probiotic: *Collinsella Intestinallis* and *Clostridium hiranonis*.
+Note that Lefse test does not use dog id as pairing variable. Actually, when individual paired rank-sum Wilcoxon paired tests are applied to this data, significance is lost.
+
+```{r Timepoint DA chunk1 Species, include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F,eval=T}
+suppressMessages(require(dplyr))
+suppressMessages(require(phyloseq))
+suppressMessages(require(lefser))
+suppressMessages(require(ggplot2))
+suppressMessages(require(patchwork))
+
+set.seed(1234)
+### Species Level
+
+devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")
+myMREObject<-readRDS("data/mreObject_goal2.rds")
+x.2.0<-myMREObject@taxa@metaphlan@phyloseq_sec
+set.seed(1234)
+x.2.0.species<-x.2.0
+
+### Species Level for Fortiflora
+x.2.0 <-x.2.0.species %>% 
+  phyloseq::subset_samples(Product=="848590-FR80-036-003") ## Fortiflora
+se_ps<-SummarizedExperiment::SummarizedExperiment(assays = list(counts=as.matrix(otu_table(x.2.0))),
+                                                  colData=sample_data(x.2.0),
+                                                  rowData=tax_table(x.2.0))
+aux_res<-lefser(expr=se_ps,groupCol="Timepoint",blockCol = NULL,lda.threshold = 1,)
+aux_res<-merge(aux_res,tax_table(x.2.0),by.x="Names",by.y="row.names")%>% 
+  dplyr::select(Names,Phylum,Class,Order,Family,Genus,Species,scores) %>% 
+  dplyr::mutate(Class=ifelse(is.na(Class),Phylum,Class)) %>% 
+  dplyr::mutate(Order=ifelse(is.na(Order),Class,Order)) %>% 
+  dplyr::mutate(Family=ifelse(is.na(Family),Order,Family)) %>% 
+  dplyr::mutate(Genus=ifelse(is.na(Genus),Family,Genus)) %>% 
+  dplyr::mutate(Species=ifelse(is.na(Species),paste0(Genus,"_spp"),Species)) %>% 
+  dplyr::filter(! is.na(Species)) %>% 
+  dplyr::mutate(otu=Names) %>% 
+  dplyr::mutate(Names=Species) %>% 
+  dplyr::select(otu,Names,scores) %>% 
+  dplyr::mutate(Names = forcats::fct_reorder(Names, scores)) %>% 
+  dplyr::mutate(Timepoint=ifelse(scores>0,"M4","M1"))
+p0<-aux_res %>% 
+    ggplot(.,aes(x=Names,y=scores,fill=Timepoint))+geom_bar(stat="identity")+coord_flip()+
+    theme_classic()+ggtitle("Month4 vs Month1")+
+    scale_fill_brewer(palette="Dark2")
+p0
+ggsave(p0,filename = "output/Deliverables/Goal2/DifferentialAbundance/lefse/lefser_goal2_Fortiflora_plot.pdf")
+for(otu_name in aux_res$otu){
+  my_ps <- x.2.0 
+  title <- aux_res %>% 
+    dplyr::filter(otu==otu_name) 
+  my_ps %>% 
+  phyloseq::psmelt()%>% 
+  dplyr::filter(OTU==otu_name) %>% 
+  dplyr::arrange(Host_name) %>% 
+  ggstatsplot::ggbetweenstats(data = .,x=Timepoint,y=Abundance,
+                                      type = "nonparametric",
+                                      pairwise.comparisons = FALSE,
+                                      xlab="Timepoint",ylab="Counts",centrality.plotting=F,
+                                      bf.message=F,title=title$Names,outlier.label=Host_name,
+                                      palette="Dark2") %>% 
+  ggsave(.,filename=paste0("output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/",title$Names,"_vs_Timepoint_Fortiflora_Goal2.pdf"),width=7, height=7)
+  my_ps %>% 
+  phyloseq::psmelt()%>% 
+  dplyr::filter(OTU==otu_name) %>% 
+  dplyr::arrange(Host_name) %>% 
+  ggstatsplot::ggwithinstats(data = .,x=Timepoint,y=Abundance,
+                                      type = "nonparametric",
+                                      pairwise.comparisons = TRUE,
+                                      xlab="Timepoint",ylab="Counts",centrality.plotting=F,
+                                      bf.message=F,title=title$Names,
+                                      palette="Dark2") %>% 
+   ggsave(.,filename=paste0("output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_",title$Names,"_vs_Timepoint_Fortiflora_Goal2.pdf"),width=7, height=7)
+}
+
+### Species Level for Placebo
+x.2.0 <-x.2.0.species %>% 
+  phyloseq::subset_samples(Product=="848589-FR80-036-003") ## Placebo
+flist    <- genefilter::filterfun(genefilter::kOverA(1, 1))
+x.2.0<-phyloseq::filter_taxa(x.2.0,flist,TRUE)
+
+se_ps<-SummarizedExperiment::SummarizedExperiment(assays = list(counts=as.matrix(otu_table(x.2.0))),
+                                                  colData=sample_data(x.2.0),
+                                                  rowData=tax_table(x.2.0))
+aux_res<-lefser(expr=se_ps,groupCol="Timepoint",blockCol = NULL,lda.threshold = 1,)
+aux_res<-merge(aux_res,tax_table(x.2.0),by.x="Names",by.y="row.names")%>% 
+  dplyr::select(Names,Phylum,Class,Order,Family,Genus,Species,scores) %>% 
+  dplyr::mutate(Class=ifelse(is.na(Class),Phylum,Class)) %>% 
+  dplyr::mutate(Order=ifelse(is.na(Order),Class,Order)) %>% 
+  dplyr::mutate(Family=ifelse(is.na(Family),Order,Family)) %>% 
+  dplyr::mutate(Genus=ifelse(is.na(Genus),Family,Genus)) %>% 
+  dplyr::mutate(Species=ifelse(is.na(Species),paste0(Genus,"_spp"),Species)) %>% ## Placebo
+  dplyr::filter(! is.na(Species)) %>% 
+  dplyr::mutate(otu=Names) %>% 
+  dplyr::mutate(Names=Species) %>% 
+  dplyr::select(otu,Names,scores) %>% 
+  dplyr::mutate(Names = forcats::fct_reorder(Names, scores)) %>% 
+  dplyr::mutate(Timepoint=ifelse(scores>0,"M4","M1"))
+p1<-aux_res %>% 
+    ggplot(.,aes(x=Names,y=scores,fill=Timepoint))+geom_bar(stat="identity")+coord_flip()+
+    theme_classic()+ggtitle("Month4 vs Month1 | Placebo")+## Placebo
+    scale_fill_brewer(palette="Dark2")
+
+ggsave(p1,filename = "output/Deliverables/Goal2/DifferentialAbundance/lefse/lefser_goal2_Placebo_plot.pdf")
+for(otu_name in aux_res$otu){
+  my_ps <- x.2.0 
+  title <- aux_res %>% 
+    dplyr::filter(otu==otu_name) 
+  my_ps %>% 
+  phyloseq::psmelt()%>% 
+  dplyr::filter(OTU==otu_name) %>% 
+  dplyr::arrange(Host_name) %>% 
+  ggstatsplot::ggbetweenstats(data = .,x=Timepoint,y=Abundance,
+                                      type = "nonparametric",
+                                      pairwise.comparisons = FALSE,
+                                      xlab="Timepoint",ylab="Counts",centrality.plotting=F,
+                                      bf.message=F,title=title$Names,outlier.label=Host_name,
+                                      palette="Dark2") %>% 
+  ggsave(.,filename=paste0("output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/",title$Names,"_vs_Timepoint_Placebo_Goal2.pdf"),width=7, height=7)
+  my_ps %>% 
+  phyloseq::psmelt()%>% 
+  dplyr::filter(OTU==otu_name) %>% 
+  dplyr::arrange(Host_name) %>% 
+  ggstatsplot::ggwithinstats(data = .,x=Timepoint,y=Abundance,
+                                      type = "nonparametric",
+                                      pairwise.comparisons = TRUE,
+                                      xlab="Timepoint",ylab="Counts",centrality.plotting=F,
+                                      bf.message=F,title=title$Names,
+                                      palette="Dark2") %>% 
+   ggsave(.,filename=paste0("output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_",title$Names,"_vs_Timepoint_Placebo_Goal1.pdf"),width=7, height=7)
+}
+
+
+```

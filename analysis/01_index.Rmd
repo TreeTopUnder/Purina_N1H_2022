@@ -133,7 +133,7 @@ metadata_df<-my_datatable %>%
 #                               outlier.tagging = T,outlier.label = SampleID)
 
 
-xlsx::write.xlsx(metadata_df,"output/Deliverables/FinalMetadata.xlsx")
+xlsx::write.xlsx(metadata_df,"output/Deliverables/Exploratory/FinalMetadata.xlsx")
 metadata_df<-metadata_df[! is.na(metadata_df$SampleID),]
 rownames(metadata_df)<-metadata_df$SampleID
 ps_metaphlan<-metar::get_phyloseq(myMREObject,type="metaphlan")
@@ -170,7 +170,7 @@ aux_DF<-table(metadata_df %>%
 
 myMREObject <- metadata_df %>% 
   dplyr::filter(Host_name %in% aux_DF$Host_name) %>%
-  dplyr::filter(Timepoint %in% c("M1","M2")) %>% .[,"SampleID"] %>% 
+  dplyr::filter(Timepoint %in% c("M1","M4")) %>% .[,"SampleID"] %>% 
   metar::filter_samples(mre = myMREObject,sample_ids = .)
 myMREObject@wd<-"output/mre_data/goal2/"
 saveRDS(myMREObject,file="data/mreObject_goal2.rds")

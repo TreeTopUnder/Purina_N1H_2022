@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Marc Noguera-Julian, PhD. TreeTopUnder" />
+
+<meta name="date" content="2022-10-02" />
+
+<title>Exploratory Analysos</title>
+
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Purina_N1H_2022</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="01_index.html">Home</a>
+</li>
+<li>
+  <a href="02_Exploratory.html">Exploratory</a>
+</li>
+<li>
+  <a href="03_Goal1.html">Goal 1</a>
+</li>
+<li>
+  <a href="04_Goal2.html">Goal 2</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Exploratory Analysos</h1>
+<h4 class="author">Marc Noguera-Julian, PhD. TreeTopUnder</h4>
+<h4 class="date">2022-10-02</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2022-10-02
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>Purina_N1H_2022/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version 1.7.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20220906code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20220906)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20220906code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20220906)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTreeTopUnderPurinaN1H2022tree59ac17e3c27e6b80b71def7e067af5282980f584targetblank59ac17ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TreeTopUnder/Purina_N1H_2022/tree/59ac17e3c27e6b80b71def7e067af5282980f584" target="_blank">59ac17e</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomTreeTopUnderPurinaN1H2022tree59ac17e3c27e6b80b71def7e067af5282980f584targetblank59ac17ea" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/TreeTopUnder/Purina_N1H_2022/tree/59ac17e3c27e6b80b71def7e067af5282980f584" target="_blank">59ac17e</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    code/001_metadata_check.Rmd
+    Ignored:    code/003_metadata_vars_selection.Rmd
+    Ignored:    code/006_DataPreprocessing.Rmd
+    Ignored:    code/006_DataPreprocessing.html
+    Ignored:    code/008_PopulateMRE.Rmd
+    Ignored:    code/output/
+    Ignored:    data/.DS_Store
+    Ignored:    data/mreObject_feces.rds
+    Ignored:    data/mreObject_goal1.rds
+    Ignored:    data/mreObject_goal2.rds
+    Ignored:    data/mreObject_goal3.rds
+    Ignored:    data/processed/
+    Ignored:    data/ps_metaphlan_feces.rds
+    Ignored:    data/raw/
+    Ignored:    output/.DS_Store
+    Ignored:    output/Deliverables/.DS_Store
+    Ignored:    output/Deliverables/Goal1/.DS_Store
+    Ignored:    output/Deliverables/Goal3/
+    Ignored:    output/mre_data/.DS_Store
+    Ignored:    output/mre_data/SpeciesQuantification/Metaphlan3/NMDS/
+    Ignored:    output/mre_data/feces/
+
+Untracked files:
+    Untracked:  analysis/02_Exploratory.Rmd
+    Untracked:  analysis/03_Goal1.Rmd
+    Untracked:  analysis/04_Conclusiones.Rmd
+    Untracked:  analysis/04_Goal2.Rmd
+    Untracked:  output/Deliverables/Exploratory/
+    Untracked:  output/Deliverables/Goal1/AlphaDiversity/
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/
+    Untracked:  output/Deliverables/Goal2/
+
+Unstaged changes:
+    Modified:   analysis/01_index.Rmd
+    Deleted:    analysis/02_Exploratory_v1.Rmd
+    Deleted:    analysis/03_Goal1_v1.Rmd
+    Deleted:    analysis/04_Conclusiones_v1.Rmd
+    Modified:   analysis/_site.yml
+    Deleted:    output/Deliverables/Adonis.xls
+    Deleted:    output/Deliverables/AlphaDiversity_Timepoint_goal1_only.pdf
+    Deleted:    output/Deliverables/AlphaDiversity_treatment.pdf
+    Deleted:    output/Deliverables/AlphaDiversity_treatment_dry_only.pdf
+    Deleted:    output/Deliverables/AlphaDiversity_treatment_w1_only.pdf
+    Deleted:    output/Deliverables/AlphaDiversity_treatment_w2_only.pdf
+    Deleted:    output/Deliverables/BrayCurtis_Distances.xls
+    Deleted:    output/Deliverables/ExploratoryHeatmap_allSamples.pdf
+    Deleted:    output/Deliverables/FinalMetadata.xlsx
+    Deleted:    output/Deliverables/GeneRichness_Estimation.xls
+    Modified:   output/Deliverables/Goal1/BetaDiversity/Goal1_Adonis.xls
+    Modified:   output/Deliverables/Goal1/BetaDiversity/NMDS_Ordination_vs_Timepoint.pdf
+    Deleted:    output/Deliverables/Goal1/BetaDiversity/sGoal1_Adonis.xls
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundanceAllisonella_vs_Timepoint_Goal1.pdf
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundanceBifidobacterium_vs_Timepoint_Goal1.pdf
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundanceCollinsella_vs_Timepoint_Goal1.pdf
+    Deleted:    output/Deliverables/Goal1/Goal1_Adonis.xls
+    Modified:   output/Deliverables/NMDS_Goal1_StressPlot.pdf
+    Deleted:    output/Deliverables/NMDS_StressPlot.pdf
+    Deleted:    output/Deliverables/Ordination_AllSamples.pdf
+    Deleted:    output/Deliverables/PhylumAbundance_RA.xls
+    Deleted:    output/Deliverables/PhylumAbundance_counts.xls
+    Deleted:    output/Deliverables/RarefactionCurve_timepoint.pdf
+    Deleted:    output/Deliverables/SpeciesAbundance_RA.xls
+    Deleted:    output/Deliverables/SpeciesAbundance_counts.xls
+    Deleted:    output/Deliverables/StackedBarplots_Species.pdf
+    Deleted:    output/Deliverables/ps_metaphlan3.biom
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+</p>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code>knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = here::here())</code></pre>
+<div id="quality-throughput" class="section level2">
+<h2>Quality &amp; Throughput</h2>
+<p>A total of 46 samples have been analysed, one of them being a positive mock control. Median throughput is around 1.8404761^{7} reads/sample (max: 2.3193562^{7}, min:1.4348208^{7}), after quality filters. This is adequate for metagenomic analysis. No differences are observed between timepoints(p=0.89), the main variable assocaited with the goals of this analysis. This coverage depth allows us to keep all samples in this analysis.</p>
+<p><em>Deliverables: ThroughputByGroup_treatment_wet_dry_neutered.pdf, SequenceThroughput.xls</em></p>
+<p><img src="figure/02_Exploratory.Rmd/Quality%20Control-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="sequencing-effort" class="section level3">
+<h3>Sequencing effort</h3>
+<p><em>Deliverables: GeneRichness_Estimation.xls, RarefactionCurve_timepoint.pdf</em></p>
+<p>Since we are treating with shotgun data, that captures total bacterial DNA, in order to asses whether our sequencing effort is adequate to capture sample’s microbiome diversity we’ll assess it by plotting rarefaction curves of the number of detected genes vs the number of sequences obtained from the sample. Since, with these data we are detecting bacterial genes, the depth needed to fully saturate gene richnes is very high and corresponds to the number of different species * the number of genes in each of these species’ genome. Thus, there is a trend to plateu we are not reaching it with the available depth of coverage. However, available depth is sufficient o describe taxonomical and functional composition of these samples. We can also see that there is no difference in the rarefaction cruve trend vs the timepoint of the sample, although richness values at similar depths seem to differ.</p>
+<div class="figure" style="text-align: center">
+<img src="figure/02_Exploratory.Rmd/Rarefaction%20curves%20chunk1-1.png" alt="Rarefaction curve showing number of different IGC genes detected vs number of reads" width="672" />
+<p class="caption">
+Rarefaction curve showing number of different IGC genes detected vs number of reads
+</p>
+</div>
+</div>
+</div>
+<div id="data-export-to-standard-formats" class="section level2">
+<h2>Data Export to Standard Formats</h2>
+<p>In order to be able to use these data in future analysis we need to export it in several formats.</p>
+<div id="total-and-relative-abundances." class="section level3">
+<h3>Total and Relative Abundances.</h3>
+<p><em>Deliverables: SpeciesAbundance_counts.xls, SpeciesAbundance_RA.xls, PhylumAbundance_counts.xls, PhylumAbundance_RA.xls y SpeciesData.biom</em></p>
+<p>Results are exported as excel table. This table contains estimated counts for each of the bacterial species that have been detected. In the same way, for each sample, animal id and other analysis related variables (<em>Timepoint</em>, <em>Sex</em>) are included to facilitate analysis by third parties. Four tables are created, both at the Species and the phylum level, and total counts and relative abundance. Taxonomic data is also exported in the BIOM standard. <span class="math display">\[BIOM.(&lt;https://biom-format.org/&gt;)\]</span> (<a href="https://biom-format.org/" class="uri">https://biom-format.org/</a>)</p>
+<pre><code>ℹ Loading metar
+── Attaching ──────────────────────────────────────────────── metar v-0.0.0.9 ──</code></pre>
+</div>
+</div>
+<div id="clustering" class="section level2">
+<h2>Clustering</h2>
+<div id="abundancias-relativas-de-géneros-bacterianos-por-grupos." class="section level3">
+<h3>Abundancias relativas de géneros bacterianos por grupos.</h3>
+<p>Para representar gráficamente la composición del microbioma correspondiente a las muestras, se eliminan los géneros bacterianos que no están presente en al menos dos muestras y se representan solamente los 40 géneros mas abundantes en el dataset completo. de los taxones se representan las mismas en gráficos tipo <em>stacked barplots</em>.</p>
+<p><em>Deliverables: StackedBarplots_Species.pdf and DendrogramClustering.pdf</em></p>
+<div class="figure" style="text-align: center">
+<img src="figure/02_Exploratory.Rmd/Graphical%20representation%20of%20species%20abundance-1.png" alt="Relative abudnance for the 30 most abundance bacterial species, segregated by Timepoint and Host_name." width="672" />
+<p class="caption">
+Relative abudnance for the 30 most abundance bacterial species, segregated by Timepoint and Host_name.
+</p>
+</div>
+</div>
+<div id="dendrograms-heatmap" class="section level3">
+<h3>Dendrograms &amp; <em>Heatmap</em></h3>
+<p>Tsxonomical relative abundance can also be used to calculate similarity between samples. We will use Bray-Curtis distance method. These distance can, in turn, be used to cluster samples that are more similar among them from those that are less similar. For that, we will use hierarchical bottom-up Ward.D2 hierarchical clustering. In this way, in the resulting dendrogram, the similarity between any two samples is inversely proportional to the distance that has to be covered within the dendrogram, between these two samples.</p>
+<p><em>Deliverables: BrayCurtis_Distances.xls and ExploratoryHeatmap_allSamples.pdf</em></p>
+<p>There is no apparent <em>clustering</em> observed in relationhip to <em>Lifestyle, Sex, or LeishVet stage.</em> Some clustering is observed from in some animals samples (<em>Host_name</em>). This is expected, and in fact, a higher degree of clustering would be expected from sampling the same animals at different timepoints even if months apart.</p>
+<div class="figure" style="text-align: center">
+<img src="figure/02_Exploratory.Rmd/Dendrograms%20based%20on%20WUnifrac-1.png" alt="Dendrogram based on pairwise Bray-Curtis distance, considering taxonomical composition." width="672" />
+<p class="caption">
+Dendrogram based on pairwise Bray-Curtis distance, considering taxonomical composition.
+</p>
+</div>
+</div>
+<div id="global-beta-diversity-analysis-ordination" class="section level3">
+<h3>Global Beta-Diversity Analysis (Ordination)</h3>
+<p><em>Deliverables: NMDS_StressPlot.pdf, Adonis.xls y Ordination_AllSamples.pdf</em></p>
+<p>In order to be able to detect structural changes in the overall composition of the gut microbiome of these samples, and its relationship with primary or secondary variables, we will perform a NMDS ordination analysis (<em>Non-metric dimensional scaling</em>). Purpose of this analysis is to be able to visualize in a 2-dimensional space, the existing variability in microbiome composition. In this way, each point in the plot represents a single sample microbiome composition, while its position in relation with the position of other samples is related to similarity between each pair of samples. Two points at a distance d1, that are far away from other two points at a smaller distance d2, will have more different microbiome composition if d1 &gt; d2 or more similar if d1 &lt; d2. Primary or secondary variables values are projected post-hoc onto this ordination space to be able to visually inspect their association with overall microbiome structure. Ordination analysis is based on NMDS algorithm, which iteratively tries to reduce the difference between projected distances and real distances. Good convergence is reflected in the so-called <em>Stress Plot</em></p>
+<p>In the same way, we evaluate the effect of each of the considered variable on microbiome composition using a permutational anova or PERMANOVA. This test provides a statistic value that determines if this effect is significant (<em>Pr(&gt;F)</em>) and a numerical 0-1-ranged value that estimates the magnitude of thi association (<em>R2</em>). The test is performed for each variable separately and, finally, a multivariate test is performed on significant co-variates.</p>
+<p>Results shown a non-significant effect of the timepoint variable</p>
+<p>En el análisis multivariado, se observa una influencia del factor <em>Host_name</em> (R2=0.52, p=.001) en la composición del microbioma, para el que según el test estadístico PERMANOVA estas dos variables explicarían conjuntamente un efecto del 17% de la composición de las muestras analizadas, apuntando a un efecto significativo de la intervención dietética en el microbioma.</p>
+<div class="figure" style="text-align: center">
+<img src="figure/02_Exploratory.Rmd/Ordination%20Analisis-1.png" alt="Análisis de ordenacion NMDS/WUnifrac. En color se representa el punto temporal de la muestra." width="672" />
+<p class="caption">
+Análisis de ordenacion NMDS/WUnifrac. En color se representa el punto temporal de la muestra.
+</p>
+</div>
+<div class="figure" style="text-align: center">
+<img src="figure/02_Exploratory.Rmd/Ordination%20Analisis-2.png" alt="Análisis de ordenacion NMDS/WUnifrac. En color se representa el punto temporal de la muestra." width="672" />
+<p class="caption">
+Análisis de ordenacion NMDS/WUnifrac. En color se representa el punto temporal de la muestra.
+</p>
+</div>
+</div>
+</div>
+<div id="probiotic-detection" class="section level2">
+<h2>Probiotic Detection</h2>
+<p>The aim of this subanalysis is to try to detect the bacterial species in the probiotic that is administered to the dogs. The probiotic is FortiFlora, by Purina. It contains <em>Enterococcus faecium SF68</em>.</p>
+<p><em>Deliverables: Spaghetti Plot showing evolution</em></p>
+<p>Results show that the probiotic straing is found in group A samples (product <em>848590-FR80-036-003</em>) after the administration of FortiFlora. The same species is foudn in a single sample at baseline in group B, although origin of these species can not be from FortiFlora since it had not beed administered at this point.</p>
+<p>Nevertheless, abundance of Fortiflora species in group A M4 and M6 samples is very low, and only detectable in 2/5 samples in this group. We’ll work, with the assumption that group “A”(848590-FR80-036-003) is the one receiving FortiFlora. This will need to be unblinded at some point downstream.</p>
+<pre class="r"><code>suppressMessages(require(dplyr))
+suppressMessages(require(phyloseq))
+suppressMessages(require(lefser))
+suppressMessages(require(ggplot2))
+suppressMessages(require(patchwork))
+
+set.seed(1234)
+
+### Species Level
+species_to_detect&lt;-&quot;Enterococcus_faecium&quot;
+product_codes&lt;-c(&quot;848589-FR80-036-003&quot;,&quot;848590-FR80-036-003&quot;)
+devtools::load_all(&quot;~/Documents/Work/Development/WMGSPipeline/&quot;)</code></pre>
+<pre><code>ℹ Loading metar
+── Attaching ──────────────────────────────────────────────── metar v-0.0.0.9 ──</code></pre>
+<pre><code>suggested package selbal ✔</code></pre>
+<pre><code></code></pre>
+<pre><code>suggested package DataExplorer ✔</code></pre>
+<pre><code></code></pre>
+<pre><code>suggested package lme4 ✔</code></pre>
+<pre><code></code></pre>
+<pre><code>suggested package merTools ✔</code></pre>
+<pre><code></code></pre>
+<pre class="r"><code>myMREObject&lt;-readRDS(&quot;data/processed/mreObject.rds&quot;)
+
+
+p0&lt;-metar::get_phyloseq(myMREObject,type=&quot;metaphlan&quot;) %&gt;% 
+  phyloseq::psmelt() %&gt;% 
+  dplyr::filter(Product %in% product_codes) %&gt;% 
+  dplyr::filter(Species==species_to_detect) %&gt;%
+  dplyr::filter(Timepoint!=&quot;BL&quot;) %&gt;%
+  dplyr::mutate(Group=ifelse(grepl(848590,Product),&quot;A&quot;,&quot;B&quot;)) %&gt;% 
+  dplyr::filter(! is.na(Group)) %&gt;% 
+  ggplot(.,aes(x=Timepoint,y=Abundance,color=Group,group=Host_name,label=Host_name))+
+    geom_point()+ 
+    geom_line()+
+    scale_fill_brewer(palette=&quot;Dark2&quot;)+
+    scale_color_brewer(palette=&quot;Dark2&quot;)+
+    ggtitle(&quot;Enterococcus Faecium vs time | product (BL-Excluded)&quot;)
+
+p1&lt;-metar::get_phyloseq(myMREObject,type=&quot;metaphlan&quot;) %&gt;% 
+  phyloseq::psmelt() %&gt;% 
+  dplyr::filter(Product %in% product_codes) %&gt;% 
+  dplyr::filter(Species==species_to_detect) %&gt;%
+
+  dplyr::mutate(Group=ifelse(grepl(848590,Product),&quot;A&quot;,&quot;B&quot;)) %&gt;% 
+  dplyr::filter(! is.na(Group)) %&gt;% 
+  ggplot(.,aes(x=Timepoint,y=Abundance,color=Group,group=Host_name,label=Host_name))+
+    geom_point()+ 
+    geom_line()+
+    scale_fill_brewer(palette=&quot;Dark2&quot;)+
+    scale_color_brewer(palette=&quot;Dark2&quot;)+
+    ggtitle(&quot;Enterococcus Faecium vs time | product&quot;)
+
+p0</code></pre>
+<p><img src="figure/02_Exploratory.Rmd/Probiotic%20detection-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(p0,filename = &quot;output/Deliverables/Exploratory/Spaghetti_Efaecium_BLexcluded.pdf&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+<pre class="r"><code>ggsave(p1,filename = &quot;output/Deliverables/Exploratory/Spaghetti_Efaecium.pdf&quot;)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.1.1 (2021-08-10)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Big Sur 10.16
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats4    grid      stats     graphics  grDevices utils     datasets 
+[8] methods   base     
+
+other attached packages:
+ [1] metar_0.1.5                 lefser_1.4.0               
+ [3] SummarizedExperiment_1.24.0 Biobase_2.54.0             
+ [5] GenomicRanges_1.46.1        GenomeInfoDb_1.30.1        
+ [7] IRanges_2.28.0              S4Vectors_0.32.4           
+ [9] BiocGenerics_0.40.0         MatrixGenerics_1.6.0       
+[11] matrixStats_0.62.0          ggforce_0.3.3              
+[13] tidyr_1.2.0                 mmtable2_0.1.3             
+[15] circlize_0.4.15             RColorBrewer_1.1-3         
+[17] ComplexHeatmap_2.10.0       ggthemes_4.2.4             
+[19] phylosmith_1.0.6            testthat_3.1.4             
+[21] picante_1.8.2               nlme_3.1-158               
+[23] ape_5.6-2                   vegan_2.6-2                
+[25] lattice_0.20-45             permute_0.9-7              
+[27] microbiome_1.17.41          patchwork_1.1.1            
+[29] ggpubr_0.4.0                ggplot2_3.3.6              
+[31] xlsx_0.6.5                  dplyr_1.0.9                
+[33] phyloseq_1.38.0             workflowr_1.7.0            
+
+loaded via a namespace (and not attached):
+  [1] coda_0.19-4            ragg_1.2.2             bit64_4.0.5           
+  [4] knitr_1.39             multcomp_1.4-19        DelayedArray_0.20.0   
+  [7] wesanderson_0.3.6      data.table_1.14.2      doParallel_1.0.17     
+ [10] DataExplorer_0.8.2     RCurl_1.98-1.8         generics_0.1.3        
+ [13] TH.data_1.1-1          callr_3.7.1            usethis_2.1.6         
+ [16] proxy_0.4-27           future_1.27.0          correlation_0.8.1     
+ [19] bit_4.0.4              tzdb_0.3.0             xml2_1.3.3            
+ [22] httpuv_1.6.5           assertthat_0.2.1       viridis_0.6.2         
+ [25] xfun_0.31              jquerylib_0.1.4        rJava_1.0-6           
+ [28] evaluate_0.15          promises_1.2.0.1       fansi_1.0.3           
+ [31] igraph_1.3.5           DBI_1.1.3              htmlwidgets_1.5.4     
+ [34] kSamples_1.2-9         Rmpfr_0.8-9            paletteer_1.4.0       
+ [37] purrr_0.3.4            ellipsis_0.3.2         backports_1.4.1       
+ [40] insight_0.18.0         prismatic_1.1.0        libcoin_1.0-9         
+ [43] RcppParallel_5.1.5     vctrs_0.4.1            remotes_2.4.2         
+ [46] here_1.0.1             abind_1.4-5            cachem_1.0.6          
+ [49] withr_2.5.0            vroom_1.5.7            prettyunits_1.1.1     
+ [52] cluster_2.1.3          crayon_1.5.1           pkgconfig_2.0.3       
+ [55] SuppDists_1.1-9.7      labeling_0.4.2         units_0.8-0           
+ [58] tweenr_1.0.2           statsExpressions_1.3.2 pkgload_1.3.0         
+ [61] blme_1.0-5             devtools_2.4.4         rlang_1.0.6           
+ [64] globals_0.15.1         lifecycle_1.0.2        miniUI_0.1.1.1        
+ [67] sandwich_3.0-2         selbal_0.1.0           rprojroot_2.0.3       
+ [70] polyclip_1.10-0        datawizard_0.4.1       Matrix_1.4-1          
+ [73] carData_3.0-5          zoo_1.8-10             Rhdf5lib_1.16.0       
+ [76] boot_1.3-28            GlobalOptions_0.1.2    whisker_0.4           
+ [79] processx_3.7.0         rjson_0.2.21           png_0.1-7             
+ [82] viridisLite_0.4.1      PMCMRplus_1.9.5        parameters_0.18.1     
+ [85] bitops_1.0-7           getPass_0.2-2          KernSmooth_2.23-20    
+ [88] rhdf5filters_1.6.0     Biostrings_2.62.0      shape_1.4.6           
+ [91] classInt_0.4-7         stringr_1.4.1          multcompView_0.1-8    
+ [94] coin_1.4-2             arm_1.12-2             parallelly_1.32.1     
+ [97] rstatix_0.7.0          ggsignif_0.6.3         scales_1.2.1          
+[100] memoise_2.0.1          magrittr_2.0.3         plyr_1.8.7            
+[103] zlibbioc_1.40.0        compiler_4.1.1         clue_0.3-61           
+[106] lme4_1.1-30            cli_3.4.1              ade4_1.7-19           
+[109] XVector_0.34.0         urlchecker_1.0.1       listenv_0.8.0         
+[112] ps_1.7.1               MASS_7.3-58            mgcv_1.8-40           
+[115] tidyselect_1.1.2       stringi_1.7.8          forcats_0.5.1         
+[118] textshaping_0.3.6      highr_0.9              yaml_2.3.5            
+[121] ggrepel_0.9.1          sass_0.4.2             tools_4.1.1           
+[124] parallel_4.1.1         rstudioapi_0.13        foreach_1.5.2         
+[127] logging_0.10-108       git2r_0.30.1           gridExtra_2.3         
+[130] farver_2.1.1           Rtsne_0.16             ggraph_2.0.5          
+[133] digest_0.6.29          shiny_1.7.2            networkD3_0.4         
+[136] BWStest_0.2.2          Rcpp_1.0.9             car_3.1-0             
+[139] broom_1.0.0            performance_0.9.1      later_1.3.0           
+[142] httr_1.4.4             sf_1.0-7               effectsize_0.7.0      
+[145] colorspace_2.0-3       brio_1.1.3             fs_1.5.2              
+[148] splines_4.1.1          rematch2_2.1.2         graphlayouts_0.8.0    
+[151] xlsxjars_0.6.1         multtest_2.50.0        sessioninfo_1.2.2     
+[154] systemfonts_1.0.4      xtable_1.8-4           gmp_0.6-5             
+[157] jsonlite_1.8.0         nloptr_2.0.3           tidygraph_1.2.1       
+[160] zeallot_0.1.0          modeltools_0.2-23      gt_0.6.0              
+[163] R6_2.5.1               profvis_0.3.7          broom.mixed_0.2.9.4   
+[166] pillar_1.8.1           htmltools_0.5.3        mime_0.12             
+[169] glue_1.6.2             fastmap_1.1.0          minqa_1.2.4           
+[172] class_7.3-20           codetools_0.2-18       pkgbuild_1.3.1        
+[175] mvtnorm_1.1-3          furrr_0.3.0            utf8_1.2.2            
+[178] bslib_0.4.0            tibble_3.1.8           logger_0.2.2          
+[181] magick_2.7.3           survival_3.3-1         rmarkdown_2.14        
+[184] desc_1.4.1             biomformat_1.22.0      merTools_0.5.2        
+[187] munsell_0.5.0          GetoptLong_1.0.5       e1071_1.7-11          
+[190] rhdf5_2.38.1           GenomeInfoDbData_1.2.7 iterators_1.0.14      
+[193] ggstatsplot_0.9.3      reshape2_1.4.4         gtable_0.3.1          
+[196] bayestestR_0.12.1     </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

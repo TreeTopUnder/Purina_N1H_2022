@@ -11,7 +11,7 @@
 
 <meta name="author" content="Marc Noguera-Julian, PhD. TreeTopUnder" />
 
-<meta name="date" content="2022-09-12" />
+<meta name="date" content="2022-10-03" />
 
 <title>Metagenomic Analysis of Canine gut microbiome in Leishmaniasis</title>
 
@@ -258,7 +258,16 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">Home</a>
+  <a href="01_index.html">Home</a>
+</li>
+<li>
+  <a href="02_Exploratory.html">Exploratory</a>
+</li>
+<li>
+  <a href="03_Goal1.html">Goal 1</a>
+</li>
+<li>
+  <a href="04_Goal2.html">Goal 2</a>
 </li>
 <li>
   <a href="about.html">About</a>
@@ -280,7 +289,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Metagenomic Analysis of Canine gut microbiome in Leishmaniasis</h1>
 <h4 class="author">Marc Noguera-Julian, PhD. TreeTopUnder</h4>
-<h4 class="date">2022-09-12</h4>
+<h4 class="date">2022-10-03</h4>
 
 </div>
 
@@ -305,7 +314,7 @@ $(document).ready(function () {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-09-12
+<strong>Last updated:</strong> 2022-10-03
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
@@ -329,7 +338,7 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 </div>
 <div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
 </div>
 </div>
 </div>
@@ -396,16 +405,16 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTreeTopUnderPurinaN1H2022treedb1f1c310637e02f52002ef4dba1e8122e1e00d2targetblankdb1f1c3a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TreeTopUnder/Purina_N1H_2022/tree/db1f1c310637e02f52002ef4dba1e8122e1e00d2" target="_blank">db1f1c3</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTreeTopUnderPurinaN1H2022tree59ac17e3c27e6b80b71def7e067af5282980f584targetblank59ac17ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TreeTopUnder/Purina_N1H_2022/tree/59ac17e3c27e6b80b71def7e067af5282980f584" target="_blank">59ac17e</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomTreeTopUnderPurinaN1H2022treedb1f1c310637e02f52002ef4dba1e8122e1e00d2targetblankdb1f1c3a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomTreeTopUnderPurinaN1H2022tree59ac17e3c27e6b80b71def7e067af5282980f584targetblank59ac17ea" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/TreeTopUnder/Purina_N1H_2022/tree/db1f1c310637e02f52002ef4dba1e8122e1e00d2" target="_blank">db1f1c3</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/TreeTopUnder/Purina_N1H_2022/tree/59ac17e3c27e6b80b71def7e067af5282980f584" target="_blank">59ac17e</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -415,7 +424,6 @@ Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    code/001_metadata_check.Rmd
     Ignored:    code/003_metadata_vars_selection.Rmd
     Ignored:    code/006_DataPreprocessing.Rmd
@@ -430,17 +438,58 @@ Ignored files:
     Ignored:    data/processed/
     Ignored:    data/ps_metaphlan_feces.rds
     Ignored:    data/raw/
+    Ignored:    output/.DS_Store
+    Ignored:    output/Deliverables/.DS_Store
+    Ignored:    output/Deliverables/Goal1/.DS_Store
+    Ignored:    output/Deliverables/Goal3/
+    Ignored:    output/mre_data/.DS_Store
+    Ignored:    output/mre_data/SpeciesQuantification/Metaphlan3/NMDS/
+    Ignored:    output/mre_data/feces/
 
 Untracked files:
-    Untracked:  analysis/01_index.Rmd
-    Untracked:  analysis/02_Exploratory_v1.Rmd
-    Untracked:  analysis/03_Longitudinal_v1.Rmd
-    Untracked:  analysis/04_Conclusiones_v1.Rmd
-    Untracked:  output/Deliverables/
-    Untracked:  output/mre_data/
+    Untracked:  analysis/02_Exploratory.Rmd
+    Untracked:  analysis/03_Goal1.Rmd
+    Untracked:  analysis/04_Conclusiones.Rmd
+    Untracked:  analysis/04_Goal2.Rmd
+    Untracked:  analysis/05_Goal3.Rmd
+    Untracked:  output/Deliverables/Exploratory/
+    Untracked:  output/Deliverables/Goal1/AlphaDiversity/
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/
+    Untracked:  output/Deliverables/Goal2/
 
 Unstaged changes:
-    Modified:   .gitignore
+    Modified:   analysis/01_index.Rmd
+    Deleted:    analysis/02_Exploratory_v1.Rmd
+    Deleted:    analysis/03_Goal1_v1.Rmd
+    Deleted:    analysis/04_Conclusiones_v1.Rmd
+    Modified:   analysis/_site.yml
+    Deleted:    output/Deliverables/Adonis.xls
+    Deleted:    output/Deliverables/AlphaDiversity_Timepoint_goal1_only.pdf
+    Deleted:    output/Deliverables/AlphaDiversity_treatment.pdf
+    Deleted:    output/Deliverables/AlphaDiversity_treatment_dry_only.pdf
+    Deleted:    output/Deliverables/AlphaDiversity_treatment_w1_only.pdf
+    Deleted:    output/Deliverables/AlphaDiversity_treatment_w2_only.pdf
+    Deleted:    output/Deliverables/BrayCurtis_Distances.xls
+    Deleted:    output/Deliverables/ExploratoryHeatmap_allSamples.pdf
+    Deleted:    output/Deliverables/FinalMetadata.xlsx
+    Deleted:    output/Deliverables/GeneRichness_Estimation.xls
+    Modified:   output/Deliverables/Goal1/BetaDiversity/Goal1_Adonis.xls
+    Modified:   output/Deliverables/Goal1/BetaDiversity/NMDS_Ordination_vs_Timepoint.pdf
+    Deleted:    output/Deliverables/Goal1/BetaDiversity/sGoal1_Adonis.xls
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundanceAllisonella_vs_Timepoint_Goal1.pdf
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundanceBifidobacterium_vs_Timepoint_Goal1.pdf
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundanceCollinsella_vs_Timepoint_Goal1.pdf
+    Deleted:    output/Deliverables/Goal1/Goal1_Adonis.xls
+    Modified:   output/Deliverables/NMDS_Goal1_StressPlot.pdf
+    Deleted:    output/Deliverables/NMDS_StressPlot.pdf
+    Deleted:    output/Deliverables/Ordination_AllSamples.pdf
+    Deleted:    output/Deliverables/PhylumAbundance_RA.xls
+    Deleted:    output/Deliverables/PhylumAbundance_counts.xls
+    Deleted:    output/Deliverables/RarefactionCurve_timepoint.pdf
+    Deleted:    output/Deliverables/SpeciesAbundance_RA.xls
+    Deleted:    output/Deliverables/SpeciesAbundance_counts.xls
+    Deleted:    output/Deliverables/StackedBarplots_Species.pdf
+    Deleted:    output/Deliverables/ps_metaphlan3.biom
 
 </code></pre>
 <p>
@@ -453,9 +502,69 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/01_index.Rmd</code>) and HTML (<code>docs/01_index.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/TreeTopUnder/Purina_N1H_2022/blob/59ac17e3c27e6b80b71def7e067af5282980f584/analysis/01_index.Rmd" target="_blank">59ac17e</a>
+</td>
+<td>
+Marc Noguera-Julian
+</td>
+<td>
+2022-09-13
+</td>
+<td>
+initial commits
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/TreeTopUnder/Purina_N1H_2022/59ac17e3c27e6b80b71def7e067af5282980f584/docs/01_index.html" target="_blank">59ac17e</a>
+</td>
+<td>
+Marc Noguera-Julian
+</td>
+<td>
+2022-09-13
+</td>
+<td>
+initial commits
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -589,9 +698,9 @@ loaded via a namespace (and not attached):
  [40] rhdf5filters_1.6.0     cachem_1.0.6           assertthat_0.2.1      
  [43] networkD3_0.4          vroom_1.5.7            promises_1.2.0.1      
  [46] scales_1.2.1           ggraph_2.0.5           googlesheets4_1.0.0   
- [49] merTools_0.5.2         gtable_0.3.0           globals_0.15.1        
+ [49] merTools_0.5.2         gtable_0.3.1           globals_0.15.1        
  [52] processx_3.7.0         xlsx_0.6.5             tidygraph_1.2.1       
- [55] workflowr_1.7.0        rlang_1.0.4            splines_4.1.1         
+ [55] workflowr_1.7.0        rlang_1.0.6            splines_4.1.1         
  [58] rstatix_0.7.0          gargle_1.2.0           broom_1.0.0           
  [61] yaml_2.3.5             reshape2_1.4.4         abind_1.4-5           
  [64] modelr_0.1.8           backports_1.4.1        httpuv_1.6.5          
@@ -606,32 +715,33 @@ loaded via a namespace (and not attached):
  [91] cluster_2.1.3          fs_1.5.2               furrr_0.3.0           
  [94] DataExplorer_0.8.2     magrittr_2.0.3         data.table_1.14.2     
  [97] reprex_2.0.1           mvtnorm_1.1-3          googledrive_2.0.0     
-[100] pkgload_1.3.0          xlsxjars_0.6.1         hms_1.1.2             
-[103] patchwork_1.1.1        mime_0.12              evaluate_0.15         
-[106] xtable_1.8-4           broom.mixed_0.2.9.4    readxl_1.4.0          
-[109] IRanges_2.28.0         gridExtra_2.3          compiler_4.1.1        
-[112] KernSmooth_2.23-20     crayon_1.5.1           minqa_1.2.4           
-[115] htmltools_0.5.3        mgcv_1.8-40            later_1.3.0           
-[118] tzdb_0.3.0             RcppParallel_5.1.5     lubridate_1.8.0       
-[121] DBI_1.1.3              tweenr_1.0.2           dbplyr_2.2.1          
-[124] MASS_7.3-58            boot_1.3-28            sf_1.0-7              
-[127] wesanderson_0.3.6      Matrix_1.4-1           ade4_1.7-19           
-[130] car_3.1-0              brio_1.1.3             permute_0.9-7         
-[133] cli_3.3.0              parallel_4.1.1         igraph_1.3.4          
-[136] pkgconfig_2.0.3        xml2_1.3.3             foreach_1.5.2         
-[139] bslib_0.4.0            blme_1.0-5             multtest_2.50.0       
-[142] XVector_0.34.0         rvest_1.0.2            callr_3.7.1           
-[145] digest_0.6.29          vegan_2.6-2            Biostrings_2.62.0     
-[148] rmarkdown_2.14         cellranger_1.1.0       shiny_1.7.2           
-[151] nloptr_2.0.3           lifecycle_1.0.1        nlme_3.1-158          
-[154] jsonlite_1.8.0         Rhdf5lib_1.16.0        carData_3.0-5         
-[157] desc_1.4.1             viridisLite_0.4.1      fansi_1.0.3           
-[160] pillar_1.8.1           lattice_0.20-45        fastmap_1.1.0         
-[163] httr_1.4.3             pkgbuild_1.3.1         survival_3.3-1        
-[166] glue_1.6.2             remotes_2.4.2          iterators_1.0.14      
-[169] bit_4.0.4              ggforce_0.3.3          class_7.3-20          
-[172] stringi_1.7.8          sass_0.4.2             profvis_0.3.7         
-[175] memoise_2.0.1          e1071_1.7-11           ape_5.6-2             </code></pre>
+[100] whisker_0.4            pkgload_1.3.0          xlsxjars_0.6.1        
+[103] patchwork_1.1.1        hms_1.1.2              mime_0.12             
+[106] evaluate_0.15          xtable_1.8-4           broom.mixed_0.2.9.4   
+[109] readxl_1.4.0           IRanges_2.28.0         gridExtra_2.3         
+[112] compiler_4.1.1         KernSmooth_2.23-20     crayon_1.5.1          
+[115] minqa_1.2.4            htmltools_0.5.3        mgcv_1.8-40           
+[118] later_1.3.0            tzdb_0.3.0             RcppParallel_5.1.5    
+[121] lubridate_1.8.0        DBI_1.1.3              tweenr_1.0.2          
+[124] dbplyr_2.2.1           MASS_7.3-58            boot_1.3-28           
+[127] sf_1.0-7               wesanderson_0.3.6      Matrix_1.4-1          
+[130] ade4_1.7-19            car_3.1-0              brio_1.1.3            
+[133] permute_0.9-7          cli_3.4.1              parallel_4.1.1        
+[136] igraph_1.3.5           pkgconfig_2.0.3        xml2_1.3.3            
+[139] foreach_1.5.2          bslib_0.4.0            blme_1.0-5            
+[142] multtest_2.50.0        XVector_0.34.0         rvest_1.0.2           
+[145] callr_3.7.1            digest_0.6.29          vegan_2.6-2           
+[148] Biostrings_2.62.0      rmarkdown_2.14         cellranger_1.1.0      
+[151] shiny_1.7.2            nloptr_2.0.3           lifecycle_1.0.2       
+[154] nlme_3.1-158           jsonlite_1.8.0         Rhdf5lib_1.16.0       
+[157] carData_3.0-5          desc_1.4.1             viridisLite_0.4.1     
+[160] fansi_1.0.3            pillar_1.8.1           lattice_0.20-45       
+[163] fastmap_1.1.0          httr_1.4.4             pkgbuild_1.3.1        
+[166] survival_3.3-1         glue_1.6.2             remotes_2.4.2         
+[169] iterators_1.0.14       bit_4.0.4              ggforce_0.3.3         
+[172] class_7.3-20           stringi_1.7.8          sass_0.4.2            
+[175] profvis_0.3.7          memoise_2.0.1          e1071_1.7-11          
+[178] ape_5.6-2             </code></pre>
 </div>
 </div>
 </div>

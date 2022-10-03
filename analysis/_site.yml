@@ -4,7 +4,13 @@ navbar:
   title: "Purina_N1H_2022"
   left:
   - text: Home
-    href: index.html
+    href: 01_index.html
+  - text: Exploratory
+    href: 02_Exploratory.html
+  - text: Goal 1
+    href: 03_Goal1.html
+  - text: Goal 2
+    href: 04_Goal2.html
   - text: About
     href: about.html
   - text: License
