@@ -10,9 +10,9 @@ analysis/*html
 analysis/*_cache
 analysis/site_libs
 code/*
-data/*
 output/
+data/*
 analysis/*
 analysis/*Rmd
-analysis/about.Rmd
+analysis/
 
