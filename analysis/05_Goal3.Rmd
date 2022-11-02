@@ -1,30 +1,697 @@
 ---
-title: "Goal 3 - Baseline Description"
-author: "Marc Noguera"
-date: "10/2/2022"
+site: workflowr::wflow_site
+title: "Leishmaniasis microbiome - BL samples"
+author: "Marc Noguera-Julian, PhD. TreeTopUnder"
+date: "`r format(Sys.time(), '%Y-%m-%d')`"
+header-includes:
+- \usepackage{fancyhdr}
+- \usepackage{lipsum}
+- \pagestyle{fancy}
+- \fancyhead[CO,CE]{2022-PurinaLeish-WMGS}
+- \fancyfoot[LO,RE]{Marc Noguera-Julian, TreeTopUnder}
+- \fancyhead[LE,RO]{\thepage}
+- \fancyfoot[CO,CE]{}
+- \usepackage[default]{sourcesanspro}
+- \usepackage[T1]{fontenc}
+- \usepackage{eso-pic,graphicx,transparent}
+mainfont: Helvetica
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup, include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_knit$set(root.dir = here::here())
+bifido_animals<-c("RUDDY","NANI","LEO","BALOO")
+set.seed(1234)
 ```
 
-## R Markdown
+## Leishmaniasis microbiome
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+The purpose of this analysis is to provide a description of the gut microbiome of dogs affected with leishmaniasis. Since the sample set being studied is composed only from affected dogs, a healthy vs leishmaniasis comparison can not be performed. However the description will take advantage of all baseline samples, including dogs with no follow up.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+### Setup dataset
 
-```{r cars}
-summary(cars)
+```{r Alpha Diversity, include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F}
+suppressMessages(require(phyloseq))
+suppressMessages(require(patchwork))
+suppressMessages(require(dplyr))
+
+my_phyloseq<-readRDS("data/processed/ps_metaphlan.rds") %>% 
+  phyloseq::subset_samples(Timepoint=="BL")
+my_phyloseq_sec<-readRDS("data/processed/ps_metaphlan_sec.rds") %>% 
+  phyloseq::subset_samples(Timepoint=="BL")
+
+my_datatable<-readRDS("data/raw/CatalogMapping/IGC/dataTable.rds") %>% 
+  dplyr::filter(SampleID %in% ( phyloseq::sample_names(my_phyloseq)))
+
+threshold<-my_datatable %>% 
+  dplyr::group_by(SampleID) %>% 
+  summarise(max=max(ReadCountReal)) %>% 
+  pull(max) %>% 
+  min() 
+
+alpha_df<-my_datatable %>% 
+  dplyr::filter(ReadCountReal==threshold) %>% 
+  dplyr::left_join(phyloseq::sample_data(my_phyloseq)) 
+saveRDS(alpha_df,"data/generichness_goal3.rds")
+saveRDS(my_phyloseq,"data/processed/ps_metaphlan_goal3.rds")
+saveRDS(my_phyloseq_sec,"data/processed/ps_metaphlan_goal3_sec.rds")
 ```
 
-## Including Plots
+## Alpha Diversity
 
-You can also embed plots, for example:
+We are interested to assess whether alpha diversity is associated to any of the variables considered in this sample set. We select specific variables, and build a multivariate linear model with them, to test with association with Gene Richness. No association is found with selected variables in baseline samples.
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r alpha diversity chunk 2, include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F}
+suppressMessages(require(phyloseq))
+suppressMessages(require(patchwork))
+suppressMessages(require(dplyr))
+
+alpha_df<-readRDS("data/generichness_goal3.rds")
+my_phyloseq<-readRDS("data/processed/ps_metaphlan_goal3_sec.rds")
+model_data<-phyloseq::estimate_richness(physeq = my_phyloseq) %>% 
+  tibble::rownames_to_column("SampleID") %>% 
+  dplyr::mutate(SampleID=gsub("X","",SampleID)) %>% 
+  dplyr::right_join(alpha_df) %>%
+  dplyr::filter(! is.na(Timepoint)) %>% 
+  dplyr::select(Chao1,Shannon,GeneNumber,Geographical_location,Sex,LeishVet_Stage_strat,Lifestyle)
+
+model_data %>% 
+  dplyr::select(-Chao1,-Shannon) %>% 
+  lm(data = .,formula=GeneNumber ~ .) %>% broom::tidy() %>% knitr::kable()
+```
+## Beta Diversity
+
+We aim to describe the species and genus composition of the gut microbiome of 15 dogs affected by untreated leishmaniasis. First we depict a stacked barplot both at the species and genus level. From the results, it can be seen that there is 
+
+### Taxon barplots
+
+We can see that both *Prevotella Copri* and *Prevotella_sp_CAG_891*, both from the *Prevotella* genus and *Prevotellaceae* familiy, and *Colinsella intestinalis* are dominant through the sample set at baseline. The latter shows lower abundance but higher prevalences that the two *Prevotella* species. Similarly, *Ruminococcus gnavus* and *Bacteroides intestinalis* are frequently found in many of the samples. Of note, *Escherichia coli* is found >1% in 5/15(33%) of the samples, with no apparent association with any of the considered variables.
+
+```{r beta diversity chunk 1, include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F}
+suppressMessages(require(phyloseq))
+suppressMessages(require(patchwork))
+suppressMessages(require(dplyr))
+suppressMessages(require(ggplot2))
+my_ps<-readRDS("data/processed/ps_metaphlan_goal3_sec.rds")%>% 
+  phyloseq::transform_sample_counts( function(x) ((x/sum(x)))) %>% 
+  microbiome::core(prevalence = 0.30,include.lowest = F,detection = 0.001)
+p0<-my_ps%>% 
+  phylosmith::phylogeny_profile(.,relative_abundance  = F,treatment = "Geographical_location",classification = "Species")+
+    guides(fill=guide_legend(nrow=10,byrow=TRUE))+
+    theme_classic(base_size=8)+
+    theme(legend.position="bottom",
+          legend.direction = "horizontal",
+          legend.spacing.x = unit(0.1, 'cm'),
+          legend.spacing.y = unit(0.0,"cm"))
+
+#### Need to manually change the Species labels from OTU (Otu_xxx) to Species name
+# p0$data$OTU<-p0$data %>% 
+#   dplyr::left_join(my_ps %>% phyloseq::psmelt() %>% 
+#                    dplyr::select(OTU,Species) %>% 
+#                    as.data.frame() %>%
+#                    unique(),by="OTU") %>% 
+#   dplyr::pull(Species)
+
+my_ps<-readRDS("data/processed/ps_metaphlan_goal3.rds") %>% 
+  phyloseq::tax_glom(.,taxrank="Genus") %>% 
+  microbiome::core(prevalence = 0.10,include.lowest = F,detection = 0.001)
+
+p1<-my_ps%>% 
+  phylosmith::phylogeny_profile(.,treatment = "Geographical_location",classification = "Genus")+
+    guides(fill=guide_legend(nrow=10,byrow=TRUE))+
+    theme_classic(base_size=10)+
+    theme(legend.position="bottom",
+          legend.direction = "horizontal",
+          legend.spacing.x = unit(0.1, 'cm'),
+          legend.spacing.y = unit(0.0,"cm"))
+
+ggsave(p0,filename="output/Deliverables/Goal3/BetaDiversity/Species_StackedBarplots_by_GeographicalLocation.pdf",width=8,height = 6)
+ggsave(p1,filename="output/Deliverables/Goal3/BetaDiversity/Genus_StackedBarplots_by_GeographicalLocation.pdf",width=8,height = 6)
+
+p0
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r beta diversity chunk 1.5,include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F}
+suppressMessages(require(phyloseq))
+suppressMessages(require(patchwork))
+suppressMessages(require(dplyr))
+suppressMessages(require(ggplot2))
+my_ps<-readRDS("data/processed/ps_metaphlan_goal3.rds")%>% 
+  microbiome::core(prevalence = 0.30,include.lowest = F,detection = 0.001)
+
+levels_species<-my_ps %>% 
+  phyloseq::psmelt() %>% 
+  dplyr::group_by(Species) %>% 
+  dplyr::summarise(mean=mean(Abundance)) %>%
+  dplyr::arrange(-mean) %>% 
+  dplyr::pull(Species)
+
+my_ps %>% 
+  phyloseq::psmelt() %>% 
+  dplyr::filter(Species %in% levels_species[1:15]) %>% 
+  dplyr::mutate(Species=factor(Species,levels=levels_species)) %>% 
+  ggplot2::ggplot(.,aes(x=Species,y=Abundance,fill=Phylum)) + geom_boxplot()+
+    theme_classic(base_size=10)+
+    theme(legend.position="right",
+          legend.direction = "vertical",
+          legend.spacing.x = unit(0.1, 'cm'),
+          legend.spacing.y = unit(0.0,"cm"),
+          axis.text.x = element_text(angle = 70 , vjust = 1, hjust=1))+
+    scale_color_brewer("Dark3")
+
+  
+```
+
+### Abundance Heatmaps
+
+In addition to the general description we want to see if the composition creates some clustering of the samples that is related to the variables being considered. Interestingly, 4 and 2 sample cluster, enriched with *Prevotella copri*  are found, but with no association to considered variables. Remaining samples show high content of *C intestinalis*, *B vulgatus* and *R gnavus* and are also diverse in geographical location, Sex, Lifestyle and LeishVet_Stage_strat variables.
+
+```{r beta diversity chunk 2, include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F}
+suppressMessages(require(phyloseq))
+suppressMessages(require(patchwork))
+suppressMessages(require(dplyr))
+### Load data and create MRE Object
+devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")### Change to require/library/load local package
+
+
+x.2.0<-readRDS("data/processed/ps_metaphlan_goal3_sec.rds")
+x.2.0 = phyloseq::transform_sample_counts(x.2.0, function(x) ((x/sum(x))))
+### Store WUnifrac distance from low-level ASV
+myDistance<-phyloseq::distance(x.2.0,"bray")
+myDist<-reshape2::melt(as.matrix(myDistance))
+colnames(myDist)<-c("Sample1","Sample2","BrayDistance")
+xlsx::write.xlsx(file="output/Deliverables/Goal3/Bray_Distances.xls",myDist)
+
+# hclust(myDistance,method = "ward.D2")
+### Prepare data for heatmap & dendrogram plot
+# x.2.0.genus<-phyloseq::tax_glom(x.2.0,taxrank="Genus",NArm = F)
+x.2.0.species<-x.2.0
+ps.melt.x.2.0.species<-x.2.0.species %>%
+  phyloseq::psmelt()
+meanBySpecies<-aggregate(ps.melt.x.2.0.species$Abundance,list(ps.melt.x.2.0.species$Species),mean)
+colnames(meanBySpecies)<-c("Species","meanAbundance")
+meanBySpecies<-meanBySpecies[with(meanBySpecies, order(-meanAbundance, Species)), ]
+SpeciesToInclude<-meanBySpecies[1:40,"Species"]
+
+
+## Prepare Metadata
+metadata_df<-sample_data(x.2.0.species) %>% data.frame() %>% dplyr::select(Geographical_location,Sex,LeishVet_Stage_strat,Lifestyle)
+# one_sample<-metadata_df %>% dplyr::select(dog_name) %>% dplyr::group_by(dog_name) %>% dplyr::summarise(n=n()) %>% dplyr::filter(n<=2) 
+# metadata_df[metadata_df$Individuo %in% one_sample$Individuo,"Individuo"]<- "Otros"
+
+## Prepare annotation
+require(RColorBrewer)
+### FActorize for plotting in controlled palette
+metadata_df$Geographical_location<-as.factor(metadata_df$Geographical_location)
+metadata_df$Sex<-as.factor(metadata_df$Sex)
+metadata_df$LeishVet_Stage_strat<-as.factor(metadata_df$LeishVet_Stage_strat)
+metadata_df$Lifestyle<-as.factor(metadata_df$Lifestyle)
+
+## Prepare color-scales for each variable
+Geographical_location_col<-colorRampPalette(brewer.pal(3,"Set2"))(length(levels(metadata_df$Geographical_location)))
+names(Geographical_location_col)<-levels(metadata_df$Geographical_location)
+Sex_col<-colorRampPalette(brewer.pal(3,"Dark2"))(length(levels(metadata_df$Sex)))
+names(Sex_col)<-levels(metadata_df$Sex)
+LeishVet_Stage_strat_col<-colorRampPalette(brewer.pal(3,"Set1"))(length(levels(metadata_df$LeishVet_Stage_strat)))
+names(LeishVet_Stage_strat_col)<-levels(metadata_df$LeishVet_Stage_strat)
+Lifestyle_col<-colorRampPalette(brewer.pal(12,"Set3"))(length(levels(metadata_df$Lifestyle)))
+names(Lifestyle_col)<-levels(metadata_df$Lifestyle)
+
+ha <- ComplexHeatmap::HeatmapAnnotation(Geographical_location=metadata_df$Geographical_location,
+                                        Sex=metadata_df$Sex,
+                                        LeishVet_Stage_strat=metadata_df$LeishVet_Stage_strat,
+                                        Lifestyle=metadata_df$Lifestyle,
+                                        annotation_name_side = "left",
+                                        annotation_legend_param = list(Geographical_location = list(direction = "horizontal"),
+                                                                       Sex=list(direction="horizontal"),
+                                                                       LeishVet_Stage_strat=list(direction="horizontal"),
+                                                                       Lifestyle=list(direction="horizontal"),ncol=3),
+                                        col=list(Geographical_location=Geographical_location_col,
+                                                 Sex=Sex_col,
+                                                 LeishVet_Stage_strat=LeishVet_Stage_strat_col,
+                                                 Lifestyle=Lifestyle_col))
+## Prepare Heatmap Viz
+suppressPackageStartupMessages(library(circlize))
+col_fun = colorRamp2(c(0, 0.05, 1), c("steelblue", "white", "darkred"))
+
+data_df<-(phyloseq::otu_table(phyloseq::subset_taxa(x.2.0.species,Species%in% SpeciesToInclude)))
+taxa_df<-phyloseq::tax_table(phyloseq::subset_taxa(x.2.0.species,Species%in% SpeciesToInclude)) %>% data.frame() %>%  dplyr::select(Species)
+rownames(data_df)<-taxa_df$Species
+
+ht_list<-ComplexHeatmap::Heatmap(data_df,
+                        cluster_columns = hclust(myDistance,method = "ward.D2"), cluster_rows = T,
+                        column_title = "Sample",row_title = "Taxa/Species",
+                        show_row_names = T, show_column_names = F, show_row_dend = F,
+                        row_names_gp = grid::gpar(fontsize=6),
+                        rect_gp = grid::gpar(col = "white", lwd = 0.2),
+                        top_annotation = ha, col=col_fun,
+                        heatmap_legend_param = list(
+                          title="relative abundance",
+                          legend_height=unit(4,"cm"),
+                          title_position="lefttop-rot",
+                          direction="vertical",
+                          legend_side="left"
+                        ))
+ComplexHeatmap::draw(ht_list,annotation_legend_side="bottom")
+pdf("output/Deliverables/Goal3/EHeatmap_baselineSamples.pdf",width=9,height=9)
+ComplexHeatmap::draw(ht_list,annotation_legend_side="bottom")
+dev.off()
+```
+
+### Ordination Analysis
+
+Ordination Analysis and PERMANOVA tests determine the association of categorical variables (*Geographical_location*, *Sex*, *LeishVet_Stage_strat* and *Lifestyle*) with gut microbiome composition. PERMANOVA tests reveals no statistically significant association of the aforementioned variables with microbiome composition of baseline samples (n=15). In addition, NMDS plots show no apparent clustering of samples considering these variables.
+
+*Deliverables: output/Deliverables/Goal3/BetaDiversity/Adonis_BL.xls, output/Deliverables/Goal3/BetaDiversity/Ordination_BLSamples.pdf*
+
+```{r ordination at BL, echo=FALSE, results='hide',fig.keep='all',fig.cap="Ordination analysis for baseline samples. NMDS on Bray-Curtis distance(Species)", message=FALSE, warning=FALSE, paged.print=FALSE,results='hide',fig.keep='all', eval=T}
+suppressWarnings(require(phyloseq))
+suppressWarnings(require(phylosmith))
+suppressWarnings(require(patchwork))
+suppressWarnings(require(vegan))
+suppressWarnings(require(ggplot2))
+suppressWarnings(require(dplyr))
+
+x.2.0<-readRDS("data/processed/ps_metaphlan_goal3_sec.rds") %>% 
+  transform_sample_counts( function(x) ((x/sum(x))))
+set.seed(1234)
+x.2.0.species<-x.2.0
+
+sampleData<-data.frame(sample_data(x.2.0.species))
+rownames(sampleData)<-sampleData$SampleID
+sample_data(x.2.0.species)<-sampleData
+
+#### PERMUTATIONAL ANOVA (adonis()) on WUnifrac distance (BL Samples)
+x.6.0.explanatory<-sampleData[,c("Geographical_location","Sex","LeishVet_Stage_strat","Lifestyle")]
+x.6.0.response<-phyloseq::distance((x.2.0.species),method="bray")
+myAdonis<-vegan::adonis2(x.6.0.response~Geographical_location,data=x.6.0.explanatory)
+file.remove("output/Deliverables/Goal3/BetaDiversity/Adonis_BL.xls")
+xlsx::write.xlsx(file = "output/Deliverables/Goal3/BetaDiversity/Adonis_BL.xls",sheetName = "Geographical_location",vegan::adonis2(x.6.0.response~Geographical_location,data=x.6.0.explanatory))
+### Perform ANOVA for non-NA in Sex
+x.6.0.explanatory<-sampleData[,c("Geographical_location","Sex","LeishVet_Stage_strat","Lifestyle")] %>%     
+  dplyr::filter(! is.na(Sex))
+x.6.0.response<-phyloseq::distance((x.2.0.species %>% 
+                                        phyloseq::subset_samples(SampleID %in%  
+                                                                    rownames(x.6.0.explanatory))),
+                                   method="bray") 
+xlsx::write.xlsx(file = "output/Deliverables/Goal3/BetaDiversity/Adonis_BL.xls",sheetName = "Sex",vegan::adonis2(x.6.0.response %>% ~Sex,data=x.6.0.explanatory),append=T)
+
+### Perform ANOVA for non-NA in LeishVet_Stage_strat
+x.6.0.explanatory<-sampleData[,c("Geographical_location","Sex","LeishVet_Stage_strat","Lifestyle")] %>%     
+  dplyr::filter(! is.na(LeishVet_Stage_strat))
+x.6.0.response<-phyloseq::distance((x.2.0.species %>% 
+                                        phyloseq::subset_samples(SampleID %in%  
+                                                                    rownames(x.6.0.explanatory))),
+                                   method="bray") 
+xlsx::write.xlsx(file = "output/Deliverables/Goal3/BetaDiversity/Adonis_BL.xls",sheetName = "LeishVet_Stage_strat",vegan::adonis2(x.6.0.response %>% ~LeishVet_Stage_strat,data=x.6.0.explanatory),append=T)
+
+### Perform ANOVA for non-NA in LeishVet_Stage_strat
+x.6.0.explanatory<-sampleData[,c("Geographical_location","Sex","LeishVet_Stage_strat","Lifestyle")] %>%     
+  dplyr::filter(! is.na(Lifestyle))
+x.6.0.response<-phyloseq::distance((x.2.0.species %>% 
+                                        phyloseq::subset_samples(SampleID %in%  
+                                                                    rownames(x.6.0.explanatory))),
+                                   method="bray") 
+xlsx::write.xlsx(file = "output/Deliverables/Goal3/BetaDiversity/Adonis_BL.xls",sheetName = "Lifestyle",vegan::adonis2(x.6.0.response %>% ~Lifestyle,data=x.6.0.explanatory),append=T)
+
+
+(myOrd<-ordinate(x.2.0.species,method="NMDS",distance="bray"))
+pdf("output/Deliverables/Goal3/NMDS_StressPlot_BL.pdf")
+vegan::stressplot(myOrd)
+dev.off()
+
+
+### By treatment
+require(ggplot2)
+require(ggforce)
+# phyloseq::plot_ordination(x.2.0.species,myOrd,color = "Geographical_location",) +
+#                 geom_point(size = 5)
+
+### Geographical location
+p0<-plot_ordination(x.2.0.species,
+                    myOrd,
+                    color = "Geographical_location") + 
+  geom_point(size=5) +
+  ggtitle("Unconstrained NMDS(Bray) by Geographical_location")+
+  theme_classic() +
+  stat_ellipse(alpha=1,
+               mapping=aes(color=Geographical_location),na.rm = T)+
+  labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2") + 
+        guides(fill = guide_legend(override.aes = list(size = 4)))+ 
+    theme(plot.title = element_text(size = 12, face = "bold"))
+
+### Sex
+p1<-plot_ordination(x.2.0.species,
+                    myOrd,
+                    color = "Sex") + 
+  geom_point(size=5)+
+  ggtitle("Unconstrained NMDS(Bray) by Sex")+
+  theme_classic() +
+  stat_ellipse(alpha=1,
+               mapping=aes(color=Sex),na.rm = T)+
+  labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2") + 
+        guides(fill = guide_legend(override.aes = list(size = 4)))+ 
+    theme(plot.title = element_text(size = 12, face = "bold"))
+
+### LeishVet_Stage_strat
+p2<-plot_ordination(x.2.0.species,
+                    myOrd,
+                    color = "LeishVet_Stage_strat") + 
+  geom_point(size=5) +
+  ggtitle("Unconstrained NMDS(Bray) by LeishVet_Stage_strat")+
+  theme_classic() +
+  stat_ellipse(alpha=1,
+               mapping=aes(color=LeishVet_Stage_strat),na.rm = T)+
+  labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2") + 
+        guides(fill = guide_legend(override.aes = list(size = 4)))+ 
+    theme(plot.title = element_text(size = 12, face = "bold"))
+
+### Lifestyle
+p3<-plot_ordination(x.2.0.species,
+                    myOrd,
+                    color = "Lifestyle") + 
+  geom_point(size=5) +
+  ggtitle("Unconstrained NMDS(Bray) by Lifestyle")+
+  theme_classic() +
+  stat_ellipse(alpha=1,
+               mapping=aes(color=Lifestyle),na.rm = T)+
+  labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2") + 
+        guides(fill = guide_legend(override.aes = list(size = 4)))+ 
+    theme(plot.title = element_text(size = 12, face = "bold"))
+
+
+p0
+
+pT<-p0 / p1 | p2 / p3
+ggsave(pT,filename = "output/Deliverables/Goal3/BetaDiversity/Ordination_BLSamples.pdf",width=12,height=12)
+```
+
+
+## Gene Function
+
+### Clustering
+
+We are interested in having a general description of gene function for baseline samples. For that we select gene function categories that are detected in at least 10/15 samples and that have a non-zero variance. Of those we select, the 50th highest variance percentile. This is performed in order to maximize signal detection.
+
+There is a trend of depletion in some functions in a group os samples, but no apparent association with their available information is clearly seen.
+
+*Deliverables: output/Deliverables/Goal3/MetaCyc_baselineSamples.pdf* 
+
+```{r gene function  chunk1, echo=FALSE, results='hide',fig.keep='all',fig.cap="Clustering by Gene Function MetaCyc pathways. Ward.D2 algorithm. Euclidean distance on the log10 scale.", message=FALSE, warning=FALSE, paged.print=FALSE,results='hide',fig.keep='all', eval=T}
+suppressMessages(require(dplyr))
+suppressMessages(require(phyloseq))
+suppressMessages(require(lefser))
+suppressMessages(require(ggplot2))
+suppressMessages(require(patchwork))
+suppressMessages(require(Maaslin2))
+suppressMessages(require(RColorBrewer))
+set.seed(1234)
+
+ps_metaphlan<-readRDS("data/processed/ps_metaphlan_goal3_sec.rds")%>% 
+  transform_sample_counts( function(x) ((x/sum(x))))
+### Prepare input_data, 
+input_data<-read.delim("data/raw/FunctionalAnnotation/HUMANN3/All_pathabun_relab.tsv")
+colnames(input_data)[1]<-"Pathway"
+colnames(input_data)<-gsub("_Abundance","",colnames(input_data))
+colnames(input_data)<-gsub("X","",colnames(input_data))
+input_data<-input_data %>% dplyr::filter(! grepl("s__",Pathway)) %>% 
+  dplyr::filter(! grepl("UNINTEGRATED",Pathway)) %>% 
+  dplyr::filter(! grepl("UNMAPPED",Pathway))
+rownames(input_data)<-input_data$Pathway
+input_data$Pathway<-NULL
+input_data<-input_data[,phyloseq::sample_names(ps_metaphlan)]
+
+## Discard functions will all 0
+zero_vector<-input_data %>% rowSums()!=0 
+input_data<-input_data[zero_vector,]
+## Discard functions with >5 zeros
+zero_df<-input_data!=0
+input_data<-input_data[rowSums(zero_df)>5,]
+## Extract functions with variance above median(var)
+var_median<-matrixStats::rowVars(input_data %>% as.matrix()) %>% median()
+var_boolean<-matrixStats::rowVars(input_data %>% as.matrix())>var_median
+input_data<-input_data[var_boolean,]
+input_data <- input_data[ order(rowMeans(input_data), decreasing = T), ]
+  
+## Prepare annotation
+
+### FActorize for plotting in controlled palette
+metadata_df<-ps_metaphlan %>% phyloseq::sample_data() %>% data.frame()
+metadata_df$Geographical_location<-as.factor(metadata_df$Geographical_location)
+metadata_df$Sex<-as.factor(metadata_df$Sex)
+metadata_df$LeishVet_Stage_strat<-as.factor(metadata_df$LeishVet_Stage_strat)
+metadata_df$Lifestyle<-as.factor(metadata_df$Lifestyle)
+
+## Prepare color-scales for each variable
+Geographical_location_col<-colorRampPalette(brewer.pal(3,"Set2"))(length(levels(metadata_df$Geographical_location)))
+names(Geographical_location_col)<-levels(metadata_df$Geographical_location)
+Sex_col<-colorRampPalette(brewer.pal(3,"Dark2"))(length(levels(metadata_df$Sex)))
+names(Sex_col)<-levels(metadata_df$Sex)
+LeishVet_Stage_strat_col<-colorRampPalette(brewer.pal(3,"Set1"))(length(levels(metadata_df$LeishVet_Stage_strat)))
+names(LeishVet_Stage_strat_col)<-levels(metadata_df$LeishVet_Stage_strat)
+Lifestyle_col<-colorRampPalette(brewer.pal(12,"Set3"))(length(levels(metadata_df$Lifestyle)))
+names(Lifestyle_col)<-levels(metadata_df$Lifestyle)
+
+ha <- ComplexHeatmap::HeatmapAnnotation(Geographical_location=metadata_df$Geographical_location,
+                                        Sex=metadata_df$Sex,
+                                        LeishVet_Stage_strat=metadata_df$LeishVet_Stage_strat,
+                                        Lifestyle=metadata_df$Lifestyle,
+                                        annotation_name_side = "left",
+                                        annotation_legend_param = list(Geographical_location = list(direction = "horizontal"),
+                                                                       Sex=list(direction="horizontal"),
+                                                                       LeishVet_Stage_strat=list(direction="horizontal"),
+                                                                       Lifestyle=list(direction="horizontal"),ncol=3),
+                                        col=list(Geographical_location=Geographical_location_col,
+                                                 Sex=Sex_col,
+                                                 LeishVet_Stage_strat=LeishVet_Stage_strat_col,
+                                                 Lifestyle=Lifestyle_col))
+## Prepare Heatmap Viz
+suppressPackageStartupMessages(library(circlize))
+# col_fun = colorRamp2(c(0, 0.05, 1), c("steelblue", "white", "darkred"))
+
+data_df<-input_data %>% sqrt()
+# taxa_df<-phyloseq::tax_table(phyloseq::subset_taxa(x.2.0.species,Species%in% SpeciesToInclude)) %>% data.frame() %>%  dplyr::select(Species)
+# rownames(data_df)<-taxa_df$Species
+
+ht_list<-ComplexHeatmap::Heatmap(data_df,
+                        cluster_columns = T, cluster_rows = T,
+                        column_title = "Sample",row_title = "MetaCyc",
+                        show_row_names = F, show_column_names = F, show_row_dend = F,
+                        row_names_gp = grid::gpar(fontsize=6),
+                        rect_gp = grid::gpar(col = "white", lwd = 0.2),
+                        top_annotation = ha,
+                        heatmap_legend_param = list(
+                          title="relative abundance",
+                          legend_height=unit(4,"cm"),
+                          title_position="lefttop-rot",
+                          direction="vertical",
+                          legend_side="left"
+                        ))
+ComplexHeatmap::draw(ht_list,annotation_legend_side="bottom")
+ht_list<-ComplexHeatmap::Heatmap(data_df,
+                        cluster_columns = T, cluster_rows = T,
+                        column_title = "Sample",row_title = "MetaCyc",
+                        show_row_names = T, show_column_names = F, show_row_dend = F,
+                        row_names_gp = grid::gpar(fontsize=6),
+                        rect_gp = grid::gpar(col = "white", lwd = 0.2),
+                        top_annotation = ha,
+                        heatmap_legend_param = list(
+                          title="relative abundance",
+                          legend_height=unit(4,"cm"),
+                          title_position="lefttop-rot",
+                          direction="vertical",
+                          legend_side="left"
+                        ))
+pdf("output/Deliverables/Goal3/MetaCyc_baselineSamples.pdf",width=9,height=9)
+ComplexHeatmap::draw(ht_list,annotation_legend_side="bottom")
+dev.off()
+```
+
+### Alpha Diversity
+
+We can further check for differences in gene function diversity by calculating a Shannon Index based on diversity for each sample and then compare whether this diversity measure is different for the groups that are formed when considering the variables of interest. Results indicate that there is no signficant difference among groups, although the statistical power to detect differences is ery limited due to the low size of the sample set and the missing information from about half of the animals on Lifestyle, LeishVet_Stage_strat and Sex variables. This is confirmed by the multivariate model, the results of which are shown in the following table.
+
+*Deliverables: output/Deliverables/Goal3/AlphaDiversity/GeneFunction_Metacyc_vs_variables.pdf*
+
+```{r gene function chunk 2,echo=FALSE, results='hide',fig.keep='all', message=FALSE, warning=FALSE, paged.print=FALSE,results='hide',fig.keep='all', eval=T}
+suppressMessages(require(dplyr))
+suppressMessages(require(phyloseq))
+suppressMessages(require(lefser))
+suppressMessages(require(ggplot2))
+suppressMessages(require(patchwork))
+suppressMessages(require(Maaslin2))
+suppressMessages(require(RColorBrewer))
+set.seed(1234)
+
+ps_metaphlan<-readRDS("data/processed/ps_metaphlan_goal3.rds") 
+
+### Prepare input_data, 
+input_data<-read.delim("data/raw/FunctionalAnnotation/HUMANN3/All_pathabun_relab.tsv")
+colnames(input_data)[1]<-"Pathway"
+colnames(input_data)<-gsub("_Abundance","",colnames(input_data))
+colnames(input_data)<-gsub("X","",colnames(input_data))
+input_data<-input_data %>% dplyr::filter(! grepl("s__",Pathway)) %>% 
+  dplyr::filter(! grepl("UNINTEGRATED",Pathway)) %>% 
+  dplyr::filter(! grepl("UNMAPPED",Pathway))
+rownames(input_data)<-input_data$Pathway
+input_data$Pathway<-NULL
+input_data<-input_data[,phyloseq::sample_names(ps_metaphlan)]
+
+## Discard functions will all 0
+zero_vector<-input_data %>% rowSums()!=0 
+input_data<-input_data[zero_vector,]
+# ## Discard functions with >5 zeros
+# zero_df<-input_data!=0
+# input_data<-input_data[rowSums(zero_df)>5,]
+## Extract functions with variance above median(var)
+var_median<-matrixStats::rowVars(input_data %>% as.matrix()) %>% median()
+var_boolean<-matrixStats::rowVars(input_data %>% as.matrix())>var_median
+input_data<-input_data[var_boolean,]
+input_data <- input_data[ order(rowMeans(input_data), decreasing = T), ]
+
+gene_function_shannon<-vegan::diversity(input_data %>% t(),index = "shannon")
+
+gene_function_shannon<-gene_function_shannon %>% as.data.frame()
+colnames(gene_function_shannon)[1]<-"Shannon"
+gene_function_shannon$SampleID<-rownames(gene_function_shannon)
+
+p0<-ps_metaphlan %>% phyloseq::sample_data() %>% data.frame()%>% 
+  dplyr::left_join(gene_function_shannon) %>% 
+  ggstatsplot::ggbetweenstats(x=Geographical_location,y=Shannon)
+p1<-ps_metaphlan %>% phyloseq::sample_data() %>% data.frame()%>% 
+  dplyr::left_join(gene_function_shannon) %>% 
+  ggstatsplot::ggbetweenstats(x=Sex,y=Shannon)
+p2<-ps_metaphlan %>% phyloseq::sample_data() %>% data.frame()%>% 
+  dplyr::left_join(gene_function_shannon) %>% 
+  ggstatsplot::ggbetweenstats(x=LeishVet_Stage_strat,y=Shannon)
+p3<-ps_metaphlan %>% phyloseq::sample_data() %>% data.frame()%>% 
+  dplyr::left_join(gene_function_shannon) %>% 
+  ggstatsplot::ggbetweenstats(x=Lifestyle,y=Shannon)
+
+pT<-p0/p1/p2/p3
+ggsave(pT,filename="output/Deliverables/Goal3/AlphaDiversity/GeneFunction_Metacyc_vs_variables.pdf",width=6,height=14)
+
+p0
+ps_metaphlan %>% phyloseq::sample_data() %>% data.frame()%>% 
+  dplyr::left_join(gene_function_shannon) %>% 
+  dplyr::select(Shannon,Geographical_location,Sex,LeishVet_Stage_strat,Lifestyle) %>% 
+  lm(data = .,formula=Shannon ~ .) %>% broom::tidy() %>% knitr::kable()
+```
+
+### Beta Diversity
+
+We can also calculate inter-sample pairwise distances, based on gene function data matrices. In this cas, we will MetaCyc Pathway abundance to calculate Euclidean distance matrices. With these matrices we will performe NMDS ordination and use results to project variables of interest. We will also use the distance matrices to perform PERMANOVA on them, and statistically assess the effect of each of the variables on the Pathway-based characterization of the baseline animals' gut microbiome.
+
+NMDS ordinations shows no apparent clustering, based on MetaCyc pathways, for the considered variables (*Geographical location*, *Sex*, *LeishVet_Stage* and *Lifestyle*). These results are confirmed by the PERMANOVA/adonis2 test.
+
+*Deliverables: Goal3/BetaDiversity/NMDS_MetaCyc.pdf, Goal3/BetaDiversity/Goal3_Adonis.xls*
+
+```{r gene function beta chunk2,echo=FALSE, results='hide',fig.keep='all', message=FALSE, warning=FALSE, paged.print=FALSE,results='hide',fig.keep='all', eval=T}
+suppressMessages(require(dplyr))
+suppressMessages(require(phyloseq))
+suppressMessages(require(lefser))
+suppressMessages(require(ggplot2))
+suppressMessages(require(patchwork))
+suppressMessages(require(Maaslin2))
+suppressMessages(require(RColorBrewer))
+set.seed(1234)
+
+ps_metaphlan<-readRDS("data/processed/ps_metaphlan_goal3.rds") 
+
+### Prepare input_data, 
+input_data<-read.delim("data/raw/FunctionalAnnotation/HUMANN3/All_pathabun_relab.tsv")
+colnames(input_data)[1]<-"Pathway"
+colnames(input_data)<-gsub("_Abundance","",colnames(input_data))
+colnames(input_data)<-gsub("X","",colnames(input_data))
+input_data<-input_data %>% dplyr::filter(! grepl("s__",Pathway)) %>% 
+  dplyr::filter(! grepl("UNINTEGRATED",Pathway)) %>% 
+  dplyr::filter(! grepl("UNMAPPED",Pathway))
+rownames(input_data)<-input_data$Pathway
+input_data$Pathway<-NULL
+input_data<-input_data[,phyloseq::sample_names(ps_metaphlan)]
+
+## Discard functions will all 0
+zero_vector<-input_data %>% rowSums()!=0 
+input_data<-input_data[zero_vector,]
+# ## Discard functions with >5 zeros
+# zero_df<-input_data!=0
+# input_data<-input_data[rowSums(zero_df)>5,]
+## Extract functions with variance above median(var)
+var_median<-matrixStats::rowVars(input_data %>% as.matrix()) %>% median()
+var_boolean<-matrixStats::rowVars(input_data %>% as.matrix())>var_median
+input_data<-input_data[var_boolean,]
+input_data <- input_data[ order(rowMeans(input_data), decreasing = T), ]
+
+# vegan::betadiver(input_data %>% t(),method = "bray")
+
+vare.mds<-(vegan::metaMDS(input_data,distance = "euclidean"))
+ 
+species.scores <- as.data.frame(vegan::scores(vare.mds, "species"))  #Using the scores function from vegan to extract the species scores and convert to a data.frame
+species.scores$species <- rownames(species.scores)  # create a column of species, from the rownames of species.scores
+head(species.scores) 
+
+p0<-species.scores %>% 
+  dplyr::rename(SampleID=species) %>% 
+  dplyr::left_join(sample_data(ps_metaphlan) %>% data.frame()) %>% 
+  ggplot(.,aes(x=NMDS1,y=NMDS2,color=Geographical_location))+
+  geom_point(size=4)+
+  theme_classic()+
+  ggtitle("NMDS vs Location | MetaCyc Pathways")+
+  stat_ellipse(lwd=1.2)
+
+p1<-species.scores %>% 
+  dplyr::rename(SampleID=species) %>% 
+  dplyr::left_join(sample_data(ps_metaphlan) %>% data.frame()) %>% 
+  ggplot(.,aes(x=NMDS1,y=NMDS2,color=Sex))+
+  geom_point(size=4)+
+  theme_classic()+
+  ggtitle("NMDS vs Sex | MetaCyc Pathways")+
+  stat_ellipse(lwd=1.2)
+
+p2<-species.scores %>% 
+  dplyr::rename(SampleID=species) %>% 
+  dplyr::left_join(sample_data(ps_metaphlan) %>% data.frame()) %>% 
+  ggplot(.,aes(x=NMDS1,y=NMDS2,color=LeishVet_Stage_strat))+
+  geom_point(size=4)+
+  theme_classic()+
+  ggtitle("NMDS vs LeishVet_Stage_strat | MetaCyc Pathways")+
+  stat_ellipse(lwd=1.2)
+
+p3<-species.scores %>% 
+  dplyr::rename(SampleID=species) %>% 
+  dplyr::left_join(sample_data(ps_metaphlan) %>% data.frame()) %>% 
+  ggplot(.,aes(x=NMDS1,y=NMDS2,color=Lifestyle))+
+  geom_point(size=4)+
+  theme_classic()+
+  ggtitle("NMDS vs Lifestyle | MetaCyc Pathways")+
+  stat_ellipse(lwd=1.2)
+
+pT <- p0 / p1 | p2 / p3 
+ggsave(pT,filename = "output/Deliverables/Goal3/BetaDiversity/NMDS_MetaCyc.pdf",width=10,height=8)
+p0
+```
+
+```{r gene function beta chunk1,echo=FALSE, results='hide',fig.keep='all', message=FALSE, warning=FALSE, paged.print=FALSE,results='hide',fig.keep='all', eval=T}
+# vegan::betadiver(input_data %>% t(),method = "euclidean")
+
+#### PERMUTATIONAL ANOVA (adonis()) on Bray-Curtus distance
+x.6.0.explanatory<-phyloseq::sample_data(ps_metaphlan) %>% 
+  data.frame() %>% 
+  dplyr::select("Geographical_location","Sex","LeishVet_Stage_strat","Lifestyle")
+
+x.6.0.response<-dist(input_data %>% t())
+
+myAdonis<-vegan::adonis2(x.6.0.response~Geographical_location,data=x.6.0.explanatory)
+file.remove("output/Deliverables/Goal3/BetaDiversity/Goal3_Adonis.xls")
+xlsx::write.xlsx(file = "output/Deliverables/Goal3/BetaDiversity/Goal3_Adonis.xls",sheetName = "Geographical_location",vegan::adonis2(x.6.0.response~Geographical_location,data=x.6.0.explanatory))
+### Perform ANOVA for non-NA in treatment
+xlsx::write.xlsx(file = "output/Deliverables/Goal3/BetaDiversity/Goal3_Adonis.xls",sheetName = "Sex",vegan::adonis2(x.6.0.response~Sex,data=x.6.0.explanatory,na.action = "na.exclude"))
+xlsx::write.xlsx(file = "output/Deliverables/Goal3/BetaDiversity/Goal3_Adonis.xls",sheetName = "LeishVet_Stage_strat",vegan::adonis2(x.6.0.response~LeishVet_Stage_strat,data=x.6.0.explanatory,na.action = "na.exclude"))
+xlsx::write.xlsx(file = "output/Deliverables/Goal3/BetaDiversity/Goal3_Adonis.xls",sheetName = "Lifestyle",vegan::adonis2(x.6.0.response~Lifestyle,data=x.6.0.explanatory,na.action = "na.exclude"))
+
+xlsx::write.xlsx(file = "output/Deliverables/Goal3/BetaDiversity/Goal3_Adonis.xls",sheetName = "multivariate",vegan::adonis2(x.6.0.response~.,data=x.6.0.explanatory,na.action = "na.exclude"))
+
+vegan::adonis2(x.6.0.response~.,data=x.6.0.explanatory,na.action = "na.exclude") %>% knitr::kable()
+````

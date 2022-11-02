@@ -11,8 +11,14 @@ navbar:
     href: 03_Goal1.html
   - text: Goal 2
     href: 04_Goal2.html
-  - text: About
-    href: about.html
+  - text: Goal 3
+    href: 05_Goal3.html
+  - text: Conclusions
+    href: 06_Conclusions.html
+  - text: Metadata
+    href: MetadataExplorer.html
+  - text: MultiQC
+    href: Multiqc_report.html
   - text: License
     href: license.html
 output:

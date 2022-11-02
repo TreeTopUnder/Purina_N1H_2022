@@ -11,4 +11,8 @@ analysis/*_cache
 analysis/site_libs
 code/*
 data/*
+output/
+analysis/*
+analysis/*Rmd
+analysis/about.Rmd
 

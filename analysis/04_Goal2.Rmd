@@ -1,6 +1,6 @@
 ---
 site: workflowr::wflow_site
-title: "Effect of FortiFlora"
+title: "Effect of Probiotic"
 author: "Marc Noguera-Julian, PhD. TreeTopUnder"
 date: "`r format(Sys.time(), '%Y-%m-%d')`"
 header-includes:
@@ -22,6 +22,7 @@ output: html_document
 knitr::opts_chunk$set(echo = FALSE)
 knitr::opts_knit$set(root.dir = here::here())
 bifido_animals<-c("RUDDY","NANI","LEO","BALOO")
+set.seed(1234)
 ```
 
 
@@ -30,7 +31,7 @@ The goal of this part of the analysis is to assess the effect of supplementing d
 
 ## Alpha Diversity
 
-We want to see if alpha-diversity is differentially affected in those dog within the Fortiflora group with respect to those dogs receiving placebo. For that we will use gene richness parameter. First we want to see if there is any overall trend in changes of alpha-diversity parameters, using all dogs, between M4 and M1. Results indicate that there is no significant increase or decrease, although it seems that there is a in increase trend that consistently affects all three parameters.
+We want to see if alpha-diversity is differentially affected in those dog within the Probiotic group with respect to those dogs receiving placebo. For that we will use gene richness parameter. First we want to see if there is any overall trend in changes of alpha-diversity parameters, using all dogs, between M4 and M1. Results indicate that there is no significant increase or decrease, although it seems that there is a in increase trend that consistently affects all three parameters.
 
 *Deliverables: AlphaDiversity_Timepoint_goal2_all_samples.pdf*
 
@@ -38,28 +39,22 @@ We want to see if alpha-diversity is differentially affected in those dog within
 suppressMessages(require(phyloseq))
 suppressMessages(require(patchwork))
 suppressMessages(require(dplyr))
-### Load data and create MRE Object
-devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")### Change to require/library/load local package
 
-myMREObject<-readRDS("data/mreObject_goal2.rds")
+ps_metaphlan<-readRDS("data/processed/ps_metaphlan_goal2_sec.rds")
 my_datatable<-readRDS("data/raw/CatalogMapping/IGC/dataTable.rds")
 mymin<-min(my_datatable$NumberMappedReads) #
 my_datatable<-my_datatable %>% 
   dplyr::filter(ReadCountReal==6000000) %>% 
-  dplyr::filter(SampleID %in% get_meta(myMREObject)$SampleID) %>% 
+  dplyr::filter(SampleID %in% phyloseq::sample_data(ps_metaphlan)$SampleID) %>% 
   dplyr::select(SampleID,GeneNumber)
 
-x.2.0 <- myMREObject@taxa@metaphlan@phyloseq_sec
+x.2.0 <-ps_metaphlan
 x.2.0.species<-x.2.0
-# x.2.0.species = transform_sample_counts(x.2.0.species, function(x) ((x/sum(x))))
-
-# get_meta(myMREObject) %>% 
-#   dplyr::select(Timepoint,Host_name) %>% table()
 
 plot_data<-phyloseq::estimate_richness(x.2.0.species) %>% 
   tibble::rownames_to_column() %>% 
   dplyr::mutate(rowname=gsub("X","",rowname)) %>% 
-  dplyr::left_join(get_meta(myMREObject),by=c("rowname"="SampleID")) %>% 
+  dplyr::left_join(phyloseq::sample_data(ps_metaphlan) %>% data.frame(),by=c("rowname"="SampleID")) %>% 
   dplyr::rename(SampleID=rowname) %>% 
   dplyr::select(SampleID, Timepoint, Host_name, Chao1,Shannon) %>% 
   dplyr::left_join(my_datatable,by="SampleID") %>% 
@@ -85,39 +80,33 @@ ggplot2::ggsave(p0,filename="output/Deliverables/Goal2/AlphaDiversity/AlphaDiver
 # ggplot2::ggsave(pT,filename="output/Deliverables/AlphaDiversity_treatment.pdf",height=15,width=7)
 ```
 
-### Fortiflora vs Placebo
+### Probiotic vs Placebo
 
-We are interested in knowing whether changes in alpha-diversity exist in any of the Fortiflora/Placebo groups, separately. REsults indicate that there are no significant changes in Chao1, Shannon or Gene Richness in any of the groups, with similar trend than in the global analysis.
+We are interested in knowing whether changes in alpha-diversity exist in any of the Probiotic/Placebo groups, separately. REsults indicate that there are no significant changes in Chao1, Shannon or Gene Richness in any of the groups, with similar trend than in the global analysis.
 
-*Deliverables: AlphaDiversity_Timepoint_goal2_Fortiflora_samples.pdf, AlphaDiversity_Timepoint_goal2_Placebo_samples.pdf*
+*Deliverables: AlphaDiversity_Timepoint_goal2_Probiotic_samples.pdf, AlphaDiversity_Timepoint_goal2_Placebo_samples.pdf*
 
 ```{r alpha diversity chunk2, include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F}
 suppressMessages(require(phyloseq))
 suppressMessages(require(patchwork))
 suppressMessages(require(dplyr))
-### Load data and create MRE Object
-devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")### Change to require/library/load local package
 
-myMREObject<-readRDS("data/mreObject_goal2.rds")
+ps_metaphlan<-readRDS("data/processed/ps_metaphlan_goal2_sec.rds")
 my_datatable<-readRDS("data/raw/CatalogMapping/IGC/dataTable.rds")
 mymin<-min(my_datatable$NumberMappedReads) #
 my_datatable<-my_datatable %>% 
   dplyr::filter(ReadCountReal==6000000) %>% 
-  dplyr::filter(SampleID %in% get_meta(myMREObject)$SampleID) %>% 
+  dplyr::filter(SampleID %in% phyloseq::sample_data(ps_metaphlan)$SampleID) %>% 
   dplyr::select(SampleID,GeneNumber)
 
-x.2.0 <- myMREObject@taxa@metaphlan@phyloseq_sec
+x.2.0 <- ps_metaphlan
 x.2.0.species<-x.2.0
-# x.2.0.species = transform_sample_counts(x.2.0.species, function(x) ((x/sum(x))))
-
-# get_meta(myMREObject) %>% 
-#   dplyr::select(Timepoint,Host_name) %>% table()
 
 plot_data<-phyloseq::estimate_richness(x.2.0.species) %>% 
   tibble::rownames_to_column() %>% 
   dplyr::mutate(rowname=gsub("X","",rowname)) %>% 
-  dplyr::left_join(get_meta(myMREObject),by=c("rowname"="SampleID")) %>% 
-  dplyr::mutate(Treatment=ifelse(grepl(848590,Product),"FortiFlora","Placebo")) %>% 
+  dplyr::left_join(sample_data(ps_metaphlan) %>% data.frame(),by=c("rowname"="SampleID")) %>% 
+  dplyr::mutate(Treatment=ifelse(grepl(848590,Product),"Probiotic","Placebo")) %>% 
   dplyr::rename(SampleID=rowname) %>% 
   dplyr::select(SampleID, Timepoint, Treatment,Host_name, Chao1,Shannon) %>% 
   dplyr::left_join(my_datatable,by="SampleID") %>% 
@@ -125,11 +114,11 @@ plot_data<-phyloseq::estimate_richness(x.2.0.species) %>%
 
 p0<-
   plot_data %>% 
-  dplyr::filter(Treatment=="FortiFlora") %>% 
+  dplyr::filter(Treatment=="Probiotic") %>% 
   dplyr::arrange(Host_name) %>% 
   dplyr::group_by(Host_name,variable) %>% 
   ggstatsplot::grouped_ggwithinstats(x=Timepoint,y=value,grouping.var = variable,type="non-parametric",centrality.plotting=F,
-                                      annotation.args = list(title = "M4 vs M1 | Fortiflora Samples",
+                                      annotation.args = list(title = "M4 vs M1 | Probiotic Samples",
                                                          theme = ggplot2::theme(
                                                                 plot.subtitle = ggplot2::element_text(size = 13),
                                                                 plot.title = ggplot2::element_text(size = 14)
@@ -151,24 +140,26 @@ p1<-
                                                          ),
                                   plotgrid.args = list(nrow = 3))
 p0
+p1
 # pT<- p0 / p1 / p2
-ggplot2::ggsave(p0,filename="output/Deliverables/Goal2/AlphaDiversity/AlphaDiversity_Timepoint_goal2_Fortiflora_samples.pdf",height=15,width=7)
+ggplot2::ggsave(p0,filename="output/Deliverables/Goal2/AlphaDiversity/AlphaDiversity_Timepoint_goal2_Probiotic_samples.pdf",height=15,width=7)
 ggplot2::ggsave(p1,filename="output/Deliverables/Goal2/AlphaDiversity/AlphaDiversity_Timepoint_goal2_Placebo_samples.pdf",height=15,width=7)
 # ggplot2::ggsave(p1,filename="output/Deliverables/AlphaDiversity_treatment_w1_only.pdf",height=15,width=7)
 # ggplot2::ggsave(p2,filename="output/Deliverables/AlphaDiversity_treatment_w2_only.pdf",height=15,width=7)
 # ggplot2::ggsave(pT,filename="output/Deliverables/AlphaDiversity_treatment.pdf",height=15,width=7)
 ```
+
 ## Beta Diversity
 
-Aside from alpha-diversity we are interested in changes in the composition of the dog's gut microbiome after Fortiflora/Placebo treatment. Of course, there is some degree of change in the compisition, but we are interested if these changes are significantly different when comparing Fortiflora and Placebo group.
+Aside from alpha-diversity we are interested in changes in the composition of the dog's gut microbiome after Probiotic/Placebo treatment. Of course, there is some degree of change in the compisition, but we are interested if these changes are significantly different when comparing Probiotic and Placebo group.
 
 ### Ordination Analysis
 
 We will use the same ordination method than in previous exploratory section but, in this case, only applied to M1 and M4 samples to detect significant changes related to the effect of Allopurinol + Glucantime treatment, discarding the effect of other variables that may act as confounders.
 
-*Deliverables: Goal2/BetaDiversity/NMDS_Ordination_vs_Timepoint.pdf Goal2/BetaDiversity/Goal2_Adonis.xls*
+*Deliverables: Goal2/BetaDiversity/NMDS_Ordination_vs_Timepoint.pdf, Goal2/BetaDiversity/NMDS_Goal2_StressPlot.pdf, Goal2/BetaDiversity/Goal2_Adonis.xls*
 
-Results: There is no apparent clustering among M1 or M4 samples,  nor among samples from dogs receiving fortiflora or Placebo. Here, we are assuming product "848590" is the one receiving Fortiflora, according to the findings of the exploratory results on *E. faecium*. PERMANOVA results also indicate no significant effect of Timepoint or treatment in this dataset while, as expected, dog identity variable explains more than 70% of microbiome composition on this subset of samples.
+Results: There is no apparent clustering among M1 or M4 samples,  nor among samples from dogs receiving Probiotic or Placebo. Here, we are assuming product "848590" is the one receiving Probiotic, according to the findings of the exploratory results on *E. faecium*. PERMANOVA results also indicate no significant effect of Timepoint or treatment in this dataset while, as expected, dog identity variable explains more than 70% of microbiome composition on this subset of samples.
 
 ```{r Global Ordination Beta Diversity chunk 3, include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F}
 suppressWarnings(require(phyloseq))
@@ -178,18 +169,16 @@ suppressWarnings(require(ggforce))
 suppressWarnings(require(patchwork))
 set.seed(1234)
 
-devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")
-myMREObject<-readRDS("data/mreObject_goal2.rds")
-x.2.0<-myMREObject@taxa@metaphlan@phyloseq_sec
+x.2.0<-readRDS("data/processed/ps_metaphlan_goal2_sec.rds")
 set.seed(1234)
 x.2.0.species<-x.2.0
 x.2.0.species<-transform_sample_counts(x.2.0.species, function(x) ((x/sum(x))))
 sampleData<-data.frame(sample_data(x.2.0.species))
 rownames(sampleData)<-sampleData$SampleID
 sampleData<-sampleData %>% 
-  dplyr::mutate(Treatment=ifelse(grepl(848590,Product),"Fortiflora","Placebo"))  
+  dplyr::mutate(Treatment=ifelse(grepl(848590,Product),"Probiotic","Placebo"))  
 sample_data(x.2.0.species)<-sampleData
-suppressWarnings(myOrd<-phyloseq::ordinate(x.2.0.species,method="NMDS",distance="bray",trymax=100))
+capture.output(myOrd<-phyloseq::ordinate(x.2.0.species,method="NMDS",distance="bray",trymax=100),file="/dev/null")
 
 pdf("output/Deliverables/Goal2/BetaDiversity/NMDS_Goal2_StressPlot.pdf")
 vegan::stressplot(myOrd)
@@ -206,34 +195,30 @@ xlsx::write.xlsx(file = "output/Deliverables/Goal2/BetaDiversity/Goal2_Adonis.xl
 ### Perform ANOVA for non-NA in treatment
 xlsx::write.xlsx(file = "output/Deliverables/Goal2/BetaDiversity/Goal2_Adonis.xls",sheetName = "Treatment",vegan::adonis2(x.6.0.response~Treatment,data=x.6.0.explanatory),append=T)
 
-p.4.0.samples=plot_ordination(x.2.0.species,myOrd)
 
 ### By Timepoint
-p0<-p.4.0.samples  + geom_point(aes(color=Timepoint,shape=Treatment,group=Treatment),size=4) +ggtitle("Unconstrained NMDS(Bray) by Timepoint | Goal2")+
-  theme(panel.border=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line=element_line(colour="black"),axis.text.x=element_text(size=16),axis.text.y=element_text(size=16))+
-  theme(axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))+
-  theme(legend.text=element_text(size=12,face="italic"),legend.title=element_text(size=12))+
-  theme(plot.title=element_text(lineheight=1,face="bold",size=15))+stat_ellipse(alpha=1,mapping=aes(color=Timepoint))+
-  theme_classic() + theme(axis.line.x = element_line(colour = "black", 
-                                    size = 1, linetype = "solid"), axis.line.y = element_line(colour = "black", 
-                                    size = 1, linetype = "solid"), axis.text.x = element_text(size = 10), 
-                                    axis.text.y = element_text(size = 10),
-                                    axis.title.x = element_text(size = 10, 
-                                        face = "bold"), axis.title.y = element_text(size = 10, 
-                                        face = "bold"), legend.title = element_text(size = 10, 
-                                        face = "bold"), legend.text = element_text(size = 8), 
-                                        legend.spacing.x = unit(0.005, "npc"), 
-                                        legend.key.size = unit(4,"mm"), legend.background = element_rect(fill = (alpha = 0))) + 
-        labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2") + scale_fill_brewer(palette="Set1")+scale_color_brewer(palette="Set1")+
-        guides(fill = guide_legend(override.aes = list(size = 4)))
+p0<-plot_ordination(x.2.0.species,
+                    myOrd,
+                    color = "Timepoint",
+                    shape="Treatment") + 
+  geom_point(size=5) +
+  ggtitle("Unconstrained NMDS(Bray) by Timepoint")+
+  theme_classic() +
+  stat_ellipse(alpha=1,lwd = 1.2,
+               mapping=aes(color=Timepoint),na.rm = T)+
+  labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2") + 
+        guides(fill = guide_legend(override.aes = list(size = 4)))+ 
+    theme(plot.title = element_text(size = 12, face = "bold"))+
+    scale_color_brewer(palette="Dark2")
 p0
 ggsave(plot=p0,filename="output/Deliverables/Goal2/BetaDiversity/NMDS_Ordination_vs_Timepoint_and_treatment.pdf",height=5,width=5)
 
 ```
 
-In order to have some more granular view of differences, at the ordination level, we'll check if paired Beta-Diversity  between M1 and M4 samples from the same animals are differen between the Fortiflora and Placebo treatment groups. Results indicate no differential change between Fortiflore and Placebo groups.
+In order to have some more granular view of differences, at the ordination level, we'll check if paired Beta-Diversity  between M1 and M4 samples from the same animals are differen between the Probiotic and Placebo treatment groups. Results indicate no differential change between Probiotic and Placebo groups.
 
 *Deliverables: Goal2/BetaDiversity/BrayDistance_by_Treatment_goal2.pdf*
+
 ```{r Global Ordination Beta Diversity chunk 4, include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F}
 suppressWarnings(require(phyloseq))
 suppressWarnings(require(dplyr))
@@ -242,18 +227,16 @@ suppressWarnings(require(ggforce))
 suppressWarnings(require(patchwork))
 set.seed(1234)
 
-devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")
-myMREObject<-readRDS("data/mreObject_goal2.rds")
-x.2.0<-myMREObject@taxa@metaphlan@phyloseq_sec
+x.2.0<-readRDS("data/processed/ps_metaphlan_goal2_sec.rds")
 set.seed(1234)
 x.2.0.species<-x.2.0
 x.2.0.species<-transform_sample_counts(x.2.0.species, function(x) ((x/sum(x))))
 sampleData<-data.frame(sample_data(x.2.0.species))
 rownames(sampleData)<-sampleData$SampleID
 sampleData<-sampleData %>% 
-  dplyr::mutate(Treatment=ifelse(grepl(848590,Product),"Fortiflora","Placebo"))  
+  dplyr::mutate(Treatment=ifelse(grepl(848590,Product),"Probiotic","Placebo"))  
 sample_data(x.2.0.species)<-sampleData
-suppressWarnings(myOrd<-phyloseq::ordinate(x.2.0.species,method="NMDS",distance="bray",trymax=100))
+# suppressWarnings(myOrd<-phyloseq::ordinate(x.2.0.species,method="NMDS",distance="bray",trymax=100))
 
 p0<-phyloseq::distance(x.2.0.species,method = "bray") %>% 
   as.matrix() %>% reshape::melt() %>% 
@@ -269,20 +252,26 @@ p0<-phyloseq::distance(x.2.0.species,method = "bray") %>%
   dplyr::left_join(sampleData %>% ungroup() %>%  dplyr::select(Host_name,Treatment)) %>% 
   unique() %>% 
   dplyr::rename(Distance=value) %>% 
-  ggstatsplot::ggbetweenstats(Treatment, Distance, title="Fortiflora: Paired Distance vs Treatment",bf.message=F,type="np")
+  ggstatsplot::ggbetweenstats(Treatment, Distance, title="Probiotic: Paired Distance vs Treatment",bf.message=F,type="np")
 p0
 ggsave(p0,filename = "output/Deliverables/Goal2/BetaDiversity/BrayDistance_by_Treatment_goal2.pdf")
 ```
 
 ## Differential Abundance
 
-We are interested in seeing whether there is any differentially abundant species between M4 and M1 in any of the groups. Low group sizes (n=5 for Fortiflora and n=5 for Placebo) greatly reduce the statistical power to detect any, but we'll try anyway. We will use both LefseR and MaasLin models. 
+We are interested in seeing whether there is any differentially abundant species between M4 and M1 in any of the groups. Low group sizes (n=5 for Probiotic and n=5 for Placebo) greatly reduce the statistical power to detect any, but we'll try anyway. We will use both LefseR and MaasLin models. 
 
 ### Lefse
 
-LEFsE results shows for the Fortflora group, an increase in M4, of three different species:  *Blautia*, *Clostridium* and *Dorea* CAGs. A CAG is a co-abundant-group that has been obtained from metagnomic data, not from and whose taxonomical annotation is limited in resolution and in reliability.
-In teh Placebo Group, there are also two species that show to be significantly more abundant in Month4, although they received no Probiotic: *Collinsella Intestinallis* and *Clostridium hiranonis*.
-Note that Lefse test does not use dog id as pairing variable. Actually, when individual paired rank-sum Wilcoxon paired tests are applied to this data, significance is lost.
+LEFsE results shows for the probiotic group, an increase in M4, of three different species:  *Blautia*, *Clostridium* and *Dorea* CAGs. A CAG is a co-abundant-group that has been obtained from metagnomic data (thus not cultivated) and whose taxonomical annotation is limited in resolution and in reliability.
+In the Placebo Group, there are also two species that show to be significantly more abundant in M4, although they received no Probiotic: *Collinsella Intestinallis* and *Clostridium hiranonis*.
+Note that Lefse test does not use dog id as pairing variable. Using dog id is a formally more correct way to perform the testing, since it accounts for inter-doc variability. Actually, when individual paired rank-sum Wilcoxon paired tests are applied to this data, for each of the species obtained from LEFsE, significance is lost for all of the LEFsE-positive species.
+
+#### Probiotic Group
+
+We will perform LEFsE test for the probiotic group samples only, comparing M4 and M1 samples. Note that as in goal 1 analysis, LEFsE does not using dog id as a pairing variable, and results need to be checked using paired-wilcoxon afterwards.
+
+*Deliverables: Goal2/DifferentialAbundance/lefse/lefser_goal2_Probiotic_plot.pdf, Goal2/DifferentialAbundance/lefse/boxplots/Species_vs_Timepoint_Probiotic_Goal2.pdf, Goal2/DifferentialAbundance/lefse/boxplots/paired_Species_vs_Timepoint_Probiotic_Goal2.pdf*
 
 ```{r Timepoint DA chunk1 Species, include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F,eval=T}
 suppressMessages(require(dplyr))
@@ -294,15 +283,13 @@ suppressMessages(require(patchwork))
 set.seed(1234)
 ### Species Level
 
-devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")
-myMREObject<-readRDS("data/mreObject_goal2.rds")
-x.2.0<-myMREObject@taxa@metaphlan@phyloseq_sec
+x.2.0<-readRDS("data/processed/ps_metaphlan_goal2_sec.rds")
 set.seed(1234)
 x.2.0.species<-x.2.0
 
-### Species Level for Fortiflora
+### Species Level for Probiotic
 x.2.0 <-x.2.0.species %>% 
-  phyloseq::subset_samples(Product=="848590-FR80-036-003") ## Fortiflora
+  phyloseq::subset_samples(Product=="848590-FR80-036-003") ## Probiotic
 se_ps<-SummarizedExperiment::SummarizedExperiment(assays = list(counts=as.matrix(otu_table(x.2.0))),
                                                   colData=sample_data(x.2.0),
                                                   rowData=tax_table(x.2.0))
@@ -325,7 +312,7 @@ p0<-aux_res %>%
     theme_classic()+ggtitle("Month4 vs Month1")+
     scale_fill_brewer(palette="Dark2")
 p0
-ggsave(p0,filename = "output/Deliverables/Goal2/DifferentialAbundance/lefse/lefser_goal2_Fortiflora_plot.pdf")
+ggsave(p0,filename = "output/Deliverables/Goal2/DifferentialAbundance/lefse/lefser_goal2_Probiotic_plot.pdf")
 for(otu_name in aux_res$otu){
   my_ps <- x.2.0 
   title <- aux_res %>% 
@@ -340,7 +327,7 @@ for(otu_name in aux_res$otu){
                                       xlab="Timepoint",ylab="Counts",centrality.plotting=F,
                                       bf.message=F,title=title$Names,outlier.label=Host_name,
                                       palette="Dark2") %>% 
-  ggsave(.,filename=paste0("output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/",title$Names,"_vs_Timepoint_Fortiflora_Goal2.pdf"),width=7, height=7)
+  ggsave(.,filename=paste0("output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/",title$Names,"_vs_Timepoint_Probiotic_Goal2.pdf"),width=7, height=7)
   my_ps %>% 
   phyloseq::psmelt()%>% 
   dplyr::filter(OTU==otu_name) %>% 
@@ -351,10 +338,28 @@ for(otu_name in aux_res$otu){
                                       xlab="Timepoint",ylab="Counts",centrality.plotting=F,
                                       bf.message=F,title=title$Names,
                                       palette="Dark2") %>% 
-   ggsave(.,filename=paste0("output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_",title$Names,"_vs_Timepoint_Fortiflora_Goal2.pdf"),width=7, height=7)
+   ggsave(.,filename=paste0("output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_",title$Names,"_vs_Timepoint_Probiotic_Goal2.pdf"),width=7, height=7)
 }
+```
 
+#### Placebo Group
+
+
+*Deliverables: Goal2/DifferentialAbundance/lefse/lefser_goal2_Placebo_plot.pdf, Goal2/DifferentialAbundance/lefse/boxplots/Species_vs_Timepoint_Placebo_Goal2.pdf, Goal2/DifferentialAbundance/lefse/boxplots/paired_Species_vs_Timepoint_Placebo_Goal2.pdf*
+
+```{r Timepoint DA chunk2 Species, include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F,eval=T}
+suppressMessages(require(dplyr))
+suppressMessages(require(phyloseq))
+suppressMessages(require(lefser))
+suppressMessages(require(ggplot2))
+suppressMessages(require(patchwork))
+
+set.seed(1234)
+### Species Level
 ### Species Level for Placebo
+x.2.0<-readRDS("data/processed/ps_metaphlan_goal2_sec.rds")
+set.seed(1234)
+x.2.0.species<-x.2.0
 x.2.0 <-x.2.0.species %>% 
   phyloseq::subset_samples(Product=="848589-FR80-036-003") ## Placebo
 flist    <- genefilter::filterfun(genefilter::kOverA(1, 1))
@@ -408,8 +413,366 @@ for(otu_name in aux_res$otu){
                                       xlab="Timepoint",ylab="Counts",centrality.plotting=F,
                                       bf.message=F,title=title$Names,
                                       palette="Dark2") %>% 
-   ggsave(.,filename=paste0("output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_",title$Names,"_vs_Timepoint_Placebo_Goal1.pdf"),width=7, height=7)
+   ggsave(.,filename=paste0("output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_",title$Names,"_vs_Timepoint_Placebo_Goal2.pdf"),width=7, height=7)
 }
 
 
 ```
+
+### MaasLin2
+
+MaasLin2 used generalized linear models to better fit microbiome data distribution and to improve sensitivity/specificity. In addition, MaasLin method allows for the accounting of other variables in the test desing. In particular, we can use dog name variable(*Host_name*) as a random effect, while *Timepoint*(M4 vs M1) is used as a fixed effect.e
+
+
+Results: Using MaasLin2 there are no significant hits at species nor genus level for neither of the Probiotic or Placebo groups when using BH-corrected qvalues, thus confirming the previous results by paired Wilcoxon tests. However, if using non-corrected p.values, we can see that *Blautia_sp_CAG_257* and *Dorea_sp_CAG_317* do increase in the probotic group, while *Blautia_hansenii* and *Firmicutes_bacterium_CAG_424* increase in the placebo group. Thus, there is an overlap in differentially abundant species for the probiotic group, reinforcing the plausibility of the increase abundance of these species, although formally the signal is non-significant.
+
+#### Probiotic group
+
+*Deliverables: Goal2/DifferentialAbundance/maaslin/Taxa_M4_vs_M1_probiotic.xlsx, Goal2/DifferentialAbundance/maaslin/Taxa_M4_vs_M1_placebo.xlsx*
+
+```{r DA species maaslin2 chunk 1, include=TRUE, echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=T,eval=T}
+suppressMessages(require(dplyr))
+suppressMessages(require(phyloseq))
+suppressMessages(require(lefser))
+suppressMessages(require(ggplot2))
+suppressMessages(require(patchwork))
+suppressMessages(require(Maaslin2))
+
+set.seed(1234)
+### Species Level
+### Probiotic
+x.2.0<-readRDS("data/processed/ps_metaphlan_goal2.rds")
+set.seed(1234)
+x.2.0.species<-x.2.0 %>% 
+  phyloseq::subset_samples(Product=="848590-FR80-036-003")
+tax_df<-tax_table(x.2.0.species) %>% data.frame() %>%  dplyr::select(Species) %>% tibble::rownames_to_column("feature")
+# tax_df$feature<-rownames(x.2.0.species)
+
+input_data<-x.2.0.species %>% otu_table() %>% t()
+
+input_metadata <- phyloseq::sample_data(x.2.0.species) %>% data.frame()
+rownames(input_metadata)<-input_metadata$SampleID
+if( file.exists("output/Deliverables/Goal2/DifferentialAbundance/maaslin/species_probiotic.rds")){
+  fit_data<-readRDS("output/Deliverables/Goal2/DifferentialAbundance/maaslin/species_probiotic.rds")
+}else{
+  suppressWarnings(fit_data <- Maaslin2::Maaslin2(input_data=input_data,input_metadata=input_metadata,output="output/Deliverables/Goal2/DifferentialAbundance/maaslin/species_probiotic",fixed_effects = c("Timepoint"),random_effects = c("Host_name"),cores=4)) ### No siginifcant hits
+  saveRDS(fit_data,file="output/Deliverables/Goal2/DifferentialAbundance/maaslin/species_probiotic.rds")
+}
+plot_data<-fit_data$results %>% 
+  dplyr::mutate('-log(qval)'=-log10(qval)) %>% 
+  dplyr::mutate(significant=ifelse(qval<0.05,"q<0.05","ns")) %>% 
+  dplyr::mutate(labels=ifelse(significant=="ns",FALSE,TRUE)) %>% 
+  dplyr::mutate(feature=ifelse(significant=="ns","",feature)) 
+  
+p0<-ggplot(plot_data)+
+    geom_point(aes(x=coef,y=`-log(qval)`,color=significant))+
+    ggrepel::geom_text_repel(aes(x=coef,y=`-log(qval)`),size=2,
+                                 label = plot_data$feature,max.overlaps = 30,
+                                 box.padding = unit(0.25, "lines"),
+                                  hjust = 1)+
+    ggtitle("M4 vs M1 | Species/Probiotic")
+fit_data$results %>% 
+  dplyr::left_join(tax_df) %>% 
+  dplyr::select(-feature, -name) %>% 
+  dplyr::relocate(Species,.before = metadata) %>%
+  dplyr::arrange(pval) %>%  head() %>% knitr::kable()
+file.remove("output/Deliverables/Goal2/DifferentialAbundance/maaslin/M4_vs_M1_probiotic_Taxa.xlsx")
+fit_data$results %>% 
+  dplyr::left_join(tax_df) %>% 
+  dplyr::select(-feature, -name) %>% 
+  dplyr::relocate(Species,.before = metadata) %>% 
+  xlsx::write.xlsx(.,file="output/Deliverables/Goal2/DifferentialAbundance/maaslin/M4_vs_M1_probiotic_Taxa.xlsx",sheetName = "Species")
+
+p0
+### Genus Level
+input_data<-x.2.0.species %>% tax_glom(.,taxrank="Genus",NArm = F) %>% otu_table() %>% t()
+input_metadata<-x.2.0.species %>% tax_glom(.,taxrank="Genus",NArm = F) %>% phyloseq::sample_data() %>% data.frame()
+rownames(input_metadata)<-input_metadata$SampleID
+tax_df<-tax_table(x.2.0.species %>% 
+                    tax_glom(.,taxrank="Genus",NArm = F)) %>% 
+  data.frame() %>%  dplyr::select(Genus) %>% 
+  tibble::rownames_to_column("feature")
+# rownames(input_metadata)
+if( file.exists("output/Deliverables/Goal2/DifferentialAbundance/maaslin/genus_probiotic.rds")){
+  fit_data<-readRDS("output/Deliverables/Goal2/DifferentialAbundance/maaslin/genus_probiotic.rds")
+}else{
+  suppressWarnings(fit_data <- Maaslin2::Maaslin2(input_data=input_data,input_metadata=input_metadata,output="output/Deliverables/Goal2/DifferentialAbundance/maaslin/genus_probiotic",fixed_effects = c("Timepoint"),random_effects = c("Host_name"),cores=4)) ### No siginifcant hits
+  saveRDS(fit_data,file="output/Deliverables/Goal2/DifferentialAbundance/maaslin/genus_probiotic.rds")
+}
+fit_data$results %>% 
+  dplyr::left_join(tax_df) %>% 
+  dplyr::select(-feature, -name) %>% 
+  dplyr::relocate(Genus,.before = metadata) %>% 
+  xlsx::write.xlsx(.,file="output/Deliverables/Goal2/DifferentialAbundance/maaslin/M4_vs_M1_probiotic_Taxa.xlsx",sheetName = "Genus",append = T)
+
+```
+
+#### Placebo group
+
+```{r DA species maaslin2 chunk 2, include=TRUE, echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=T,eval=T}
+suppressMessages(require(dplyr))
+suppressMessages(require(phyloseq))
+suppressMessages(require(lefser))
+suppressMessages(require(ggplot2))
+suppressMessages(require(patchwork))
+suppressMessages(require(Maaslin2))
+
+set.seed(1234)
+### Placebo
+x.2.0<-readRDS("data/processed/ps_metaphlan_goal2.rds")
+set.seed(1234)
+x.2.0.species<-x.2.0 %>% 
+  phyloseq::subset_samples(Product=="848589-FR80-036-003")
+tax_df<-tax_table(x.2.0.species) %>% as.data.frame() %>%  dplyr::select(Species) %>% tibble::rownames_to_column("feature")
+# tax_df$feature<-rownames(x.2.0.species)
+input_data<-x.2.0.species %>% otu_table() %>% t()
+
+input_metadata<-sample_data(x.2.0.species) %>% data.frame()
+rownames(input_metadata)<-input_metadata$SampleID
+if( file.exists("output/Deliverables/Goal2/DifferentialAbundance/maaslin/species_placebo.rds")){
+  fit_data<-readRDS("output/Deliverables/Goal2/DifferentialAbundance/maaslin/species_placebo.rds")
+}else{
+  suppressWarnings(fit_data <- Maaslin2::Maaslin2(input_data=input_data,input_metadata=input_metadata,output="output/Deliverables/Goal2/DifferentialAbundance/maaslin/species_Placebo",fixed_effects = c("Timepoint"),random_effects = c("Host_name"),cores=4)) ### No siginifcant hits
+   saveRDS(fit_data,file="output/Deliverables/Goal2/DifferentialAbundance/maaslin/species_placebo.rds")
+}
+plot_data<-fit_data$results %>% 
+  dplyr::mutate('-log(qval)'=-log10(qval)) %>% 
+  dplyr::mutate(significant=ifelse(qval<0.05,"q<0.05","ns")) %>% 
+  dplyr::mutate(labels=ifelse(significant=="ns",FALSE,TRUE)) %>% 
+  dplyr::mutate(feature=ifelse(significant=="ns","",feature)) 
+  
+p0<-ggplot(plot_data)+
+    geom_point(aes(x=coef,y=`-log(qval)`,color=significant))+
+    ggrepel::geom_text_repel(aes(x=coef,y=`-log(qval)`),size=2,
+                                 label = plot_data$feature,max.overlaps = 30,
+                                 box.padding = unit(0.25, "lines"),
+                                  hjust = 1)+
+    ggtitle("M4 vs M1 | Species/Placebo")
+fit_data$results %>%
+   dplyr::left_join(tax_df) %>% 
+  dplyr::select(-feature, -name) %>% 
+  dplyr::relocate(Species,.before = metadata) %>%
+  dplyr::arrange(pval) %>%  head() %>% knitr::kable()
+file.remove("output/Deliverables/Goal2/DifferentialAbundance/maaslin/M4_vs_M1_placebo_Taxa.xlsx")
+fit_data$results %>% 
+  dplyr::left_join(tax_df) %>% 
+  dplyr::select(-feature, -name) %>% 
+  dplyr::relocate(Species,.before = metadata) %>% 
+  xlsx::write.xlsx(.,file="output/Deliverables/Goal2/DifferentialAbundance/maaslin/M4_vs_M1_placebo_Taxa.xlsx",sheetName = "Species")
+p0
+### Genus Level
+input_data <- x.2.0.species %>% tax_glom(.,taxrank="Genus",NArm = F) %>% otu_table() %>% t()
+input_metadata<-x.2.0.species %>% tax_glom(.,taxrank="Genus",NArm = F) %>% phyloseq::sample_data() %>% data.frame()
+rownames(input_metadata)<-input_metadata$SampleID
+tax_df<-tax_table(x.2.0.species %>% 
+                    tax_glom(.,taxrank="Genus",NArm = F)) %>% 
+  data.frame() %>%  dplyr::select(Genus) %>% 
+  tibble::rownames_to_column("feature")
+# rownames(input_metadata)
+if( file.exists("output/Deliverables/Goal2/DifferentialAbundance/maaslin/genus_placebo.rds")){
+  fit_data<-readRDS("output/Deliverables/Goal2/DifferentialAbundance/maaslin/genus_placebo.rds")
+}else{
+  suppressWarnings(fit_data <- Maaslin2::Maaslin2(input_data=input_data,input_metadata=input_metadata,output="output/Deliverables/Goal2/DifferentialAbundance/maaslin/genus_Placebo",fixed_effects = c("Timepoint"),random_effects = c("Host_name"),cores=4)) ### No siginifcant hits
+   saveRDS(fit_data,file="output/Deliverables/Goal2/DifferentialAbundance/maaslin/genus_placebo.rds")
+}
+fit_data$results %>% 
+  dplyr::left_join(tax_df) %>% 
+  dplyr::select(-feature, -name) %>% 
+  dplyr::relocate(Genus,.before = metadata) %>% 
+  xlsx::write.xlsx(.,file="output/Deliverables/Goal2/DifferentialAbundance/maaslin/M4_vs_M1_placebo_Taxa.xlsx",sheetName = "Genus",append=T)
+```
+
+## Functional Analysis
+
+### MaasLin2
+
+One of the advantages of using metagenomic sequencing is the possibility to profile gene abundance in addition to taxonomical composition. this is done using HUMANN3 software. Briefly, this software performs the analysis in three stages:
+
+  * Detection of the bacterial species that are present in the sample above threshold.
+  * Download of full genomes of detected species and indexes of the sample-specific genomes and gene annotation. In this manner, we obtain a table of relative abundances for UniRef Gene families that are annotated using KEGG and eggNOG ontologies.
+  * Read mapping to sample-specific full-genome. Quantification of gene relative abundance and annotation to pathways if possible using MetaCyc.
+  
+From these analysis, we'll use both MetaCYC pathway relative abundance and KEGG Ortholog groups relative abundance quantification to compare sample groups. We run MaasLin2 algorithm both at the MetaCyc pathway and UniRef levels using standard TSS normalization and log transformation. Note thata very high number of gene function features are being tested. No significant hits were found for Timepoint within the Probiotic nor the Placebo Group when using BH corrected q.values.
+
+*Deliverables: DifferentialAbundance/maaslin/M4_vs_M1_probiotic_function.xlsx, DifferentialAbundance/maaslin/M4_vs_M1_probiotic_function.xlsx*
+ 
+#### Probiotic group
+
+There are several Pathways that are either enriched or depleted at M4 in the Probiotic group, when using uncorrected p-values:
+
+```{r functional analysis chunk 1,include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F,eval=T}
+suppressMessages(require(dplyr))
+suppressMessages(require(phyloseq))
+suppressMessages(require(lefser))
+suppressMessages(require(ggplot2))
+suppressMessages(require(patchwork))
+suppressMessages(require(Maaslin2))
+
+set.seed(1234)
+
+ps_metaphlan<-readRDS("data/processed/ps_metaphlan_goal2.rds") %>% 
+  phyloseq::subset_samples(Product=="848590-FR80-036-003")
+
+### Prepare input_data, 
+input_data<-read.delim("data/raw/FunctionalAnnotation/HUMANN3/All_pathabun_relab.tsv")
+colnames(input_data)[1]<-"Pathway"
+colnames(input_data)<-gsub("_Abundance","",colnames(input_data))
+colnames(input_data)<-gsub("X","",colnames(input_data))
+input_data<-input_data %>% dplyr::filter(! grepl("s__",Pathway)) %>% 
+  dplyr::filter(! grepl("UNINTEGRATED",Pathway)) %>% 
+  dplyr::filter(! grepl("UNMAPPED",Pathway))
+rownames(input_data)<-input_data$Pathway
+input_data$Pathway<-NULL
+
+input_data<-input_data[,phyloseq::sample_names(ps_metaphlan)]
+
+### Prepare metadata
+input_metadata<-phyloseq::sample_data(ps_metaphlan) %>% data.frame()
+rownames(input_metadata)<-input_metadata$SampleID
+if( file.exists("output/Deliverables/Goal2/DifferentialAbundance/maaslin/pathways_probiotic.rds")){
+  fit_data<-readRDS("output/Deliverables/Goal2/DifferentialAbundance/maaslin/pathways_probiotic.rds")
+}else{
+  suppressMessages(fit_data <- Maaslin2::Maaslin2(input_data=input_data,input_metadata=input_metadata,output="output/Deliverables/Goal2/DifferentialAbundance/maaslin/function/pathways/probiotic",fixed_effects = c("Timepoint"),random_effects = c("Host_name"),cores = 4) )### No siginifcant hits
+  saveRDS(fit_data,file="output/Deliverables/Goal2/DifferentialAbundance/maaslin/pathways_probiotic.rds")
+}
+file.remove("output/Deliverables/Goal2/DifferentialAbundance/maaslin/M4_vs_M1_probiotic_function.xlsx")
+fit_data$results %>% 
+  xlsx::write.xlsx(.,file="output/Deliverables/Goal2/DifferentialAbundance/maaslin/M4_vs_M1_probiotic_function.xlsx",sheetName = "MetaCyc")
+fit_data$results %>%
+  dplyr::arrange(pval) %>% 
+  dplyr::select(-name,-metadata) %>% 
+  head(10) %>% 
+  knitr::kable()
+
+### Prepare input_data, GENE Families
+input_data<-read.delim("data/raw/FunctionalAnnotation/HUMANN3/All_genefam_cpm_kegg.tsv")
+colnames(input_data)[1]<-"Gene.Family"
+colnames(input_data)<-gsub("_Abundance.RPKs","",colnames(input_data))
+colnames(input_data)<-gsub("X","",colnames(input_data))
+input_data<-input_data %>% dplyr::filter(! grepl("s__",Gene.Family)) %>% 
+  dplyr::filter(! grepl("UNINTEGRATED",Gene.Family)) %>% 
+  dplyr::filter(! grepl("UNMAPPED",Gene.Family)) %>% 
+  dplyr::filter(! grepl("unclassified",Gene.Family))
+rownames(input_data)<-input_data$Gene.Family
+input_data$Gene.Family<-NULL
+input_data<-input_data[,phyloseq::sample_names(ps_metaphlan)]
+### Prepare metadata
+input_metadata<-phyloseq::sample_data(ps_metaphlan) %>% data.frame()
+rownames(input_metadata)<-input_metadata$SampleID
+
+if( file.exists("output/Deliverables/Goal2/DifferentialAbundance/maaslin/genefamilies_probiotic.rds")){
+  fit_data<-readRDS("output/Deliverables/Goal2/DifferentialAbundance/maaslin/genefamilies_probiotic.rds")
+}else{
+  suppressMessages(fit_data <- Maaslin2::Maaslin2(input_data=input_data,input_metadata=input_metadata,output="output/Deliverables/Goal2/DifferentialAbundance/maaslin/function/genes/probiotic",fixed_effects = c("Timepoint"),random_effects = c("Host_name"),cores = 4,min_prevalence = 0.4)) ### No siginifcant hits
+   saveRDS(fit_data,file="output/Deliverables/Goal2/DifferentialAbundance/maaslin/genefamilies_probiotic.rds")
+}
+fit_data$results %>% 
+  xlsx::write.xlsx(.,file="output/Deliverables/Goal2/DifferentialAbundance/maaslin/M4_vs_M1_probiotic_function.xlsx",sheetName = "KEGG",append=T)
+
+plot_data<-fit_data$results %>% 
+  dplyr::mutate('-log(qval)'=-log10(qval)) %>% 
+  dplyr::mutate(significant=ifelse(qval<0.05,"q<0.05","ns")) %>% 
+  dplyr::mutate(labels=ifelse(significant=="ns",FALSE,TRUE)) %>% 
+  dplyr::mutate(feature=ifelse(significant=="ns","",feature)) 
+  
+p0<-ggplot(plot_data)+
+    geom_point(aes(x=coef,y=`-log(qval)`,color=significant))+
+    ggrepel::geom_text_repel(aes(x=coef,y=`-log(qval)`),size=2,
+                                 label = plot_data$feature,max.overlaps = 30,
+                                 box.padding = unit(0.25, "lines"),
+                                  hjust = 1)+
+    ggtitle("M4 vs M1 | Gene Family/Probiotic")
+# fit_data$results %>% dplyr::arrange(pval) %>%  head() %>% knitr::kable()
+p0
+```
+
+#### Placebo group
+
+```{r functional analysis chunk 2,include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F,eval=T}
+suppressMessages(require(dplyr))
+suppressMessages(require(phyloseq))
+suppressMessages(require(lefser))
+suppressMessages(require(ggplot2))
+suppressMessages(require(patchwork))
+suppressMessages(require(Maaslin2))
+
+set.seed(1234)
+ps_metaphlan<-readRDS("data/processed/ps_metaphlan_goal2.rds") %>% 
+  phyloseq::subset_samples(Product=="848589-FR80-036-003")
+
+
+### Prepare input_data, 
+input_data<-read.delim("data/raw/FunctionalAnnotation/HUMANN3/All_pathabun_relab.tsv")
+colnames(input_data)[1]<-"Pathway"
+colnames(input_data)<-gsub("_Abundance","",colnames(input_data))
+colnames(input_data)<-gsub("X","",colnames(input_data))
+input_data<-input_data %>% dplyr::filter(! grepl("s__",Pathway)) %>% 
+  dplyr::filter(! grepl("UNINTEGRATED",Pathway)) %>% 
+  dplyr::filter(! grepl("UNMAPPED",Pathway))
+rownames(input_data)<-input_data$Pathway
+input_data$Pathway<-NULL
+
+input_data<-input_data[,phyloseq::sample_names(ps_metaphlan)]
+
+### Prepare metadata
+input_metadata<-phyloseq::sample_data(ps_metaphlan) %>% data.frame()
+rownames(input_metadata)<-input_metadata$SampleID
+if( file.exists("output/Deliverables/Goal2/DifferentialAbundance/maaslin/pathways_placebo.rds")){
+  fit_data<-readRDS("output/Deliverables/Goal2/DifferentialAbundance/maaslin/pathways_placebo.rds")
+}else{
+suppressMessages(fit_data <- Maaslin2::Maaslin2(input_data=input_data,input_metadata=input_metadata,output="output/Deliverables/Goal2/DifferentialAbundance/maaslin/function/pathways/placebo",fixed_effects = c("Timepoint"),random_effects = c("Host_name"),cores = 4) )### No siginifcant hits
+  saveRDS(fit_data,file="output/Deliverables/Goal2/DifferentialAbundance/maaslin/pathways_placebo.rds")
+}
+file.remove("output/Deliverables/Goal2/DifferentialAbundance/maaslin/M4_vs_M1_placebo_function.xlsx")
+fit_data$results %>% 
+  xlsx::write.xlsx(.,file="output/Deliverables/Goal2/DifferentialAbundance/maaslin/M4_vs_M1_placebo_function.xlsx",sheetName = "MetaCyc")
+fit_data$results %>%
+  dplyr::arrange(pval)  %>% 
+  dplyr::select(-name,-metadata)%>% 
+  head() %>% 
+  knitr::kable()
+### Prepare input_data, GENE Families
+input_data<-read.delim("data/raw/FunctionalAnnotation/HUMANN3/All_genefam_cpm_kegg.tsv")
+colnames(input_data)[1]<-"Gene.Family"
+colnames(input_data)<-gsub("_Abundance.RPKs","",colnames(input_data))
+colnames(input_data)<-gsub("X","",colnames(input_data))
+input_data<-input_data %>% dplyr::filter(! grepl("s__",Gene.Family)) %>% 
+  dplyr::filter(! grepl("UNINTEGRATED",Gene.Family)) %>% 
+  dplyr::filter(! grepl("UNMAPPED",Gene.Family)) %>% 
+  dplyr::filter(! grepl("unclassified",Gene.Family))
+rownames(input_data)<-input_data$Gene.Family
+input_data$Gene.Family<-NULL
+input_data<-input_data[,phyloseq::sample_names(ps_metaphlan)]
+### Prepare metadata
+input_metadata<-phyloseq::sample_data(ps_metaphlan) %>% data.frame()
+rownames(input_metadata)<-input_metadata$SampleID
+
+if( file.exists("output/Deliverables/Goal2/DifferentialAbundance/maaslin/genefamilies_placebo.rds")){
+  fit_data<-readRDS("output/Deliverables/Goal2/DifferentialAbundance/maaslin/genefamilies_placebo.rds")
+}else{
+  suppressMessages(fit_data <- Maaslin2::Maaslin2(input_data=input_data,input_metadata=input_metadata,output="output/Deliverables/Goal2/DifferentialAbundance/maaslin/function/genes/placebo",fixed_effects = c("Timepoint"),random_effects = c("Host_name"),cores = 4,min_prevalence = 0.4)) ### No siginifcant hits
+  saveRDS(fit_data,file="output/Deliverables/Goal2/DifferentialAbundance/maaslin/genefamilies_placebo.rds")
+}
+fit_data$results %>% 
+  xlsx::write.xlsx(.,file="output/Deliverables/Goal2/DifferentialAbundance/maaslin/M4_vs_M1_placebo_function.xlsx",sheetName = "KEGG",append=T)
+
+plot_data<-fit_data$results %>% 
+  dplyr::mutate('-log(qval)'=-log10(qval)) %>% 
+  dplyr::mutate(significant=ifelse(qval<0.05,"q<0.05","ns")) %>% 
+  dplyr::mutate(labels=ifelse(significant=="ns",FALSE,TRUE)) %>% 
+  dplyr::mutate(feature=ifelse(significant=="ns","",feature)) 
+  
+p0<-ggplot(plot_data)+
+    geom_point(aes(x=coef,y=`-log(qval)`,color=significant))+
+    ggrepel::geom_text_repel(aes(x=coef,y=`-log(qval)`),size=2,
+                                 label = plot_data$feature,max.overlaps = 30,
+                                 box.padding = unit(0.25, "lines"),
+                                  hjust = 1)+
+    ggtitle("M4 vs M1 | Gene Family/Placebo")
+# fit_data$results %>% dplyr::arrange(qval) %>%  head() %>% knitr::kable()
+p0
+```
+
+
+
+

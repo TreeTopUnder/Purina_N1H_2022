@@ -45,15 +45,20 @@ Clinical trial goals:
 Response variable(s): 
 
   * Primary Variables: Timepoint(Goal 1 & 2), Probiotic(Goal 2).
-  *     Secondary Variables: gender, animal_name, lifestyle, Leish_stage
+  * Secondary Variables: gender, animal_name, lifestyle, Leish_stage
 
 Software: 
   * Trimmomatic/Kraken2
   * Bowtie2/IGC
-  * Biobakery3::Metaphlan/HUMANN
+  * Biobakery3::Metaphlan/HUMANN/ChocophlanDB
   * R::phyloseq/R::vegan/R::lefser/R::maaslin/R::r_statix
 
 # Methods
+
+## Gut Metagenomic Sequencing
+
+(Details on sample collection, shipment, DNA extraction)
+Extracted DNA was submitted to Macrogen(Macrogen, South Korea) for sequencing, with a median depth of 10 million reads 150x2 in paired-end configuration.
 
 ## Sequence Data Analysis
 
@@ -63,9 +68,10 @@ Raw data is obtained in fastq format. Data have been acquired through a whole DN
 - Gene Marker-based taxonomical quantification using Metaphlan3. (v201901b)
 - Gene Catalog Mapping using Integrated Gene Catalog (IGC)
 - Functional quantification using humann3.(v201901b)
-- Each analysis result has been packaged into a phyloseq object for further analysis.
+- When possible, Analysis results have been packaged into phyloseq object for further analysis.
 
 In this way, we obtain three data packets. Each of them contains a different aspecte that can be obtained from the sequencing data, including taxonomical quantification down to the species level, gene richness/diversity, and gene function. This will allow us to calculate bot alpha- and beta-diversity estimators.
+
 
 # Results
 
@@ -106,6 +112,8 @@ myMREObject<-metadata_df %>%
 
 myMREObject@wd<-"output/mre_data/feces/"
 saveRDS(myMREObject,file="data/mreObject_feces.rds")
+myMREObject@taxa@metaphlan@phyloseq %>% saveRDS(object=.,file="data/ps_metaphlan_feces.rds")
+myMREObject@taxa@metaphlan@phyloseq_sec %>% saveRDS(object=.,file="data/processed/ps_metaphlan_feces_sec.rds")
 
 
 
@@ -139,7 +147,7 @@ rownames(metadata_df)<-metadata_df$SampleID
 ps_metaphlan<-metar::get_phyloseq(myMREObject,type="metaphlan")
 ps_metaphlan<-phyloseq::prune_samples(! sample_names(ps_metaphlan) %in% mock_samples, ps_metaphlan)
 ps_metaphlan<-phyloseq::subset_taxa(ps_metaphlan,Kingdom %in% c("Bacteria","Archaea"))
-saveRDS(ps_metaphlan,file="data/ps_metaphlan_feces.rds")
+# saveRDS(ps_metaphlan,file="data/ps_metaphlan_feces.rds")
 
 table(metadata_df %>% dplyr::select(Host_name,Timepoint)) 
 
@@ -158,6 +166,8 @@ myMREObject <- metadata_df %>%
   metar::filter_samples(mre = myMREObject,sample_ids = .)
 myMREObject@wd<-"output/mre_data/goal1/"
 saveRDS(myMREObject,file="data/mreObject_goal1.rds")
+myMREObject@taxa@metaphlan@phyloseq %>% saveRDS(object=.,file="data/processed/ps_metaphlan_goal1.rds")
+myMREObject@taxa@metaphlan@phyloseq_sec %>% saveRDS(object=.,file="data/processed/ps_metaphlan_goal1_sec.rds")
 
 ### Dataset for goal2
 myMREObject<-readRDS("data/processed/mreObject.rds")
@@ -174,7 +184,8 @@ myMREObject <- metadata_df %>%
   metar::filter_samples(mre = myMREObject,sample_ids = .)
 myMREObject@wd<-"output/mre_data/goal2/"
 saveRDS(myMREObject,file="data/mreObject_goal2.rds")
-
+myMREObject@taxa@metaphlan@phyloseq %>% saveRDS(object=.,file="data/processed/ps_metaphlan_goal2.rds")
+myMREObject@taxa@metaphlan@phyloseq_sec %>% saveRDS(object=.,file="data/processed/ps_metaphlan_goal2_sec.rds")
 ### Dataset for goal3
 myMREObject<-readRDS("data/processed/mreObject.rds")
 aux_DF<-table(metadata_df %>% 
@@ -190,6 +201,8 @@ myMREObject <- metadata_df %>%
   metar::filter_samples(mre = myMREObject,sample_ids = .)
 myMREObject@wd<-"output/mre_data/goal3/"
 saveRDS(myMREObject,file="data/mreObject_goal3.rds")
+myMREObject@taxa@metaphlan@phyloseq %>% saveRDS(object=.,file="data/processed/ps_metaphlan_goal3.rds")
+myMREObject@taxa@metaphlan@phyloseq_sec %>% saveRDS(object=.,file="data/processed/ps_metaphlan_goal3_sec.rds")
 ```
 
 Dataset characteristics are:
@@ -203,5 +216,6 @@ Dataset characteristics are:
 ```{r data summary,eval=T, echo=F, message=FALSE, warning=FALSE, paged.print=FALSE}
 ps_metaphlan<-readRDS("data/ps_metaphlan_feces.rds")
 ps_metaphlan
+
 # data.frame(sample_data(ps_metaphlan)) %>% DataExplorer::create_report(output_file = "docs/MetadataExplorer.html")
 ```

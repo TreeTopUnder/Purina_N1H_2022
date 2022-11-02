@@ -11,7 +11,7 @@
 
 <meta name="author" content="Marc Noguera-Julian, PhD. TreeTopUnder" />
 
-<meta name="date" content="2022-10-03" />
+<meta name="date" content="2022-11-01" />
 
 <title>Metagenomic Analysis of Canine gut microbiome in Leishmaniasis</title>
 
@@ -270,7 +270,16 @@ $(document).ready(function () {
   <a href="04_Goal2.html">Goal 2</a>
 </li>
 <li>
-  <a href="about.html">About</a>
+  <a href="05_Goal3.html">Goal 3</a>
+</li>
+<li>
+  <a href="06_Conclusions.html">Conclusions</a>
+</li>
+<li>
+  <a href="MetadataExplorer.html">Metadata</a>
+</li>
+<li>
+  <a href="Multiqc_report.html">MultiQC</a>
 </li>
 <li>
   <a href="license.html">License</a>
@@ -289,7 +298,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Metagenomic Analysis of Canine gut microbiome in Leishmaniasis</h1>
 <h4 class="author">Marc Noguera-Julian, PhD. TreeTopUnder</h4>
-<h4 class="date">2022-10-03</h4>
+<h4 class="date">2022-11-01</h4>
 
 </div>
 
@@ -314,7 +323,7 @@ $(document).ready(function () {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-10-03
+<strong>Last updated:</strong> 2022-11-01
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
@@ -405,16 +414,16 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTreeTopUnderPurinaN1H2022tree59ac17e3c27e6b80b71def7e067af5282980f584targetblank59ac17ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TreeTopUnder/Purina_N1H_2022/tree/59ac17e3c27e6b80b71def7e067af5282980f584" target="_blank">59ac17e</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTreeTopUnderPurinaN1H2022tree74b0908090ff8e0bc963c89a8444a189c23e53datargetblank74b0908a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TreeTopUnder/Purina_N1H_2022/tree/74b0908090ff8e0bc963c89a8444a189c23e53da" target="_blank">74b0908</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomTreeTopUnderPurinaN1H2022tree59ac17e3c27e6b80b71def7e067af5282980f584targetblank59ac17ea" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomTreeTopUnderPurinaN1H2022tree74b0908090ff8e0bc963c89a8444a189c23e53datargetblank74b0908a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/TreeTopUnder/Purina_N1H_2022/tree/59ac17e3c27e6b80b71def7e067af5282980f584" target="_blank">59ac17e</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/TreeTopUnder/Purina_N1H_2022/tree/74b0908090ff8e0bc963c89a8444a189c23e53da" target="_blank">74b0908</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -429,8 +438,10 @@ Ignored files:
     Ignored:    code/006_DataPreprocessing.Rmd
     Ignored:    code/006_DataPreprocessing.html
     Ignored:    code/008_PopulateMRE.Rmd
+    Ignored:    code/Phylosmith_bug.Rmd
     Ignored:    code/output/
     Ignored:    data/.DS_Store
+    Ignored:    data/generichness_goal3.rds
     Ignored:    data/mreObject_feces.rds
     Ignored:    data/mreObject_goal1.rds
     Ignored:    data/mreObject_goal2.rds
@@ -440,56 +451,137 @@ Ignored files:
     Ignored:    data/raw/
     Ignored:    output/.DS_Store
     Ignored:    output/Deliverables/.DS_Store
+    Ignored:    output/Deliverables/Exploratory/.DS_Store
+    Ignored:    output/Deliverables/Exploratory/DifferentialAbundance/
     Ignored:    output/Deliverables/Goal1/.DS_Store
-    Ignored:    output/Deliverables/Goal3/
+    Ignored:    output/Deliverables/Goal1/DifferentialAbundance/.DS_Store
+    Ignored:    output/Deliverables/Goal1/DifferentialAbundance/lefse/.DS_Store
+    Ignored:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/.DS_Store
+    Ignored:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/genus/figures/
+    Ignored:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/species/figures/
+    Ignored:    output/Deliverables/Goal2/.DS_Store
+    Ignored:    output/Deliverables/Goal2/DifferentialAbundance/.DS_Store
+    Ignored:    output/Deliverables/Goal2/DifferentialAbundance/lefse/.DS_Store
+    Ignored:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/.DS_Store
     Ignored:    output/mre_data/.DS_Store
+    Ignored:    output/mre_data/Goal3/
     Ignored:    output/mre_data/SpeciesQuantification/Metaphlan3/NMDS/
     Ignored:    output/mre_data/feces/
 
 Untracked files:
-    Untracked:  analysis/02_Exploratory.Rmd
-    Untracked:  analysis/03_Goal1.Rmd
-    Untracked:  analysis/04_Conclusiones.Rmd
-    Untracked:  analysis/04_Goal2.Rmd
-    Untracked:  analysis/05_Goal3.Rmd
-    Untracked:  output/Deliverables/Exploratory/
-    Untracked:  output/Deliverables/Goal1/AlphaDiversity/
-    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/
-    Untracked:  output/Deliverables/Goal2/
+    Untracked:  MetadataExplorer.html
+    Untracked:  analysis/06_Conclusions.Rmd
+    Untracked:  output/Deliverables/Exploratory/BetaDiversity/Ordination_BLSamples.pdf
+    Untracked:  output/Deliverables/Exploratory/DataExport/
+    Untracked:  output/Deliverables/Exploratory/StackedBarplots_Genus.pdf
+    Untracked:  output/Deliverables/Exploratory/TwoSamples_Efaecium.pdf
+    Untracked:  output/Deliverables/ExploratoryHeatmap_allSamples.pdf
+    Untracked:  output/Deliverables/Goal1/BetaDiversity/NMDS_Goal1_StressPlot.pdf
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function.xls
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function.xlsx
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_kegg.pdf
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_kegg.rds
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_kegg.xls
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_metacyc.pdf
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_metacyc.rds
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_metacyc.xls
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_taxonomy_genus.rds
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_taxonomy_species.rds
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MetaCyc/
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/Volcano_M1_vs_BL.xlsx
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/Volcano_M1_vs_BL_taxonomy_genus.pdf
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/Volcano_M1_vs_BL_taxonomy_species.pdf
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/kegg/
+    Untracked:  output/Deliverables/Goal2/AlphaDiversity/AlphaDiversity_Timepoint_goal2_Probiotic_samples.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Blautia_sp_CAG_257_vs_Timepoint_Probiotic_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Clostridium_sp_CAG_58_vs_Timepoint_Probiotic_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Dorea_sp_CAG_317_vs_Timepoint_Probiotic_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Blautia_sp_CAG_257_vs_Timepoint_Probiotic_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Clostridium_hiranonis_vs_Timepoint_Placebo_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Clostridium_sp_CAG_58_vs_Timepoint_Probiotic_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Collinsella_intestinalis_vs_Timepoint_Placebo_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Dorea_sp_CAG_317_vs_Timepoint_Probiotic_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/lefser_goal2_Probiotic_plot.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/maaslin/
+    Untracked:  output/Deliverables/Goal3/
+    Untracked:  output/Deliverables/NMDS_StressPlot_BL.pdf
 
 Unstaged changes:
     Modified:   analysis/01_index.Rmd
-    Deleted:    analysis/02_Exploratory_v1.Rmd
-    Deleted:    analysis/03_Goal1_v1.Rmd
-    Deleted:    analysis/04_Conclusiones_v1.Rmd
+    Modified:   analysis/02_Exploratory.Rmd
+    Modified:   analysis/03_Goal1.Rmd
+    Deleted:    analysis/04_Conclusiones.Rmd
+    Modified:   analysis/04_Goal2.Rmd
+    Modified:   analysis/05_Goal3.Rmd
     Modified:   analysis/_site.yml
-    Deleted:    output/Deliverables/Adonis.xls
-    Deleted:    output/Deliverables/AlphaDiversity_Timepoint_goal1_only.pdf
-    Deleted:    output/Deliverables/AlphaDiversity_treatment.pdf
-    Deleted:    output/Deliverables/AlphaDiversity_treatment_dry_only.pdf
-    Deleted:    output/Deliverables/AlphaDiversity_treatment_w1_only.pdf
-    Deleted:    output/Deliverables/AlphaDiversity_treatment_w2_only.pdf
-    Deleted:    output/Deliverables/BrayCurtis_Distances.xls
-    Deleted:    output/Deliverables/ExploratoryHeatmap_allSamples.pdf
-    Deleted:    output/Deliverables/FinalMetadata.xlsx
-    Deleted:    output/Deliverables/GeneRichness_Estimation.xls
-    Modified:   output/Deliverables/Goal1/BetaDiversity/Goal1_Adonis.xls
+    Deleted:    analysis/about.Rmd
+    Modified:   output/Deliverables/Exploratory/AlphaDiversity/RarefactionCurve_timepoint.pdf
+    Modified:   output/Deliverables/Exploratory/BetaDiversity/Adonis.xls
+    Modified:   output/Deliverables/Exploratory/BetaDiversity/NMDS_StressPlot.pdf
+    Modified:   output/Deliverables/Exploratory/BetaDiversity/Ordination_AllSamples.pdf
+    Modified:   output/Deliverables/Exploratory/ExploratoryHeatmap_allSamples.pdf
+    Modified:   output/Deliverables/Exploratory/FinalMetadata.xlsx
+    Modified:   output/Deliverables/Exploratory/PhylumAbundance_RA.xls
+    Modified:   output/Deliverables/Exploratory/PhylumAbundance_counts.xls
+    Modified:   output/Deliverables/Exploratory/Spaghetti_Efaecium.pdf
+    Modified:   output/Deliverables/Exploratory/Spaghetti_Efaecium_BLexcluded.pdf
+    Modified:   output/Deliverables/Exploratory/SpeciesAbundance_RA.xls
+    Modified:   output/Deliverables/Exploratory/SpeciesAbundance_counts.xls
+    Modified:   output/Deliverables/Exploratory/StackedBarplots_Species.pdf
+    Modified:   output/Deliverables/Exploratory/ps_metaphlan3.biom
+    Modified:   output/Deliverables/Goal1/AlphaDiversity/AlphaDiversity_Timepoint_goal1_only.pdf
     Modified:   output/Deliverables/Goal1/BetaDiversity/NMDS_Ordination_vs_Timepoint.pdf
-    Deleted:    output/Deliverables/Goal1/BetaDiversity/sGoal1_Adonis.xls
-    Deleted:    output/Deliverables/Goal1/DifferentialAbundanceAllisonella_vs_Timepoint_Goal1.pdf
-    Deleted:    output/Deliverables/Goal1/DifferentialAbundanceBifidobacterium_vs_Timepoint_Goal1.pdf
-    Deleted:    output/Deliverables/Goal1/DifferentialAbundanceCollinsella_vs_Timepoint_Goal1.pdf
-    Deleted:    output/Deliverables/Goal1/Goal1_Adonis.xls
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/Allisonella_histaminiformans_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/Bifidobacterium_longum_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/Bifidobacterium_pseudocatenulatum_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/Bifidobacterium_pullorum_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/Collinsella_tanakaei_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/paired_Allisonella_histaminiformans_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/paired_Bifidobacterium_longum_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/paired_Bifidobacterium_pseudocatenulatum_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/paired_Bifidobacterium_pullorum_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/paired_Collinsella_tanakaei_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/lefser_goal1_plot.pdf
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/all_results.tsv
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/fitted.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/genes/all_results.tsv
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/genes/fitted.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/genes/maaslin2.log
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/genes/ranef.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/genes/residuals.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/genes/significant_results.tsv
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/maaslin2.log
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/pathways/all_results.tsv
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/pathways/fitted.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/pathways/maaslin2.log
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/pathways/ranef.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/pathways/residuals.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/pathways/significant_results.tsv
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/ranef.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/residuals.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/significant_results.tsv
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/maaslin/genus/maaslin2.log
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/maaslin/species/maaslin2.log
+    Modified:   output/Deliverables/Goal2/AlphaDiversity/AlphaDiversity_Timepoint_goal2_Fortiflora_samples.pdf
+    Modified:   output/Deliverables/Goal2/AlphaDiversity/AlphaDiversity_Timepoint_goal2_Placebo_samples.pdf
+    Modified:   output/Deliverables/Goal2/AlphaDiversity/AlphaDiversity_Timepoint_goal2_all_samples.pdf
+    Modified:   output/Deliverables/Goal2/BetaDiversity/BrayDistance_by_Treatment_goal2.pdf
+    Modified:   output/Deliverables/Goal2/BetaDiversity/Goal2_Adonis.xls
+    Modified:   output/Deliverables/Goal2/BetaDiversity/NMDS_Goal2_StressPlot.pdf
+    Modified:   output/Deliverables/Goal2/BetaDiversity/NMDS_Ordination_vs_Timepoint_and_treatment.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Blautia_sp_CAG_257_vs_Timepoint_Fortiflora_Goal2.pdf
+    Modified:   output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Clostridium_hiranonis_vs_Timepoint_Placebo_Goal2.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Clostridium_sp_CAG_58_vs_Timepoint_Fortiflora_Goal2.pdf
+    Modified:   output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Collinsella_intestinalis_vs_Timepoint_Placebo_Goal2.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Dorea_sp_CAG_317_vs_Timepoint_Fortiflora_Goal2.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Blautia_sp_CAG_257_vs_Timepoint_Fortiflora_Goal2.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Clostridium_hiranonis_vs_Timepoint_Placebo_Goal1.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Clostridium_sp_CAG_58_vs_Timepoint_Fortiflora_Goal2.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Collinsella_intestinalis_vs_Timepoint_Placebo_Goal1.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Dorea_sp_CAG_317_vs_Timepoint_Fortiflora_Goal2.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/lefser_goal2_Fortiflora_plot.pdf
+    Modified:   output/Deliverables/Goal2/DifferentialAbundance/lefse/lefser_goal2_Placebo_plot.pdf
     Modified:   output/Deliverables/NMDS_Goal1_StressPlot.pdf
-    Deleted:    output/Deliverables/NMDS_StressPlot.pdf
-    Deleted:    output/Deliverables/Ordination_AllSamples.pdf
-    Deleted:    output/Deliverables/PhylumAbundance_RA.xls
-    Deleted:    output/Deliverables/PhylumAbundance_counts.xls
-    Deleted:    output/Deliverables/RarefactionCurve_timepoint.pdf
-    Deleted:    output/Deliverables/SpeciesAbundance_RA.xls
-    Deleted:    output/Deliverables/SpeciesAbundance_counts.xls
-    Deleted:    output/Deliverables/StackedBarplots_Species.pdf
-    Deleted:    output/Deliverables/ps_metaphlan3.biom
 
 </code></pre>
 <p>
@@ -528,6 +620,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/TreeTopUnder/Purina_N1H_2022/blob/74b0908090ff8e0bc963c89a8444a189c23e53da/analysis/01_index.Rmd" target="_blank">74b0908</a>
+</td>
+<td>
+Marc Noguera-Julian
+</td>
+<td>
+2022-10-03
+</td>
+<td>
+update
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/TreeTopUnder/Purina_N1H_2022/74b0908090ff8e0bc963c89a8444a189c23e53da/docs/01_index.html" target="_blank">74b0908</a>
+</td>
+<td>
+Marc Noguera-Julian
+</td>
+<td>
+2022-10-03
+</td>
+<td>
+update
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -595,6 +721,10 @@ initial commits
 </div>
 <div id="methods" class="section level1">
 <h1>Methods</h1>
+<div id="gut-metagenomic-sequencing" class="section level2">
+<h2>Gut Metagenomic Sequencing</h2>
+<p>(Details on sample collection, shipment, DNA extraction) Extracted DNA was submitted to Macrogen(Macrogen, South Korea) for sequencing, with a median depth of 10 million reads 150x2 in paired-end configuration.</p>
+</div>
 <div id="sequence-data-analysis" class="section level2">
 <h2>Sequence Data Analysis</h2>
 <p>Raw data is obtained in fastq format. Data have been acquired through a whole DNA shotgun metagenomic sequencing using an Illumina HiSeq 150x2 bp instrument and sequencing kit. Using these data, several analysis have been performed:</p>
@@ -603,7 +733,7 @@ initial commits
 <li>Gene Marker-based taxonomical quantification using Metaphlan3. (v201901b)</li>
 <li>Gene Catalog Mapping using Integrated Gene Catalog (IGC)</li>
 <li>Functional quantification using humann3.(v201901b)</li>
-<li>Each analysis result has been packaged into a phyloseq object for further analysis.</li>
+<li>When possible, Analysis results have been packaged into phyloseq object for further analysis.</li>
 </ul>
 <p>In this way, we obtain three data packets. Each of them contains a different aspecte that can be obtained from the sequencing data, including taxonomical quantification down to the species level, gene richness/diversity, and gene function. This will allow us to calculate bot alpha- and beta-diversity estimators.</p>
 </div>
@@ -650,9 +780,9 @@ Host_name    BL M1 M4 M6
 <li>Taxonomic annotation down to the species level</li>
 </ul>
 <pre><code>phyloseq-class experiment-level object
-otu_table()   OTU Table:         [ 194 taxa and 45 samples ]
+otu_table()   OTU Table:         [ 197 taxa and 45 samples ]
 sample_data() Sample Data:       [ 45 samples by 47 sample variables ]
-tax_table()   Taxonomy Table:    [ 194 taxa by 7 taxonomic ranks ]</code></pre>
+tax_table()   Taxonomy Table:    [ 197 taxa by 7 taxonomic ranks ]</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -677,12 +807,12 @@ attached base packages:
 
 other attached packages:
  [1] metar_0.1.5      testthat_3.1.4   forcats_0.5.1    stringr_1.4.1   
- [5] dplyr_1.0.9      purrr_0.3.4      readr_2.1.2      tidyr_1.2.0     
+ [5] dplyr_1.0.10     purrr_0.3.5      readr_2.1.2      tidyr_1.2.1     
  [9] tibble_3.1.8     ggplot2_3.3.6    tidyverse_1.3.2  phylosmith_1.0.6
-[13] here_1.0.1       pander_0.6.5     phyloseq_1.38.0 
+[13] here_1.0.1       pander_0.6.5     phyloseq_1.38.0  workflowr_1.7.0 
 
 loaded via a namespace (and not attached):
-  [1] utf8_1.2.2             lme4_1.1-30            tidyselect_1.1.2      
+  [1] utf8_1.2.2             lme4_1.1-30            tidyselect_1.2.0      
   [4] htmlwidgets_1.5.4      grid_4.1.1             Rtsne_0.16            
   [7] devtools_2.4.4         munsell_0.5.0          codetools_0.2-18      
  [10] units_0.8-0            future_1.27.0          miniUI_0.1.1.1        
@@ -692,7 +822,7 @@ loaded via a namespace (and not attached):
  [22] listenv_0.8.0          git2r_0.30.1           GenomeInfoDbData_1.2.7
  [25] polyclip_1.10-0        bit64_4.0.5            farver_2.1.1          
  [28] rhdf5_2.38.1           rprojroot_2.0.3        parallelly_1.32.1     
- [31] coda_0.19-4            vctrs_0.4.1            generics_0.1.3        
+ [31] coda_0.19-4            vctrs_0.4.2            generics_0.1.3        
  [34] xfun_0.31              R6_2.5.1               GenomeInfoDb_1.30.1   
  [37] arm_1.12-2             graphlayouts_0.8.0     bitops_1.0-7          
  [40] rhdf5filters_1.6.0     cachem_1.0.6           assertthat_0.2.1      
@@ -700,39 +830,39 @@ loaded via a namespace (and not attached):
  [46] scales_1.2.1           ggraph_2.0.5           googlesheets4_1.0.0   
  [49] merTools_0.5.2         gtable_0.3.1           globals_0.15.1        
  [52] processx_3.7.0         xlsx_0.6.5             tidygraph_1.2.1       
- [55] workflowr_1.7.0        rlang_1.0.6            splines_4.1.1         
- [58] rstatix_0.7.0          gargle_1.2.0           broom_1.0.0           
- [61] yaml_2.3.5             reshape2_1.4.4         abind_1.4-5           
- [64] modelr_0.1.8           backports_1.4.1        httpuv_1.6.5          
- [67] tools_4.1.1            usethis_2.1.6          logging_0.10-108      
- [70] ellipsis_0.3.2         selbal_0.1.0           jquerylib_0.1.4       
- [73] biomformat_1.22.0      RColorBrewer_1.1-3     proxy_0.4-27          
- [76] BiocGenerics_0.40.0    sessioninfo_1.2.2      Rcpp_1.0.9            
- [79] plyr_1.8.7             zlibbioc_1.40.0        classInt_0.4-7        
- [82] RCurl_1.98-1.8         ps_1.7.1               prettyunits_1.1.1     
- [85] ggpubr_0.4.0           viridis_0.6.2          urlchecker_1.0.1      
- [88] S4Vectors_0.32.4       haven_2.5.0            ggrepel_0.9.1         
- [91] cluster_2.1.3          fs_1.5.2               furrr_0.3.0           
- [94] DataExplorer_0.8.2     magrittr_2.0.3         data.table_1.14.2     
- [97] reprex_2.0.1           mvtnorm_1.1-3          googledrive_2.0.0     
-[100] whisker_0.4            pkgload_1.3.0          xlsxjars_0.6.1        
-[103] patchwork_1.1.1        hms_1.1.2              mime_0.12             
-[106] evaluate_0.15          xtable_1.8-4           broom.mixed_0.2.9.4   
-[109] readxl_1.4.0           IRanges_2.28.0         gridExtra_2.3         
-[112] compiler_4.1.1         KernSmooth_2.23-20     crayon_1.5.1          
-[115] minqa_1.2.4            htmltools_0.5.3        mgcv_1.8-40           
-[118] later_1.3.0            tzdb_0.3.0             RcppParallel_5.1.5    
-[121] lubridate_1.8.0        DBI_1.1.3              tweenr_1.0.2          
-[124] dbplyr_2.2.1           MASS_7.3-58            boot_1.3-28           
-[127] sf_1.0-7               wesanderson_0.3.6      Matrix_1.4-1          
-[130] ade4_1.7-19            car_3.1-0              brio_1.1.3            
-[133] permute_0.9-7          cli_3.4.1              parallel_4.1.1        
-[136] igraph_1.3.5           pkgconfig_2.0.3        xml2_1.3.3            
+ [55] rlang_1.0.6            splines_4.1.1          rstatix_0.7.0         
+ [58] gargle_1.2.0           broom_1.0.0            yaml_2.3.5            
+ [61] reshape2_1.4.4         abind_1.4-5            modelr_0.1.8          
+ [64] backports_1.4.1        httpuv_1.6.5           tools_4.1.1           
+ [67] usethis_2.1.6          logging_0.10-108       ellipsis_0.3.2        
+ [70] selbal_0.1.0           jquerylib_0.1.4        biomformat_1.22.0     
+ [73] RColorBrewer_1.1-3     proxy_0.4-27           BiocGenerics_0.40.0   
+ [76] sessioninfo_1.2.2      Rcpp_1.0.9             plyr_1.8.7            
+ [79] zlibbioc_1.40.0        classInt_0.4-7         RCurl_1.98-1.8        
+ [82] ps_1.7.1               prettyunits_1.1.1      ggpubr_0.4.0          
+ [85] viridis_0.6.2          urlchecker_1.0.1       S4Vectors_0.32.4      
+ [88] haven_2.5.0            ggrepel_0.9.1          cluster_2.1.3         
+ [91] fs_1.5.2               furrr_0.3.0            DataExplorer_0.8.2    
+ [94] magrittr_2.0.3         data.table_1.14.2      reprex_2.0.1          
+ [97] mvtnorm_1.1-3          googledrive_2.0.0      whisker_0.4           
+[100] pkgload_1.3.0          xlsxjars_0.6.1         hms_1.1.2             
+[103] patchwork_1.1.1        mime_0.12              evaluate_0.15         
+[106] xtable_1.8-4           broom.mixed_0.2.9.4    readxl_1.4.0          
+[109] IRanges_2.28.0         gridExtra_2.3          compiler_4.1.1        
+[112] KernSmooth_2.23-20     crayon_1.5.1           minqa_1.2.4           
+[115] htmltools_0.5.3        mgcv_1.8-40            later_1.3.0           
+[118] tzdb_0.3.0             RcppParallel_5.1.5     lubridate_1.8.0       
+[121] DBI_1.1.3              tweenr_1.0.2           dbplyr_2.2.1          
+[124] MASS_7.3-58            boot_1.3-28            sf_1.0-7              
+[127] wesanderson_0.3.6      Matrix_1.4-1           ade4_1.7-19           
+[130] car_3.1-0              brio_1.1.3             permute_0.9-7         
+[133] cli_3.4.1              parallel_4.1.1         igraph_1.3.5          
+[136] pkgconfig_2.0.3        getPass_0.2-2          xml2_1.3.3            
 [139] foreach_1.5.2          bslib_0.4.0            blme_1.0-5            
 [142] multtest_2.50.0        XVector_0.34.0         rvest_1.0.2           
-[145] callr_3.7.1            digest_0.6.29          vegan_2.6-2           
+[145] callr_3.7.1            digest_0.6.29          vegan_2.6-4           
 [148] Biostrings_2.62.0      rmarkdown_2.14         cellranger_1.1.0      
-[151] shiny_1.7.2            nloptr_2.0.3           lifecycle_1.0.2       
+[151] shiny_1.7.2            nloptr_2.0.3           lifecycle_1.0.3       
 [154] nlme_3.1-158           jsonlite_1.8.0         Rhdf5lib_1.16.0       
 [157] carData_3.0-5          desc_1.4.1             viridisLite_0.4.1     
 [160] fansi_1.0.3            pillar_1.8.1           lattice_0.20-45       

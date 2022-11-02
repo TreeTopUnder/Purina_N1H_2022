@@ -1,6 +1,6 @@
 ---
 site: workflowr::wflow_site
-title: "Exploratory Analysos"
+title: "Exploratory Analysis"
 author: "Marc Noguera-Julian, PhD. TreeTopUnder"
 date: "`r format(Sys.time(), '%Y-%m-%d')`"
 header-includes:
@@ -17,14 +17,16 @@ header-includes:
 mainfont: Helvetica
 output:
   workflowr::wflow_html:
-    toc: false
+    toc: true
 editor_options:
   chunk_output_type: console
 ---
 
-```{r setup, include=T}
+```{r setup, include=T, echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F}
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = here::here())
+set.seed(1234)
+bifido_animals<-c("RUDDY","NANI","LEO","BALOO")
 ```
 
 ## Quality & Throughput
@@ -39,7 +41,7 @@ max_throughput<-max(final_metadata$QFPassReads)
 median_throughput<-median(final_metadata$QFPassReads)
 ```
 
-A total of 46 samples have been analysed, one of them being a positive mock control. Median throughput is around `r median_throughput` reads/sample (max: `r max_throughput`, min:`r min_throughput`), after quality filters. This is adequate for metagenomic analysis. No differences are observed between timepoints(p=0.89), the main variable assocaited with the goals of this analysis. This coverage depth allows us to keep all samples in this analysis. 
+A total of 46 samples have been analysed, one of them being a positive mock control. Median throughput is around `r median_throughput` reads/sample (max: `r max_throughput`, min:`r min_throughput`), after quality filters. This is adequate for metagenomic analysis. No differences are observed between timepoints(p=0.89), the main variable associated with the goals of this analysis. This coverage depth allows us to keep all samples in this analysis.
 
 *Deliverables: ThroughputByGroup_treatment_wet_dry_neutered.pdf, SequenceThroughput.xls*
 
@@ -71,35 +73,69 @@ p0.treatment
 
 *Deliverables: GeneRichness_Estimation.xls, RarefactionCurve_timepoint.pdf*
 
-Since we are treating with shotgun data, that captures total bacterial DNA, in order to asses whether our sequencing effort is adequate to capture sample's microbiome diversity we'll assess it by plotting rarefaction curves of the number of detected genes vs the number of sequences obtained from the sample. Since, with these data we are detecting bacterial genes, the depth needed to fully saturate gene richnes is very high and corresponds to the number of different species * the number of genes in each of these species' genome. Thus, there is a trend to plateu we are not reaching it with the available depth of coverage. However, available depth is sufficient o describe taxonomical and functional composition of these samples. We can also see that there is no difference in the rarefaction cruve trend vs the timepoint of the sample, although richness values at similar depths seem to differ.
-
+Since we are treating with shotgun data, that captures total bacterial DNA, in order to asses whether our sequencing effort is adequate to capture sample's microbiome diversity we'll assess it by plotting rarefaction curves of the number of detected genes vs the number of sequences obtained from the sample. Since, with these data we are detecting bacterial genes, the depth needed to fully saturate gene richnes is very high and corresponds to the number of different species \* the number of genes in each of these species' genome. Thus, there is a trend to plateu we are not reaching it with the available depth of coverage. However, available depth is sufficient o describe taxonomical and functional composition of these samples. We can also see that there is no difference in the rarefaction cruve trend vs the timepoint of the sample, although richness values at similar depths seem to differ.
 
 ```{r Rarefaction curves chunk1, message=FALSE, warning=FALSE, warning=F, paged.print=FALSE,echo=F, results='hide',fig.keep='all',fig.cap="Rarefaction curve showing number of different IGC genes detected vs number of reads"}
 suppressMessages(require(microbiome))
 suppressMessages(require(vegan))
 suppressMessages(require(picante))
 suppressMessages(require(dplyr))
-### Load data and create MRE Object
-devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")
+
 my_datatable<-readRDS("data/raw/CatalogMapping/IGC/dataTable.rds")
 
-myMREObject<-readRDS("data/mreObject_feces.rds")
+# myMREObject<-readRDS("data/mreObject_feces.rds")
+ps_metaphlan<-readRDS("data/ps_metaphlan_feces.rds")
 xlsx::write.xlsx(my_datatable,file="output/Deliverables/Exploratory/AlphaDiversity/GeneRichness_Estimation.xls")
 
-# myMREObject %>% 
-#   metar::igc_rarefaction()
 
-
-p0<-my_datatable %>% 
-  dplyr::left_join(metar::get_meta(myMREObject) %>% 
+p0 <- my_datatable %>% 
+  dplyr::left_join(phyloseq::sample_data(ps_metaphlan) %>% data.frame() %>% 
                      dplyr::select(SampleID,Host_name,Timepoint)) %>% 
   ggplot(.,aes(x=ReadCountReal,y=GeneNumber,group=SampleID))+
         geom_line(aes(color=Timepoint))+
         geom_point(aes(color=Timepoint))+
         ggtitle("Rarefaction Curve - Gene Richness")+
+        theme_classic()+
         theme(legend.position="bottom")+
         theme(legend.title = element_text( size=6, 
                                       face="bold"))
+
+ggsave(plot = p0,filename = "output/Deliverables/Exploratory/AlphaDiversity/RarefactionCurve_timepoint.pdf")
+p0
+```
+
+We are also interested, in this case, in checking the mappability of our dataset onto IGC and, specifically, test whether there are differences in mappability between groups. We can see that approximately 60-70% of the filter-passing reads map onto IGC catalog, ensuring a good capture of metagenomic data for alpha-diversity assessment. 
+
+```{r Rarefaction curves chunk2, message=FALSE, warning=FALSE, warning=F, paged.print=FALSE,echo=F, results='hide',fig.keep='all',fig.cap="Rarefaction curve showing number of different IGC genes detected vs number of reads"}
+suppressMessages(require(microbiome))
+suppressMessages(require(vegan))
+suppressMessages(require(picante))
+suppressMessages(require(dplyr))
+
+my_datatable<-readRDS("data/raw/CatalogMapping/IGC/dataTable.rds")
+xlsx::write.xlsx(my_datatable,file = "output/Deliverables/Exploratory/GeneRichness.xls")
+ps_metaphlan<-readRDS("data/ps_metaphlan_feces.rds")
+
+my_datatable<-my_datatable %>% 
+  dplyr::select(SampleID,InitialReads,NumberMappedReads) %>% 
+  unique() %>% 
+  dplyr::mutate(mappability=(NumberMappedReads/InitialReads)*100)
+
+p0<-my_datatable %>% 
+  dplyr::left_join(sample_data(ps_metaphlan) %>% data.frame() %>% 
+                     dplyr::select(SampleID,Host_name,Timepoint)) %>% 
+  ggstatsplot::ggbetweenstats(Timepoint,mappability,bf.message=F,title="Mappability | IGC")
+
+p1<-my_datatable %>% 
+  dplyr::left_join(sample_data(ps_metaphlan) %>% data.frame() %>% 
+                     dplyr::select(SampleID,Host_name,Timepoint,Geographical_location)) %>% 
+  ggstatsplot::ggbetweenstats(Host_name,mappability,bf.message=F,title="Mappability | IGC")
+
+p2<-my_datatable %>% 
+  dplyr::left_join(sample_data(ps_metaphlan) %>% data.frame() %>% 
+                     dplyr::select(SampleID,Host_name,Timepoint,Geographical_location)) %>% 
+  ggstatsplot::ggbetweenstats(Geographical_location,mappability,bf.message=F,title="Mappability | IGC")
+  
 
 ggsave(plot = p0,filename = "output/Deliverables/Exploratory/AlphaDiversity/RarefactionCurve_timepoint.pdf")
 p0
@@ -113,63 +149,121 @@ p0
 
 In order to be able to use these data in future analysis we need to export it in several formats.
 
-### Total and Relative Abundances.
+### Total and Relative Taxonomic Abundances.
 
-*Deliverables: SpeciesAbundance_counts.xls, SpeciesAbundance_RA.xls, PhylumAbundance_counts.xls, PhylumAbundance_RA.xls y SpeciesData.biom*
+*Deliverables: SpeciesAbundance_counts.xls, SpeciesAbundance_RA.xls, GenusAbundance_counts.xls, GenusAbundance_RA.xls, PhylumAbundance_counts.xls, PhylumAbundance_RA.xls y SpeciesData.biom*
 
-Results are exported as excel table. This table contains estimated counts for each of the bacterial species that have been detected. In the same way, for each sample, animal id and other analysis related variables (*Timepoint*, *Sex*) are included to facilitate analysis by third parties. Four tables are created, both at the Species and the phylum level, and total counts and relative abundance. Taxonomic data is also exported in the BIOM standard. \[BIOM.(<https://biom-format.org/>)\] (<https://biom-format.org/>)
+Results are exported as excel table. This table contains estimated counts for each of the bacterial species that have been detected. In the same way, for each sample, animal id and other analysis related variables (*Timepoint*, *Sex*) are included to facilitate analysis by third parties. Six tables are created, both at the Species, Genus and the phylum level, and total counts and relative abundance. Taxonomic data is also exported in the [BIOM](https://biom-format.org/) standard.
 
-```{r Obtencion y exportacion de resultados, echo=F, warning=F,results='hide',fig.keep='all'}
+```{r Obtencion y exportacion de resultados chunk1, echo=F, warning=F,results='hide',fig.keep='all'}
 suppressWarnings(require(dplyr))
 ### Use Metaphlan3 counts
-### Load data and create MRE Object
-devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")
-myMREObject<-readRDS("data/processed/mreObject.rds")
-x.1.0 <- myMREObject@taxa@metaphlan@phyloseq_sec
+
+ps_metaphlan<-readRDS("data/processed/ps_metaphlan_sec.rds")
+x.1.0 <- ps_metaphlan
 x.1.0.species<-x.1.0
+x.1.0.genus<-phyloseq::tax_glom(x.1.0,taxrank="Genus",NArm = F)
 x.1.0.phylum<-phyloseq::tax_glom(x.1.0,taxrank="Phylum",NArm = F)
 x.1.0.species.ra<-phyloseq::transform_sample_counts(x.1.0.species, function(x) ((x/sum(x))))
+x.1.0.genus.ra<-phyloseq::transform_sample_counts(x.1.0.genus, function(x) ((x/sum(x))))
 x.1.0.phylum.ra<-phyloseq::transform_sample_counts(x.1.0.phylum, function(x) ((x/sum(x))))
 
 phyloseq::psmelt(x.1.0.species) %>%
   # select(SampleID,Phylum,Class,Order,Family,species,Especie,ID,,Abundance)%>%
-  xlsx::write.xlsx(file="output/Deliverables/Exploratory/SpeciesAbundance_counts.xls")
+  xlsx::write.xlsx(file="output/Deliverables/Exploratory/DataExport/SpeciesAbundance_counts.xls")
 phyloseq::psmelt(x.1.0.species.ra) %>%
   # select(SampleID,Phylum,Class,Order,Family,species,Especie,Sexo,Edad,Edad_2020,Edad_2021,Region,Code,Year,Abundance)%>%
   dplyr::rename(`Relative Abundance`=Abundance)%>%
-  xlsx::write.xlsx(file="output/Deliverables/Exploratory/SpeciesAbundance_RA.xls")
+  xlsx::write.xlsx(file="output/Deliverables/Exploratory/DataExport/SpeciesAbundance_RA.xls")
+
+phyloseq::psmelt(x.1.0.genus) %>%
+  # select(SampleID,Phylum,Class,Order,Family,species,Especie,ID,,Abundance)%>%
+  xlsx::write.xlsx(file="output/Deliverables/Exploratory/DataExport/GenusAbundance_counts.xls")
+phyloseq::psmelt(x.1.0.genus.ra) %>%
+  # select(SampleID,Phylum,Class,Order,Family,species,Especie,Sexo,Edad,Edad_2020,Edad_2021,Region,Code,Year,Abundance)%>%
+  dplyr::rename(`Relative Abundance`=Abundance)%>%
+  xlsx::write.xlsx(file="output/Deliverables/Exploratory/DataExport/GenusAbundance_RA.xls")
+
 
 phyloseq::psmelt(x.1.0.phylum) %>%
   # select(SampleID,Phylum,Especie,Sexo,Edad,Edad_2020,Edad_2021,Region,Code,Year,Abundance)%>%
-  xlsx::write.xlsx(file="output/Deliverables/Exploratory/PhylumAbundance_counts.xls")
+  xlsx::write.xlsx(file="output/Deliverables/Exploratory/DataExport/PhylumAbundance_counts.xls")
 phyloseq::psmelt(x.1.0.phylum.ra) %>%
   # select(SampleID,Phylum,Especie,Sexo,Edad,Edad_2020,Edad_2021,Region,Code,Year,Abundance)%>%
   dplyr::rename(`Relative Abundance`=Abundance)%>%
-  xlsx::write.xlsx(file="output/Deliverables/Exploratory/PhylumAbundance_RA.xls")
+  xlsx::write.xlsx(file="output/Deliverables/Exploratory/DataExport/PhylumAbundance_RA.xls")
 
-biomformat::write_biom(biomformat::make_biom(phyloseq::otu_table(x.1.0),phyloseq::sample_data(x.1.0),phyloseq::tax_table(x.1.0)),biom_file="output/Deliverables/Exploratory/ps_metaphlan3.biom")
+biomformat::write_biom(biomformat::make_biom(phyloseq::otu_table(x.1.0),phyloseq::sample_data(x.1.0),phyloseq::tax_table(x.1.0)),biom_file="output/Deliverables/Exploratory/DataExport/ps_metaphlan3.biom")
 ```
 
+### Total and Relative Gene Function.
+
+*Deliverables: GeneFunction_KEGG_Abundance.xls, GeneFunction_MetaCyc_Abundance.xls*
+
+Results are exported as excel table. This table contains estimated abundance for each of gene family (KEGG orthologs) that has been detected. In the same way, for each sample, animal id and other analysis related variables (*Timepoint*, *Sex*) are included to facilitate analysis by third parties.
+
+```{r Obtencion y exportacion de resultados chunk 2, echo=F, warning=F,results='hide',fig.keep='all'}
+suppressWarnings(require(dplyr))
+
+### Prepare input_data, 
+input_data<-read.delim("data/raw/FunctionalAnnotation/HUMANN3/All_pathabun_relab.tsv")
+colnames(input_data)[1]<-"Pathway"
+colnames(input_data)<-gsub("_Abundance","",colnames(input_data))
+colnames(input_data)<-gsub("X","",colnames(input_data))
+input_data<-input_data %>% dplyr::filter(! grepl("s__",Pathway))
+  # dplyr::filter(! grepl("UNINTEGRATED",Pathway)) %>% 
+  # dplyr::filter(! grepl("UNMAPPED",Pathway))
+rownames(input_data)<-input_data$Pathway
+input_data$Pathway<-NULL
+
+input_data %>% 
+  xlsx::write.xlsx(file="output/Deliverables/Exploratory/DataExport/GeneFunction_MetaCyc_Abundance.xls")
+
+### Prepare input_data, GENE Families
+input_data<-read.delim("data/raw/FunctionalAnnotation/HUMANN3/All_genefam_cpm_kegg.tsv")
+colnames(input_data)[1]<-"Gene.Family"
+colnames(input_data)<-gsub("_Abundance.RPKs","",colnames(input_data))
+colnames(input_data)<-gsub("X","",colnames(input_data))
+input_data<-input_data %>% dplyr::filter(! grepl("s__",Gene.Family)) %>% 
+  # dplyr::filter(! grepl("UNINTEGRATED",Gene.Family)) %>% 
+  # dplyr::filter(! grepl("UNMAPPED",Gene.Family)) %>% 
+  dplyr::filter(! grepl("unclassified",Gene.Family))
+rownames(input_data)<-input_data$Gene.Family
+input_data$Gene.Family<-NULL
+input_data %>% 
+  xlsx::write.xlsx(file="output/Deliverables/Exploratory/DataExport/GeneFunction_KEGG_Abundance.xls")
+```
+
+### Alpha-Diversity
+
+We need also to export alpha diversity parameters calculated on bacterial composition data(such as Shannon and Simpson). Note that these values are different, numerically and conceptually, to those calculated from gene richness. 
+
+```{r Obtencion y exportacion de resultados chunk 3, echo=F, warning=F,results='hide',fig.keep='all'}
+suppressWarnings(require(dplyr))
+### Use Metaphlan3 counts
+
+ps_metaphlan<-readRDS("data/processed/ps_metaphlan_sec.rds")
+ps_metaphlan %>% microbiome::alpha() %>% 
+  xlsx::write.xlsx(file="output/Deliverables/Exploratory/DataExport/AlphaDiversity.xls")
+```
 
 ## Clustering
 
-### Abundancias relativas de géneros bacterianos por grupos.
+### Stacked Barplot Representation.
 
-Para representar gráficamente la composición del microbioma correspondiente a las muestras, se eliminan los géneros bacterianos que no están presente en al menos dos muestras y se representan solamente los 40 géneros mas abundantes en el dataset completo. de los taxones se representan las mismas en gráficos tipo *stacked barplots*.
+We are interested in visually representing the composition of the microbiome using stacked barplots. Each bar represents a sample and in the y-axis the relative abundance of each detected bacterial species is represented. Only the 40 more abundant species are represented, for the sake of readability.
 
-*Deliverables: StackedBarplots_Species.pdf and DendrogramClustering.pdf*
+*Deliverables: Exploratory/StackedBarplots_Species.pdf, Exploratory/StackedBarplots_Genus.pdf and DendrogramClustering.pdf*
 
-```{r Graphical representation of species abundance, echo=F,message=FALSE, results='hide',fig.keep='all',warning=FALSE, paged.print=FALSE, fig.cap="Relative abudnance for the 30 most abundance bacterial species, segregated by Timepoint and Host_name."}
+```{r Graphical representation of species abundance, echo=F,message=FALSE, results='hide',fig.keep='all',warning=FALSE, paged.print=FALSE, fig.cap="Relative abudnance for the 30 most abundance bacterial species, segregated by  Host_name."}
 suppressWarnings(require(phyloseq))
 suppressWarnings(require(phylosmith))
 suppressWarnings(require(dplyr))
 suppressWarnings(require(patchwork))
 suppressWarnings(require(ggplot2))
 suppressWarnings(require(ggthemes))
-### Load data and create MRE Object
-devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")
-myMREObject<-readRDS("data/processed/mreObject.rds")
-x.2.0 <- myMREObject@taxa@metaphlan@phyloseq_sec
+
+x.2.0 <- readRDS("data/processed/ps_metaphlan_sec.rds")
 x.2.0.species<-x.2.0
 wh0=genefilter_sample(x.2.0.species,filterfun_sample(function(x) x>1), A=2) # Remove singletons
 x.2.0.species<-prune_taxa(wh0,x.2.0.species)
@@ -197,27 +291,43 @@ colnames(meanBySpecies)<-c("Species","meanAbundance")
 meanBySpecies<-meanBySpecies[with(meanBySpecies, order(-meanAbundance, Species)), ]
 SpeciesToInclude<-meanBySpecies[1:30,"Species"]
 
-p1<-phylosmith::phylogeny_profile(phyloseq::subset_taxa(x.2.0.species,Species%in% SpeciesToInclude),classification="Species",relative_abundance=F,treatment="Timepoint",sample_labels = NULL,)+
- theme( panel.grid = element_blank(),axis.title= element_blank(), axis.text= element_blank())+
-  theme(axis.title.x=element_blank(),axis.text.x=element_blank(),axis.ticks.x=element_blank())+
-  theme(legend.position = "none")+ theme(plot.title = element_text(size=8))
-
+p1<-phylosmith::phylogeny_profile(phyloseq::subset_taxa(x.2.0.species,Species%in% SpeciesToInclude),
+                                  classification="Species",relative_abundance=F,treatment="Timepoint",sample_labels = NULL,)+
+    guides(fill=guide_legend(nrow=8,byrow=TRUE))+
+    theme_classic(base_size=6)+
+    theme(legend.position="bottom",
+          legend.direction = "horizontal",
+          legend.spacing.x = unit(0.1, 'cm'),
+          legend.spacing.y = unit(0.0,"cm"))+ 
+    theme(axis.text.x = element_text(angle = 70,hjust=1))
 
 ### Barplot for animals with longitufinal follow-up
-aux_DF<-table(get_meta(myMREObject) %>% 
+aux_DF<-table(phyloseq::sample_data(x.2.0.species) %>% data.frame() %>% 
                dplyr::select(Host_name,Timepoint)) %>% 
   as.data.frame() %>% 
   dplyr::group_by(Host_name) %>% 
   dplyr::summarise(counts=sum(Freq)) %>% 
   dplyr::filter(counts==4)
 
-p2<-phylosmith::phylogeny_profile(phyloseq::subset_taxa(x.2.0.species,Species%in% SpeciesToInclude) %>% phyloseq::subset_samples(Host_name %in% aux_DF$Host_name),classification="Species",relative_abundance=F,treatment="Host_name",sample_labels = NULL,)+
- theme( panel.grid = element_blank(),axis.title= element_blank(), axis.text= element_blank())+
-  theme(axis.title.x=element_blank(),axis.text.x=element_blank(),axis.ticks.x=element_blank())+
-        theme(legend.position="bottom")+
-        theme(legend.title = element_text( size=6, 
-                                      face="bold"))+
-        guides(fill=guide_legend(nrow=6,byrow=TRUE))
+### Order samples by timepoint
+sampleData<-data.frame(phyloseq::sample_data(x.2.0)) %>% 
+  dplyr::mutate(SampleID=forcats::fct_reorder(SampleID,Temporal_point)) 
+rownames(sampleData)<-sampleData$SampleID
+sample_data(x.2.0.species)<-sampleData[levels(sampleData$SampleID),]
+otu_df<-phyloseq::otu_table(x.2.0.species) %>% data.frame()
+colnames(otu_df)<-gsub("X","",colnames(otu_df))
+otu_table(x.2.0.species)<-phyloseq::otu_table(otu_df[,levels(sampleData$SampleID)],taxa_are_rows = T)
+
+p2<-phylosmith::phylogeny_profile(phyloseq::subset_taxa(x.2.0.species,Species%in% SpeciesToInclude) %>% 
+                                    phyloseq::subset_samples(Host_name %in% aux_DF$Host_name),
+                          classification="Species",relative_abundance=F,treatment="Host_name",)+
+     guides(fill=guide_legend(nrow=8,byrow=TRUE))+
+     theme_classic(base_size=7)+
+     theme(legend.position="bottom",
+          legend.direction = "horizontal",
+          legend.spacing.x = unit(0.1, 'cm'),
+          legend.spacing.y = unit(0.0,"cm"))+ 
+    theme(axis.text.x = element_text(angle = 70,hjust=1))
 
 
 p2
@@ -227,9 +337,88 @@ ggsave(pT,filename="output/Deliverables/Exploratory/StackedBarplots_Species.pdf"
 
 ```
 
+
+```{r Graphical representation of genus abundance, echo=F,message=FALSE, results='hide',fig.keep='all',warning=FALSE, paged.print=FALSE, fig.cap="Relative abudnance for the 30 most abundance bacterial genus, segregated by Timepoint and Host_name."}
+suppressWarnings(require(phyloseq))
+suppressWarnings(require(phylosmith))
+suppressWarnings(require(dplyr))
+suppressWarnings(require(patchwork))
+suppressWarnings(require(ggplot2))
+suppressWarnings(require(ggthemes))
+
+x.2.0 <-readRDS("data/processed/ps_metaphlan_sec.rds")
+x.2.0.genus<-tax_glom(x.2.0,taxrank="Genus",NArm=F)
+wh0=genefilter_sample(x.2.0.genus,filterfun_sample(function(x) x>1), A=2) # Remove singletons
+x.2.0.genus<-prune_taxa(wh0,x.2.0.genus)
+x.2.0.genus = transform_sample_counts(x.2.0.genus, function(x) ((x/sum(x))))
+
+ps.melt.x.2.0.genus<-x.2.0.genus %>%
+  phyloseq::psmelt()
+
+genus_for_order<-ps.melt.x.2.0.genus %>% 
+  dplyr::select(Genus,Abundance) %>% 
+  dplyr::group_by(Genus) %>% 
+  summarise_at(vars(Abundance),list(mean_abundance=mean)) %>% 
+  arrange(.,desc(mean_abundance)) %>% 
+  dplyr::slice(1) %>% 
+  select(Genus) 
+myOrder<-reorder(ps.melt.x.2.0.genus[ps.melt.x.2.0.genus$Genus==genus_for_order$Genus,"SampleID"],ps.melt.x.2.0.genus[ps.melt.x.2.0.genus$Genus==genus_for_order$Genus,"Abundance"])
+
+sampleData<-data.frame(phyloseq::sample_data(x.2.0))
+sampleData$SampleID<-factor(sampleData$SampleID,levels=levels(myOrder),ordered = T)
+rownames(sampleData)<-sampleData$SampleID
+sample_data(x.2.0.genus)<-sampleData
+### Keep the most abundant Genus
+meanByGenus<-aggregate(ps.melt.x.2.0.genus$Abundance,list(ps.melt.x.2.0.genus$Genus),mean)
+colnames(meanByGenus)<-c("Genus","meanAbundance")
+meanByGenus<-meanByGenus[with(meanByGenus, order(-meanAbundance, Genus)), ]
+GenusToInclude<-meanByGenus[1:30,"Genus"]
+
+p1<-phylosmith::phylogeny_profile(phyloseq::subset_taxa(x.2.0.genus,Genus%in% GenusToInclude),classification="Genus", relative_abundance=F, treatment="Timepoint")+
+ theme( panel.grid = element_blank(),axis.title= element_blank(), axis.text= element_blank())+
+  theme(axis.title.x=element_blank(),axis.text.x=element_blank(),axis.ticks.x=element_blank())+
+  theme(legend.position = "none")+ theme(plot.title = element_text(size=6))
+
+
+### Barplot for animals with longitufinal follow-up
+aux_DF<-table(phyloseq::sample_data(x.2.0) %>% data.frame() %>% 
+               dplyr::select(Host_name,Timepoint)) %>% 
+  as.data.frame() %>% 
+  dplyr::group_by(Host_name) %>% 
+  dplyr::summarise(counts=sum(Freq)) %>% 
+  dplyr::filter(counts==4)
+### Order samples by timepoint
+sampleData<-data.frame(phyloseq::sample_data(x.2.0.genus)) %>% 
+  dplyr::mutate(SampleID=forcats::fct_reorder(SampleID,Temporal_point)) 
+rownames(sampleData)<-sampleData$SampleID
+sample_data(x.2.0.genus)<-sampleData[levels(sampleData$SampleID),]
+otu_df<-phyloseq::otu_table(x.2.0.genus) %>% data.frame()
+colnames(otu_df)<-gsub("X","",colnames(otu_df))
+otu_table(x.2.0.genus)<-phyloseq::otu_table(otu_df[,levels(sampleData$SampleID)],taxa_are_rows = T)
+
+p2<-phylosmith::phylogeny_profile(phyloseq::subset_taxa(x.2.0.genus,Genus%in% GenusToInclude) %>% phyloseq::subset_samples(Host_name %in% aux_DF$Host_name), 
+                                  classification="Genus",
+                                  relative_abundance=F,
+                                  treatment="Host_name" )+
+  theme( panel.grid = element_blank(),axis.title= element_blank(), axis.text= element_blank())+
+  theme(axis.title.x=element_blank(),axis.text.x=element_blank(),axis.ticks.x=element_blank())+
+        theme(legend.position="bottom")+
+        theme(legend.title = element_text( size=6, 
+                                      face="bold"))+
+        guides(fill=guide_legend(nrow=6,byrow=TRUE))+ 
+    theme(axis.text.x = element_text(angle = 70,hjust=1))
+
+
+p2
+pT <-p2/p1
+ggsave(pT,filename="output/Deliverables/Exploratory/StackedBarplots_Genus.pdf",width=15,height=20)
+
+
+```
+
 ### Dendrograms & *Heatmap*
 
-Tsxonomical relative abundance can also be used to calculate similarity between samples. We will use Bray-Curtis distance method. These distance can, in turn, be used to cluster samples that are more similar among them from those that are less similar. For that, we will use hierarchical bottom-up Ward.D2 hierarchical clustering. In this way, in the resulting dendrogram, the similarity between any two samples is inversely proportional to the distance that has to be covered within the dendrogram, between these two samples. 
+Tsxonomical relative abundance can also be used to calculate similarity between samples. We will use Bray-Curtis distance method. These distance can, in turn, be used to cluster samples that are more similar among them from those that are less similar. For that, we will use hierarchical bottom-up Ward.D2 hierarchical clustering. In this way, in the resulting dendrogram, the similarity between any two samples is inversely proportional to the distance that has to be covered within the dendrogram, between these two samples.
 
 *Deliverables: BrayCurtis_Distances.xls and ExploratoryHeatmap_allSamples.pdf*
 
@@ -240,11 +429,8 @@ suppressPackageStartupMessages(require(ComplexHeatmap))
 require(phyloseq)
 suppressPackageStartupMessages(require(RColorBrewer))
 suppressPackageStartupMessages(require(dplyr))
-### Load data and create MRE Object
-devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")
-### Create Dendrograms based on WUnifrac Distance
-myMREObject<-readRDS("data/processed/mreObject.rds")
-x.2.0 <- myMREObject@taxa@metaphlan@phyloseq_sec
+
+x.2.0 <- readRDS("data/processed/ps_metaphlan_sec.rds")
 x.2.0 = transform_sample_counts(x.2.0, function(x) ((x/sum(x))))
 ### Store WUnifrac distance from low-level ASV
 myDistance<-phyloseq::distance(x.2.0,"bray")
@@ -353,25 +539,23 @@ dev.off()
 
 ### Global Beta-Diversity Analysis (Ordination)
 
-*Deliverables: NMDS_StressPlot.pdf, Adonis.xls y Ordination_AllSamples.pdf*
 
-In order to be able to detect structural changes in the overall composition of the gut microbiome of these samples, and its relationship with primary or secondary variables, we will perform a NMDS ordination analysis (*Non-metric dimensional scaling*). Purpose of this analysis is to be able to visualize in a 2-dimensional space, the existing variability in microbiome composition. In this way, each point in the plot represents a single sample microbiome composition, while its position in relation with the position of other samples is related to similarity between each pair of samples. Two points at a distance d1, that are far away from other two points at a smaller distance d2, will have more different microbiome composition if d1 > d2 or more similar if d1 < d2. Primary or secondary variables values are projected post-hoc onto this ordination space to be able to visually inspect their association with overall microbiome structure. Ordination analysis is based on NMDS algorithm, which iteratively tries to reduce the difference between projected distances and real distances. Good convergence is reflected in the so-called *Stress Plot*
+In order to be able to detect structural changes in the overall composition of the gut microbiome of these samples, and its relationship with primary or secondary variables, we will perform a NMDS ordination analysis (*Non-metric dimensional scaling*). Purpose of this analysis is to be able to visualize in a 2-dimensional space, the existing variability in microbiome composition. In this way, each point in the plot represents a single sample microbiome composition, while its position in relation with the position of other samples is related to similarity between each pair of samples. Two points at a distance d1, that are far away from other two points at a smaller distance d2, will have more different microbiome composition if d1 \> d2 or more similar if d1 \< d2. Primary or secondary variables values are projected post-hoc onto this ordination space to be able to visually inspect their association with overall microbiome structure. Ordination analysis is based on NMDS algorithm, which iteratively tries to reduce the difference between projected distances and real distances. Good convergence is reflected in the so-called *Stress Plot*
 
 In the same way, we evaluate the effect of each of the considered variable on microbiome composition using a permutational anova or PERMANOVA. This test provides a statistic value that determines if this effect is significant (*Pr(>F)*) and a numerical 0-1-ranged value that estimates the magnitude of thi association (*R2*). The test is performed for each variable separately and, finally, a multivariate test is performed on significant co-variates.
 
-Results shown a non-significant effect of the timepoint variable
+Results shown a non-significant effect of the timepoint variable. On the other hand, dog id is significantly linked to 52% of the microbiome composition (p<0.001).
 
-En el análisis multivariado, se observa una influencia del factor *Host_name* (R2=0.52, p=.001)  en la composición del microbioma, para el que según el test estadístico PERMANOVA estas dos variables explicarían conjuntamente un efecto del 17% de la composición de las muestras analizadas, apuntando a un efecto significativo de la intervención dietética en el microbioma.
+*Deliverables: NMDS_StressPlot.pdf, Adonis.xls y Ordination_AllSamples.pdf*
+
 
 ```{r Ordination Analisis, echo=FALSE, results='hide',fig.keep='all',fig.cap="Análisis de ordenacion NMDS/WUnifrac. En color se representa el punto temporal de la muestra.", message=FALSE, warning=FALSE, paged.print=FALSE,fig.keep='all'}
 suppressWarnings(require(phyloseq))
 suppressWarnings(require(phylosmith))
 suppressWarnings(require(patchwork))
 suppressWarnings(require(vegan))
-### Load data and create MRE Object
-devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")
-myMREObject<-readRDS("data/mreObject_feces.rds")
-x.2.0<-myMREObject@taxa@metaphlan@phyloseq_sec
+
+x.2.0<-readRDS("data/ps_metaphlan_feces.rds")
 set.seed(1234)
 x.2.0.species<-x.2.0
 x.2.0.species<-transform_sample_counts(x.2.0.species, function(x) ((x/sum(x))))
@@ -495,165 +679,37 @@ p4<-p.4.0.samples  + geom_point(aes(color=LeishVet_Stage_strat)) +ggtitle("Uncon
 
  p0
 pT<-p0 / p1 | p2 / p4
-
-
 ggsave(pT,filename = "output/Deliverables/Exploratory/BetaDiversity/Ordination_AllSamples.pdf",width=15,height=15)
-
-```
-
-```{r ordination at BL, echo=FALSE, results='hide',fig.keep='all',fig.cap="Análisis de ordenacion NMDS/WUnifrac para muestras basales. En color se representa la especie del individuo.", message=FALSE, warning=FALSE, paged.print=FALSE,results='hide',fig.keep='all', eval=F}
-suppressWarnings(require(phyloseq))
-suppressWarnings(require(phylosmith))
-suppressWarnings(require(patchwork))
-suppressWarnings(require(vegan))
-x.2.0<-readRDS("data/ps_silva.rds")
-
-set.seed(1234)
-x.2.0.species<-tax_glom(x.2.0,taxrank="species",NArm = F) %>% 
-  microbiome::transform(.,transform="compositional") %>% 
-  phyloseq::subset_samples(.,time_point=="t0")
-
-sampleData<-data.frame(sample_data(x.2.0.species))
-rownames(sampleData)<-sampleData$SampleID
-sample_data(x.2.0.species)<-sampleData
-(myOrd<-ordinate(x.2.0.species,method="NMDS",distance="wunifrac"))
-
-pdf("output/Deliverables/NMDS_StressPlot_BL.pdf")
-vegan::stressplot(myOrd)
-dev.off()
-
-
-#### PERMUTATIONAL ANOVA (adonis()) on WUnifrac distance (BL Samples)
-x.6.0.explanatory<-sampleData[,c("treatment","dry_wet","neutered","dog_name")]
-x.6.0.response<-phyloseq::distance((x.2.0.species),method="wunifrac")
-myAdonis<-vegan::adonis2(x.6.0.response~treatment,data=x.6.0.explanatory)
-file.remove("output/Deliverables/Exploratory/BetaDiversity/Adonis_BL.xls")
-xlsx::write.xlsx(file = "output/Deliverables/Exploratory/BetaDiversity/Adonis_BL.xls",sheetName = "treatment",vegan::adonis2(x.6.0.response~treatment,data=x.6.0.explanatory))
-### Perform ANOVA for non-NA in treatment
-xlsx::write.xlsx(file = "output/Deliverables/Exploratory/BetaDiversity/Adonis_BL.xls",sheetName = "dry_wet",vegan::adonis2(x.6.0.response~dry_wet,data=x.6.0.explanatory),append=T)
-xlsx::write.xlsx(file = "output/Deliverables/Exploratory/BetaDiversity/Adonis_BL.xls",sheetName = "neutered",vegan::adonis2(x.6.0.response~neutered,data=x.6.0.explanatory),append=T)
-xlsx::write.xlsx(file = "output/Deliverables/AExploratory/BetaDiversity/donis_BL.xls",sheetName = "dog_name",vegan::adonis2(x.6.0.response~dog_name,data=x.6.0.explanatory),append=T)
-### These variables are not significant at BL.
-
-p.4.0.samples=plot_ordination(x.2.0.species,myOrd)
-
-### By treatment
-require(ggplot2)
-require(ggforce)
-p0<-p.4.0.samples  + geom_point(aes(color=treatment)) +ggtitle("Unconstrained NMDS(WUnifrac) by treatment")+
-  theme(panel.border=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line=element_line(colour="black"),axis.text.x=element_text(size=16),axis.text.y=element_text(size=16))+
-  theme(axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))+
-  theme(legend.text=element_text(size=12,face="italic"),legend.title=element_text(size=12))+
-  theme(plot.title=element_text(lineheight=1,face="bold",size=15))+stat_ellipse(alpha=1,mapping=aes(color=treatment))+
-  theme_classic() + theme(axis.line.x = element_line(colour = "black", 
-                                    size = 1, linetype = "solid"), axis.line.y = element_line(colour = "black", 
-                                    size = 1, linetype = "solid"), axis.text.x = element_text(size = 10), 
-                                    axis.text.y = element_text(size = 10),
-                                    axis.title.x = element_text(size = 10, 
-                                        face = "bold"), axis.title.y = element_text(size = 10, 
-                                        face = "bold"), legend.title = element_text(size = 10, 
-                                        face = "bold"), legend.text = element_text(size = 8), 
-                                        legend.spacing.x = unit(0.005, "npc"), 
-                                        legend.key.size = unit(4,"mm"), legend.background = element_rect(fill = (alpha = 0))) + 
-        labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2") + 
-        guides(fill = guide_legend(override.aes = list(size = 4)))
-
-p1<-p.4.0.samples  + geom_point(aes(color=dry_wet)) +ggtitle("Unconstrained NMDS(WUnifrac) by dry_wet")+
-  theme(panel.border=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line=element_line(colour="black"),axis.text.x=element_text(size=16),axis.text.y=element_text(size=16))+
-  theme(axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))+
-  theme(legend.text=element_text(size=12,face="italic"),legend.title=element_text(size=12))+
-  theme(plot.title=element_text(lineheight=1,face="bold",size=15))+stat_ellipse(alpha=1,aes(color=dry_wet))+
-  theme_classic() + theme(axis.line.x = element_line(colour = "black", 
-                                    size = 1, linetype = "solid"), axis.line.y = element_line(colour = "black", 
-                                    size = 1, linetype = "solid"), axis.text.x = element_text(size = 10), 
-                                    axis.text.y = element_text(size = 10), axis.title.x = element_text(size = 10, 
-                                    face = "bold"), axis.title.y = element_text(size = 10, 
-                                    face = "bold"), legend.title = element_text(size = 10, 
-                                    face = "bold"), legend.text = element_text(size = 8), 
-                                     legend.spacing.x = unit(0.005, "npc"), legend.key.size = unit(4,"mm"), legend.background = element_rect(fill = (alpha = 0))) + 
-        labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2") + 
-        guides(fill = guide_legend(override.aes = list(size = 4)))
-
-p2<-p.4.0.samples  + geom_point(aes(color=neutered)) +ggtitle("Unconstrained NMDS(WUnifrac) by neutered")+
-  theme(panel.border=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line=element_line(colour="black"),axis.text.x=element_text(size=16),axis.text.y=element_text(size=16))+
-  theme(axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))+
-  theme(legend.text=element_text(size=12,face="italic"),legend.title=element_text(size=12))+
-  theme(plot.title=element_text(lineheight=1,face="bold",size=15))+stat_ellipse(alpha=1,aes(color=neutered))+
-  theme_classic() + theme(axis.line.x = element_line(colour = "black", 
-                                    size = 1, linetype = "solid"), axis.line.y = element_line(colour = "black", 
-                                    size = 1, linetype = "solid"), axis.text.x = element_text(size = 10), 
-                                    axis.text.y = element_text(size = 10), axis.title.x = element_text(size = 10, 
-                                    face = "bold"), axis.title.y = element_text(size = 10, 
-                                    face = "bold"), legend.title = element_text(size = 10, 
-                                    face = "bold"), legend.text = element_text(size = 8), 
-                                     legend.spacing.x = unit(0.005, "npc"), legend.key.size = unit(4,"mm"), legend.background = element_rect(fill = (alpha = 0))) + 
-        labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2") + 
-        guides(fill = guide_legend(override.aes = list(size = 4)))
-
-p3<-p.4.0.samples  + geom_point(aes(color=dog_name)) +ggtitle("Unconstrained NMDS(WUnifrac) by dog_name")+
-  theme(panel.border=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line=element_line(colour="black"),axis.text.x=element_text(size=16),axis.text.y=element_text(size=16))+
-  theme(axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))+
-  theme(legend.text=element_text(size=12,face="italic"),legend.title=element_text(size=12))+
-  theme(plot.title=element_text(lineheight=1,face="bold",size=15))+stat_ellipse(alpha=1,aes(color=dog_name))+
-  theme_classic() + theme(axis.line.x = element_line(colour = "black", 
-                                    size = 1, linetype = "solid"), axis.line.y = element_line(colour = "black", 
-                                    size = 1, linetype = "solid"), axis.text.x = element_text(size = 10), 
-                                    axis.text.y = element_text(size = 10), axis.title.x = element_text(size = 10, 
-                                    face = "bold"), axis.title.y = element_text(size = 10, 
-                                    face = "bold"), legend.title = element_text(size = 10, 
-                                    face = "bold"), legend.text = element_text(size = 8), 
-                                     legend.spacing.x = unit(0.005, "npc"), legend.key.size = unit(4,"mm"), legend.background = element_rect(fill = (alpha = 0))) + 
-        labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2") + 
-        guides(fill = guide_legend(override.aes = list(size = 4)))
-
-p4<-p.4.0.samples  + geom_point(aes(color=time_point)) +ggtitle("Unconstrained NMDS(WUnifrac) by time_point")+
-  theme(panel.border=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line=element_line(colour="black"),axis.text.x=element_text(size=16),axis.text.y=element_text(size=16))+
-  theme(axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))+
-  theme(legend.text=element_text(size=12,face="italic"),legend.title=element_text(size=12))+
-  theme(plot.title=element_text(lineheight=1,face="bold",size=15))+stat_ellipse(alpha=1,aes(color=time_point))+
-  theme_classic() + theme(axis.line.x = element_line(colour = "black", 
-                                    size = 1, linetype = "solid"), axis.line.y = element_line(colour = "black", 
-                                    size = 1, linetype = "solid"), axis.text.x = element_text(size = 10), 
-                                    axis.text.y = element_text(size = 10), axis.title.x = element_text(size = 10, 
-                                    face = "bold"), axis.title.y = element_text(size = 10, 
-                                    face = "bold"), legend.title = element_text(size = 10, 
-                                    face = "bold"), legend.text = element_text(size = 8), 
-                                     legend.spacing.x = unit(0.005, "npc"), legend.key.size = unit(4,"mm"), legend.background = element_rect(fill = (alpha = 0))) + 
-        labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2") + 
-        guides(fill = guide_legend(override.aes = list(size = 4)))
-
-
-pT<-p0 / p1 | p2 / p4
-ggsave(pT,filename = "output/Deliverables/Exploratory/BetaDiversity/Ordination_BLSamples.pdf",width=12,height=12)
 ```
 
 ## Probiotic Detection
 
-The aim of this subanalysis is to try to detect the bacterial species in the probiotic that is administered to the dogs. The probiotic is FortiFlora, by Purina. It contains *Enterococcus faecium SF68*.
+### All Samples
 
-*Deliverables: Spaghetti Plot showing evolution*
+The aim of this subanalysis is to try to detect the bacterial species in the probiotic that is administered to the dogs. The probiotic contains *Enterococcus faecium SF68*.
 
-Results show that the probiotic straing is found in group A samples (product *848590-FR80-036-003*) after the administration of FortiFlora. The same species is foudn in a single sample at baseline in group B, although origin of these species can not be from FortiFlora since it had not beed administered at this point.
+*Deliverables: Spaghetti_Efaecium_BLexcluded.pdf Spaghetti_Efaecium.pdf *
 
-Nevertheless, abundance of Fortiflora species in group A M4 and M6 samples is very low, and only detectable in 2/5 samples in this group. We'll work, with the assumption that group "A"(848590-FR80-036-003) is the one receiving FortiFlora. This will need to be unblinded at some point downstream.
+Results show that the probiotic straing is found in group A samples (product *848590-FR80-036-003*) after the administration of the probiotic The same species is foudn in a single sample at baseline in group B, although origin of these species can not be from the probiotic since it had not beed administered at this point.
 
-```{r Probiotic detection}
+Nevertheless, abundance of probiotic species in group A M4 and M6 samples is very low, and only detectable in 2/5 samples in this group. We'll work, with the assumption that group "A"(848590-FR80-036-003) is the one receiving the probiotic. This will need to be unblinded at some point downstream.
+
+```{r Probiotic detection, echo=FALSE, results='hide',fig.keep='all', message=FALSE, warning=FALSE, paged.print=FALSE, eval=T}
 suppressMessages(require(dplyr))
 suppressMessages(require(phyloseq))
 suppressMessages(require(lefser))
 suppressMessages(require(ggplot2))
 suppressMessages(require(patchwork))
-
 set.seed(1234)
 
 ### Species Level
 species_to_detect<-"Enterococcus_faecium"
 product_codes<-c("848589-FR80-036-003","848590-FR80-036-003")
-devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")
-myMREObject<-readRDS("data/processed/mreObject.rds")
+# devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")
+# myMREObject<-readRDS("data/processed/mreObject.rds")
+ps_metaphlan<-readRDS("data/ps_metaphlan_feces.rds")
 
-
-p0<-metar::get_phyloseq(myMREObject,type="metaphlan") %>% 
+p0<-ps_metaphlan %>% 
   phyloseq::psmelt() %>% 
   dplyr::filter(Product %in% product_codes) %>% 
   dplyr::filter(Species==species_to_detect) %>%
@@ -667,7 +723,7 @@ p0<-metar::get_phyloseq(myMREObject,type="metaphlan") %>%
     scale_color_brewer(palette="Dark2")+
     ggtitle("Enterococcus Faecium vs time | product (BL-Excluded)")
 
-p1<-metar::get_phyloseq(myMREObject,type="metaphlan") %>% 
+p1<-ps_metaphlan %>% 
   phyloseq::psmelt() %>% 
   dplyr::filter(Product %in% product_codes) %>% 
   dplyr::filter(Species==species_to_detect) %>%
@@ -685,6 +741,62 @@ p0
 
 ggsave(p0,filename = "output/Deliverables/Exploratory/Spaghetti_Efaecium_BLexcluded.pdf")
 ggsave(p1,filename = "output/Deliverables/Exploratory/Spaghetti_Efaecium.pdf")
+```
+
+### 2-samples
+
+We are interested in knowing which of the "Italian" samples is on the probiotic group and which in the placebo, since, product labels have not been recovered from the clinical partners. Probiotic species is a strain Enterococcus Faecium, a common species within gut microbiome. Apparently according to the plot, CHARLIE dog would be in the probiotic arm (product 848590), although this is rather speculative.
+
+*Deliverables: TwoSamples_Efaecium.pdf*
+
+```{r Probiotic detection in two samples, echo=FALSE, results='hide',fig.keep='all', message=FALSE, warning=FALSE, paged.print=FALSE, eval=T}
+suppressMessages(require(dplyr))
+suppressMessages(require(phyloseq))
+suppressMessages(require(lefser))
+suppressMessages(require(ggplot2))
+suppressMessages(require(patchwork))
+
+set.seed(1234)
+
+### Species Level
+species_to_detect<-"Enterococcus_faecium"
+product_codes<-c("848589-FR80-036-003","848590-FR80-036-003")
+# devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")
+# myMREObject<-readRDS("data/processed/mreObject.rds")
+ps_metaphlan<-readRDS("data/ps_metaphlan_feces.rds")
+
+p0<-ps_metaphlan %>% 
+  phyloseq::psmelt() %>% 
+  dplyr::filter(Host_name %in% c("IMPERATORE","CHARLIE")) %>%
+  dplyr::filter(Species==species_to_detect) %>%
+  # dplyr::filter(Timepoint!="BL") %>%
+  # dplyr::mutate(Group=ifelse(grepl(848590,Product),"A","B")) %>% 
+  # dplyr::filter(! is.na(Group)) %>% 
+  ggplot(.,aes(x=Timepoint,y=Abundance,color=Host_name,group=Host_name,label=Host_name))+
+    geom_point()+ 
+    geom_line()+
+    scale_fill_brewer(palette="Dark2")+
+    scale_color_brewer(palette="Dark2")+
+    ggtitle("Enterococcus Faecium vs Time | 2-samples")
+
+# p1<-metar::get_phyloseq(myMREObject,type="metaphlan") %>% 
+#   phyloseq::psmelt() %>% 
+#   dplyr::filter(Product %in% product_codes) %>% 
+#   dplyr::filter(Species==species_to_detect) %>%
+# 
+#   dplyr::mutate(Group=ifelse(grepl(848590,Product),"A","B")) %>% 
+#   dplyr::filter(! is.na(Group)) %>% 
+#   ggplot(.,aes(x=Timepoint,y=Abundance,color=Group,group=Host_name,label=Host_name))+
+#     geom_point()+ 
+#     geom_line()+
+#     scale_fill_brewer(palette="Dark2")+
+#     scale_color_brewer(palette="Dark2")+
+#     ggtitle("Enterococcus Faecium vs time | product")
+# 
+ p0
+
+ggsave(p0,filename = "output/Deliverables/Exploratory/TwoSamples_Efaecium.pdf")
+# ggsave(p1,filename = "output/Deliverables/Exploratory/Spaghetti_Efaecium.pdf")
 
 
 ```

@@ -11,9 +11,9 @@
 
 <meta name="author" content="Marc Noguera-Julian, PhD. TreeTopUnder" />
 
-<meta name="date" content="2022-10-02" />
+<meta name="date" content="2022-11-01" />
 
-<title>Effect of FortiFlora</title>
+<title>Effect of Probiotic</title>
 
 <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -346,7 +346,16 @@ div.tocify {
   <a href="04_Goal2.html">Goal 2</a>
 </li>
 <li>
-  <a href="about.html">About</a>
+  <a href="05_Goal3.html">Goal 3</a>
+</li>
+<li>
+  <a href="06_Conclusions.html">Conclusions</a>
+</li>
+<li>
+  <a href="MetadataExplorer.html">Metadata</a>
+</li>
+<li>
+  <a href="Multiqc_report.html">MultiQC</a>
 </li>
 <li>
   <a href="license.html">License</a>
@@ -363,9 +372,9 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Effect of FortiFlora</h1>
+<h1 class="title toc-ignore">Effect of Probiotic</h1>
 <h4 class="author">Marc Noguera-Julian, PhD. TreeTopUnder</h4>
-<h4 class="date">2022-10-02</h4>
+<h4 class="date">2022-11-01</h4>
 
 </div>
 
@@ -390,7 +399,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-10-02
+<strong>Last updated:</strong> 2022-11-01
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
@@ -414,7 +423,7 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 </div>
 <div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
 </div>
 </div>
 </div>
@@ -481,16 +490,16 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTreeTopUnderPurinaN1H2022tree59ac17e3c27e6b80b71def7e067af5282980f584targetblank59ac17ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TreeTopUnder/Purina_N1H_2022/tree/59ac17e3c27e6b80b71def7e067af5282980f584" target="_blank">59ac17e</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTreeTopUnderPurinaN1H2022tree74b0908090ff8e0bc963c89a8444a189c23e53datargetblank74b0908a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TreeTopUnder/Purina_N1H_2022/tree/74b0908090ff8e0bc963c89a8444a189c23e53da" target="_blank">74b0908</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomTreeTopUnderPurinaN1H2022tree59ac17e3c27e6b80b71def7e067af5282980f584targetblank59ac17ea" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomTreeTopUnderPurinaN1H2022tree74b0908090ff8e0bc963c89a8444a189c23e53datargetblank74b0908a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/TreeTopUnder/Purina_N1H_2022/tree/59ac17e3c27e6b80b71def7e067af5282980f584" target="_blank">59ac17e</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/TreeTopUnder/Purina_N1H_2022/tree/74b0908090ff8e0bc963c89a8444a189c23e53da" target="_blank">74b0908</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -506,8 +515,10 @@ Ignored files:
     Ignored:    code/006_DataPreprocessing.Rmd
     Ignored:    code/006_DataPreprocessing.html
     Ignored:    code/008_PopulateMRE.Rmd
+    Ignored:    code/Phylosmith_bug.Rmd
     Ignored:    code/output/
     Ignored:    data/.DS_Store
+    Ignored:    data/generichness_goal3.rds
     Ignored:    data/mreObject_feces.rds
     Ignored:    data/mreObject_goal1.rds
     Ignored:    data/mreObject_goal2.rds
@@ -517,56 +528,137 @@ Ignored files:
     Ignored:    data/raw/
     Ignored:    output/.DS_Store
     Ignored:    output/Deliverables/.DS_Store
+    Ignored:    output/Deliverables/Exploratory/.DS_Store
+    Ignored:    output/Deliverables/Exploratory/DifferentialAbundance/
     Ignored:    output/Deliverables/Goal1/.DS_Store
-    Ignored:    output/Deliverables/Goal3/
+    Ignored:    output/Deliverables/Goal1/DifferentialAbundance/.DS_Store
+    Ignored:    output/Deliverables/Goal1/DifferentialAbundance/lefse/.DS_Store
+    Ignored:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/.DS_Store
+    Ignored:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/genus/figures/
+    Ignored:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/species/figures/
+    Ignored:    output/Deliverables/Goal2/.DS_Store
+    Ignored:    output/Deliverables/Goal2/DifferentialAbundance/.DS_Store
+    Ignored:    output/Deliverables/Goal2/DifferentialAbundance/lefse/.DS_Store
+    Ignored:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/.DS_Store
     Ignored:    output/mre_data/.DS_Store
+    Ignored:    output/mre_data/Goal3/
     Ignored:    output/mre_data/SpeciesQuantification/Metaphlan3/NMDS/
     Ignored:    output/mre_data/feces/
 
 Untracked files:
-    Untracked:  analysis/02_Exploratory.Rmd
-    Untracked:  analysis/03_Goal1.Rmd
-    Untracked:  analysis/04_Conclusiones.Rmd
-    Untracked:  analysis/04_Goal2.Rmd
-    Untracked:  analysis/05_Goal3.Rmd
-    Untracked:  output/Deliverables/Exploratory/
-    Untracked:  output/Deliverables/Goal1/AlphaDiversity/
-    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/
-    Untracked:  output/Deliverables/Goal2/
+    Untracked:  MetadataExplorer.html
+    Untracked:  analysis/06_Conclusions.Rmd
+    Untracked:  output/Deliverables/Exploratory/BetaDiversity/Ordination_BLSamples.pdf
+    Untracked:  output/Deliverables/Exploratory/DataExport/
+    Untracked:  output/Deliverables/Exploratory/StackedBarplots_Genus.pdf
+    Untracked:  output/Deliverables/Exploratory/TwoSamples_Efaecium.pdf
+    Untracked:  output/Deliverables/ExploratoryHeatmap_allSamples.pdf
+    Untracked:  output/Deliverables/Goal1/BetaDiversity/NMDS_Goal1_StressPlot.pdf
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function.xls
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function.xlsx
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_kegg.pdf
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_kegg.rds
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_kegg.xls
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_metacyc.pdf
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_metacyc.rds
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_metacyc.xls
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_taxonomy_genus.rds
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_taxonomy_species.rds
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MetaCyc/
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/Volcano_M1_vs_BL.xlsx
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/Volcano_M1_vs_BL_taxonomy_genus.pdf
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/Volcano_M1_vs_BL_taxonomy_species.pdf
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/kegg/
+    Untracked:  output/Deliverables/Goal2/AlphaDiversity/AlphaDiversity_Timepoint_goal2_Probiotic_samples.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Blautia_sp_CAG_257_vs_Timepoint_Probiotic_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Clostridium_sp_CAG_58_vs_Timepoint_Probiotic_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Dorea_sp_CAG_317_vs_Timepoint_Probiotic_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Blautia_sp_CAG_257_vs_Timepoint_Probiotic_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Clostridium_hiranonis_vs_Timepoint_Placebo_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Clostridium_sp_CAG_58_vs_Timepoint_Probiotic_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Collinsella_intestinalis_vs_Timepoint_Placebo_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Dorea_sp_CAG_317_vs_Timepoint_Probiotic_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/lefser_goal2_Probiotic_plot.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/maaslin/
+    Untracked:  output/Deliverables/Goal3/
+    Untracked:  output/Deliverables/NMDS_StressPlot_BL.pdf
 
 Unstaged changes:
     Modified:   analysis/01_index.Rmd
-    Deleted:    analysis/02_Exploratory_v1.Rmd
-    Deleted:    analysis/03_Goal1_v1.Rmd
-    Deleted:    analysis/04_Conclusiones_v1.Rmd
+    Modified:   analysis/02_Exploratory.Rmd
+    Modified:   analysis/03_Goal1.Rmd
+    Deleted:    analysis/04_Conclusiones.Rmd
+    Modified:   analysis/04_Goal2.Rmd
+    Modified:   analysis/05_Goal3.Rmd
     Modified:   analysis/_site.yml
-    Deleted:    output/Deliverables/Adonis.xls
-    Deleted:    output/Deliverables/AlphaDiversity_Timepoint_goal1_only.pdf
-    Deleted:    output/Deliverables/AlphaDiversity_treatment.pdf
-    Deleted:    output/Deliverables/AlphaDiversity_treatment_dry_only.pdf
-    Deleted:    output/Deliverables/AlphaDiversity_treatment_w1_only.pdf
-    Deleted:    output/Deliverables/AlphaDiversity_treatment_w2_only.pdf
-    Deleted:    output/Deliverables/BrayCurtis_Distances.xls
-    Deleted:    output/Deliverables/ExploratoryHeatmap_allSamples.pdf
-    Deleted:    output/Deliverables/FinalMetadata.xlsx
-    Deleted:    output/Deliverables/GeneRichness_Estimation.xls
-    Modified:   output/Deliverables/Goal1/BetaDiversity/Goal1_Adonis.xls
+    Deleted:    analysis/about.Rmd
+    Modified:   output/Deliverables/Exploratory/AlphaDiversity/RarefactionCurve_timepoint.pdf
+    Modified:   output/Deliverables/Exploratory/BetaDiversity/Adonis.xls
+    Modified:   output/Deliverables/Exploratory/BetaDiversity/NMDS_StressPlot.pdf
+    Modified:   output/Deliverables/Exploratory/BetaDiversity/Ordination_AllSamples.pdf
+    Modified:   output/Deliverables/Exploratory/ExploratoryHeatmap_allSamples.pdf
+    Modified:   output/Deliverables/Exploratory/FinalMetadata.xlsx
+    Modified:   output/Deliverables/Exploratory/PhylumAbundance_RA.xls
+    Modified:   output/Deliverables/Exploratory/PhylumAbundance_counts.xls
+    Modified:   output/Deliverables/Exploratory/Spaghetti_Efaecium.pdf
+    Modified:   output/Deliverables/Exploratory/Spaghetti_Efaecium_BLexcluded.pdf
+    Modified:   output/Deliverables/Exploratory/SpeciesAbundance_RA.xls
+    Modified:   output/Deliverables/Exploratory/SpeciesAbundance_counts.xls
+    Modified:   output/Deliverables/Exploratory/StackedBarplots_Species.pdf
+    Modified:   output/Deliverables/Exploratory/ps_metaphlan3.biom
+    Modified:   output/Deliverables/Goal1/AlphaDiversity/AlphaDiversity_Timepoint_goal1_only.pdf
     Modified:   output/Deliverables/Goal1/BetaDiversity/NMDS_Ordination_vs_Timepoint.pdf
-    Deleted:    output/Deliverables/Goal1/BetaDiversity/sGoal1_Adonis.xls
-    Deleted:    output/Deliverables/Goal1/DifferentialAbundanceAllisonella_vs_Timepoint_Goal1.pdf
-    Deleted:    output/Deliverables/Goal1/DifferentialAbundanceBifidobacterium_vs_Timepoint_Goal1.pdf
-    Deleted:    output/Deliverables/Goal1/DifferentialAbundanceCollinsella_vs_Timepoint_Goal1.pdf
-    Deleted:    output/Deliverables/Goal1/Goal1_Adonis.xls
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/Allisonella_histaminiformans_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/Bifidobacterium_longum_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/Bifidobacterium_pseudocatenulatum_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/Bifidobacterium_pullorum_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/Collinsella_tanakaei_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/paired_Allisonella_histaminiformans_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/paired_Bifidobacterium_longum_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/paired_Bifidobacterium_pseudocatenulatum_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/paired_Bifidobacterium_pullorum_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/paired_Collinsella_tanakaei_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/lefser_goal1_plot.pdf
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/all_results.tsv
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/fitted.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/genes/all_results.tsv
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/genes/fitted.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/genes/maaslin2.log
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/genes/ranef.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/genes/residuals.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/genes/significant_results.tsv
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/maaslin2.log
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/pathways/all_results.tsv
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/pathways/fitted.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/pathways/maaslin2.log
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/pathways/ranef.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/pathways/residuals.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/pathways/significant_results.tsv
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/ranef.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/residuals.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/significant_results.tsv
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/maaslin/genus/maaslin2.log
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/maaslin/species/maaslin2.log
+    Modified:   output/Deliverables/Goal2/AlphaDiversity/AlphaDiversity_Timepoint_goal2_Fortiflora_samples.pdf
+    Modified:   output/Deliverables/Goal2/AlphaDiversity/AlphaDiversity_Timepoint_goal2_Placebo_samples.pdf
+    Modified:   output/Deliverables/Goal2/AlphaDiversity/AlphaDiversity_Timepoint_goal2_all_samples.pdf
+    Modified:   output/Deliverables/Goal2/BetaDiversity/BrayDistance_by_Treatment_goal2.pdf
+    Modified:   output/Deliverables/Goal2/BetaDiversity/Goal2_Adonis.xls
+    Modified:   output/Deliverables/Goal2/BetaDiversity/NMDS_Goal2_StressPlot.pdf
+    Modified:   output/Deliverables/Goal2/BetaDiversity/NMDS_Ordination_vs_Timepoint_and_treatment.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Blautia_sp_CAG_257_vs_Timepoint_Fortiflora_Goal2.pdf
+    Modified:   output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Clostridium_hiranonis_vs_Timepoint_Placebo_Goal2.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Clostridium_sp_CAG_58_vs_Timepoint_Fortiflora_Goal2.pdf
+    Modified:   output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Collinsella_intestinalis_vs_Timepoint_Placebo_Goal2.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Dorea_sp_CAG_317_vs_Timepoint_Fortiflora_Goal2.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Blautia_sp_CAG_257_vs_Timepoint_Fortiflora_Goal2.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Clostridium_hiranonis_vs_Timepoint_Placebo_Goal1.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Clostridium_sp_CAG_58_vs_Timepoint_Fortiflora_Goal2.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Collinsella_intestinalis_vs_Timepoint_Placebo_Goal1.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Dorea_sp_CAG_317_vs_Timepoint_Fortiflora_Goal2.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/lefser_goal2_Fortiflora_plot.pdf
+    Modified:   output/Deliverables/Goal2/DifferentialAbundance/lefse/lefser_goal2_Placebo_plot.pdf
     Modified:   output/Deliverables/NMDS_Goal1_StressPlot.pdf
-    Deleted:    output/Deliverables/NMDS_StressPlot.pdf
-    Deleted:    output/Deliverables/Ordination_AllSamples.pdf
-    Deleted:    output/Deliverables/PhylumAbundance_RA.xls
-    Deleted:    output/Deliverables/PhylumAbundance_counts.xls
-    Deleted:    output/Deliverables/RarefactionCurve_timepoint.pdf
-    Deleted:    output/Deliverables/SpeciesAbundance_RA.xls
-    Deleted:    output/Deliverables/SpeciesAbundance_counts.xls
-    Deleted:    output/Deliverables/StackedBarplots_Species.pdf
-    Deleted:    output/Deliverables/ps_metaphlan3.biom
 
 </code></pre>
 <p>
@@ -579,9 +671,69 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/04_Goal2.Rmd</code>) and HTML (<code>docs/04_Goal2.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/TreeTopUnder/Purina_N1H_2022/blob/74b0908090ff8e0bc963c89a8444a189c23e53da/analysis/04_Goal2.Rmd" target="_blank">74b0908</a>
+</td>
+<td>
+Marc Noguera-Julian
+</td>
+<td>
+2022-10-03
+</td>
+<td>
+update
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/TreeTopUnder/Purina_N1H_2022/74b0908090ff8e0bc963c89a8444a189c23e53da/docs/04_Goal2.html" target="_blank">74b0908</a>
+</td>
+<td>
+Marc Noguera-Julian
+</td>
+<td>
+2022-10-03
+</td>
+<td>
+update
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -589,107 +741,638 @@ There are no past versions. Publish this analysis with <code>wflow_publish()</co
 <p>The goal of this part of the analysis is to assess the effect of supplementing dogs’ diet with probiotics, after GlucanTime treatment interruption, at the taxonomic and functional level. For that, only M1 and M4 samples will be used, in a animal paired manner, to characterized differences at the taxonomical and functional level, separately for the Probiotic and Placebo groups. Note: sample sizes for each of the groups (n=5) are very low and have limited statistical power due to under-recruitment at the clinical stage. <em>Results may be affected</em>.</p>
 <div id="alpha-diversity" class="section level2">
 <h2>Alpha Diversity</h2>
-<p>We want to see if alpha-diversity is differentially affected in those dog within the Fortiflora group with respect to those dogs receiving placebo. For that we will use gene richness parameter. First we want to see if there is any overall trend in changes of alpha-diversity parameters, using all dogs, between M4 and M1. Results indicate that there is no significant increase or decrease, although it seems that there is a in increase trend that consistently affects all three parameters.</p>
+<p>We want to see if alpha-diversity is differentially affected in those dog within the Probiotic group with respect to those dogs receiving placebo. For that we will use gene richness parameter. First we want to see if there is any overall trend in changes of alpha-diversity parameters, using all dogs, between M4 and M1. Results indicate that there is no significant increase or decrease, although it seems that there is a in increase trend that consistently affects all three parameters.</p>
 <p><em>Deliverables: AlphaDiversity_Timepoint_goal2_all_samples.pdf</em></p>
-<pre><code>suggested package selbal ✔suggested package DataExplorer ✔suggested package lme4 ✔suggested package merTools ✔</code></pre>
 <p><img src="figure/04_Goal2.Rmd/alpha%20diversity%20chunk1-1.png" width="672" style="display: block; margin: auto;" /></p>
-<div id="fortiflora-vs-placebo" class="section level3">
-<h3>Fortiflora vs Placebo</h3>
-<p>We are interested in knowing whether changes in alpha-diversity exist in any of the Fortiflora/Placebo groups, separately. REsults indicate that there are no significant changes in Chao1, Shannon or Gene Richness in any of the groups, with similar trend than in the global analysis.</p>
-<p><em>Deliverables: AlphaDiversity_Timepoint_goal2_Fortiflora_samples.pdf, AlphaDiversity_Timepoint_goal2_Placebo_samples.pdf</em></p>
-<pre><code>suggested package selbal ✔suggested package DataExplorer ✔suggested package lme4 ✔suggested package merTools ✔</code></pre>
-<p><img src="figure/04_Goal2.Rmd/alpha%20diversity%20chunk2-1.png" width="672" style="display: block; margin: auto;" /> ## Beta Diversity</p>
-<p>Aside from alpha-diversity we are interested in changes in the composition of the dog’s gut microbiome after Fortiflora/Placebo treatment. Of course, there is some degree of change in the compisition, but we are interested if these changes are significantly different when comparing Fortiflora and Placebo group.</p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-alpha-diversity-chunk1-1">
+Past versions of "alpha diversity chunk1-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-alpha-diversity-chunk1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TreeTopUnder/Purina_N1H_2022/blob/74b0908090ff8e0bc963c89a8444a189c23e53da/docs/figure/04_Goal2.Rmd/alpha diversity chunk1-1.png" target="_blank">74b0908</a>
+</td>
+<td>
+Marc Noguera-Julian
+</td>
+<td>
+2022-10-03
+</td>
+</tr>
+</tbody>
+</table>
 </div>
+</div>
+<div id="probiotic-vs-placebo" class="section level3">
+<h3>Probiotic vs Placebo</h3>
+<p>We are interested in knowing whether changes in alpha-diversity exist in any of the Probiotic/Placebo groups, separately. REsults indicate that there are no significant changes in Chao1, Shannon or Gene Richness in any of the groups, with similar trend than in the global analysis.</p>
+<p><em>Deliverables: AlphaDiversity_Timepoint_goal2_Probiotic_samples.pdf, AlphaDiversity_Timepoint_goal2_Placebo_samples.pdf</em></p>
+<p><img src="figure/04_Goal2.Rmd/alpha%20diversity%20chunk2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-alpha-diversity-chunk2-1">
+Past versions of "alpha diversity chunk2-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-alpha-diversity-chunk2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TreeTopUnder/Purina_N1H_2022/blob/74b0908090ff8e0bc963c89a8444a189c23e53da/docs/figure/04_Goal2.Rmd/alpha diversity chunk2-1.png" target="_blank">74b0908</a>
+</td>
+<td>
+Marc Noguera-Julian
+</td>
+<td>
+2022-10-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/04_Goal2.Rmd/alpha%20diversity%20chunk2-2.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="beta-diversity" class="section level2">
+<h2>Beta Diversity</h2>
+<p>Aside from alpha-diversity we are interested in changes in the composition of the dog’s gut microbiome after Probiotic/Placebo treatment. Of course, there is some degree of change in the compisition, but we are interested if these changes are significantly different when comparing Probiotic and Placebo group.</p>
 <div id="ordination-analysis" class="section level3">
 <h3>Ordination Analysis</h3>
 <p>We will use the same ordination method than in previous exploratory section but, in this case, only applied to M1 and M4 samples to detect significant changes related to the effect of Allopurinol + Glucantime treatment, discarding the effect of other variables that may act as confounders.</p>
-<p><em>Deliverables: Goal2/BetaDiversity/NMDS_Ordination_vs_Timepoint.pdf Goal2/BetaDiversity/Goal2_Adonis.xls</em></p>
-<p>Results: There is no apparent clustering among M1 or M4 samples, nor among samples from dogs receiving fortiflora or Placebo. Here, we are assuming product “848590” is the one receiving Fortiflora, according to the findings of the exploratory results on <em>E. faecium</em>. PERMANOVA results also indicate no significant effect of Timepoint or treatment in this dataset while, as expected, dog identity variable explains more than 70% of microbiome composition on this subset of samples.</p>
-<pre><code>suggested package selbal ✔suggested package DataExplorer ✔suggested package lme4 ✔suggested package merTools ✔</code></pre>
-<pre><code>Run 0 stress 0.1453789 
-Run 1 stress 0.1695634 
-Run 2 stress 0.1453789 
-... New best solution
-... Procrustes: rmse 2.061327e-05  max resid 4.863886e-05 
-... Similar to previous best
-Run 3 stress 0.1442091 
-... New best solution
-... Procrustes: rmse 0.1488903  max resid 0.3933601 
-Run 4 stress 0.1695635 
-Run 5 stress 0.1695634 
-Run 6 stress 0.1715456 
-Run 7 stress 0.1430317 
-... New best solution
-... Procrustes: rmse 0.13612  max resid 0.3973843 
-Run 8 stress 0.1701525 
-Run 9 stress 0.1457757 
-Run 10 stress 0.1526772 
-Run 11 stress 0.1510907 
-Run 12 stress 0.1453789 
-Run 13 stress 0.1765011 
-Run 14 stress 0.1446664 
-Run 15 stress 0.2245711 
-Run 16 stress 0.1381436 
-... New best solution
-... Procrustes: rmse 0.04013246  max resid 0.1377958 
-Run 17 stress 0.1446664 
-Run 18 stress 0.1381436 
-... Procrustes: rmse 3.213055e-06  max resid 1.199596e-05 
-... Similar to previous best
-Run 19 stress 0.1458552 
-Run 20 stress 0.1381436 
-... Procrustes: rmse 1.133536e-05  max resid 3.689347e-05 
-... Similar to previous best
-*** Solution reached</code></pre>
+<p><em>Deliverables: Goal2/BetaDiversity/NMDS_Ordination_vs_Timepoint.pdf, Goal2/BetaDiversity/NMDS_Goal2_StressPlot.pdf, Goal2/BetaDiversity/Goal2_Adonis.xls</em></p>
+<p>Results: There is no apparent clustering among M1 or M4 samples, nor among samples from dogs receiving Probiotic or Placebo. Here, we are assuming product “848590” is the one receiving Probiotic, according to the findings of the exploratory results on <em>E. faecium</em>. PERMANOVA results also indicate no significant effect of Timepoint or treatment in this dataset while, as expected, dog identity variable explains more than 70% of microbiome composition on this subset of samples.</p>
 <pre><code>quartz_off_screen 
                 2 </code></pre>
 <pre><code>[1] TRUE</code></pre>
 <p><img src="figure/04_Goal2.Rmd/Global%20Ordination%20Beta%20Diversity%20chunk%203-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>In order to have some more granular view of differences, at the ordination level, we’ll check if paired Beta-Diversity between M1 and M4 samples from the same animals are differen between the Fortiflora and Placebo treatment groups. Results indicate no differential change between Fortiflore and Placebo groups.</p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Global-Ordination-Beta-Diversity-chunk-3-1">
+Past versions of "Global Ordination Beta Diversity chunk 3-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Global-Ordination-Beta-Diversity-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TreeTopUnder/Purina_N1H_2022/blob/74b0908090ff8e0bc963c89a8444a189c23e53da/docs/figure/04_Goal2.Rmd/Global Ordination Beta Diversity chunk 3-1.png" target="_blank">74b0908</a>
+</td>
+<td>
+Marc Noguera-Julian
+</td>
+<td>
+2022-10-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>In order to have some more granular view of differences, at the ordination level, we’ll check if paired Beta-Diversity between M1 and M4 samples from the same animals are differen between the Probiotic and Placebo treatment groups. Results indicate no differential change between Probiotic and Placebo groups.</p>
 <p><em>Deliverables: Goal2/BetaDiversity/BrayDistance_by_Treatment_goal2.pdf</em></p>
-<pre><code>suggested package selbal ✔suggested package DataExplorer ✔suggested package lme4 ✔suggested package merTools ✔</code></pre>
-<pre><code>Run 0 stress 0.1453789 
-Run 1 stress 0.1695634 
-Run 2 stress 0.1453789 
-... New best solution
-... Procrustes: rmse 2.061327e-05  max resid 4.863886e-05 
-... Similar to previous best
-Run 3 stress 0.1442091 
-... New best solution
-... Procrustes: rmse 0.1488903  max resid 0.3933601 
-Run 4 stress 0.1695635 
-Run 5 stress 0.1695634 
-Run 6 stress 0.1715456 
-Run 7 stress 0.1430317 
-... New best solution
-... Procrustes: rmse 0.13612  max resid 0.3973843 
-Run 8 stress 0.1701525 
-Run 9 stress 0.1457757 
-Run 10 stress 0.1526772 
-Run 11 stress 0.1510907 
-Run 12 stress 0.1453789 
-Run 13 stress 0.1765011 
-Run 14 stress 0.1446664 
-Run 15 stress 0.2245711 
-Run 16 stress 0.1381436 
-... New best solution
-... Procrustes: rmse 0.04013246  max resid 0.1377958 
-Run 17 stress 0.1446664 
-Run 18 stress 0.1381436 
-... Procrustes: rmse 3.213055e-06  max resid 1.199596e-05 
-... Similar to previous best
-Run 19 stress 0.1458552 
-Run 20 stress 0.1381436 
-... Procrustes: rmse 1.133536e-05  max resid 3.689347e-05 
-... Similar to previous best
-*** Solution reached</code></pre>
 <p><img src="figure/04_Goal2.Rmd/Global%20Ordination%20Beta%20Diversity%20chunk%204-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Global-Ordination-Beta-Diversity-chunk-4-1">
+Past versions of "Global Ordination Beta Diversity chunk 4-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-Global-Ordination-Beta-Diversity-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TreeTopUnder/Purina_N1H_2022/blob/74b0908090ff8e0bc963c89a8444a189c23e53da/docs/figure/04_Goal2.Rmd/Global Ordination Beta Diversity chunk 4-1.png" target="_blank">74b0908</a>
+</td>
+<td>
+Marc Noguera-Julian
+</td>
+<td>
+2022-10-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="differential-abundance" class="section level2">
 <h2>Differential Abundance</h2>
-<p>We are interested in seeing whether there is any differentially abundant species between M4 and M1 in any of the groups. Low group sizes (n=5 for Fortiflora and n=5 for Placebo) greatly reduce the statistical power to detect any, but we’ll try anyway.</p>
+<p>We are interested in seeing whether there is any differentially abundant species between M4 and M1 in any of the groups. Low group sizes (n=5 for Probiotic and n=5 for Placebo) greatly reduce the statistical power to detect any, but we’ll try anyway. We will use both LefseR and MaasLin models.</p>
+<div id="lefse" class="section level3">
+<h3>Lefse</h3>
+<p>LEFsE results shows for the probiotic group, an increase in M4, of three different species: <em>Blautia</em>, <em>Clostridium</em> and <em>Dorea</em> CAGs. A CAG is a co-abundant-group that has been obtained from metagnomic data (thus not cultivated) and whose taxonomical annotation is limited in resolution and in reliability. In the Placebo Group, there are also two species that show to be significantly more abundant in M4, although they received no Probiotic: <em>Collinsella Intestinallis</em> and <em>Clostridium hiranonis</em>. Note that Lefse test does not use dog id as pairing variable. Using dog id is a formally more correct way to perform the testing, since it accounts for inter-doc variability. Actually, when individual paired rank-sum Wilcoxon paired tests are applied to this data, for each of the species obtained from LEFsE, significance is lost for all of the LEFsE-positive species.</p>
+<div id="probiotic-group" class="section level4">
+<h4>Probiotic Group</h4>
+<p>We will perform LEFsE test for the probiotic group samples only, comparing M4 and M1 samples. Note that as in goal 1 analysis, LEFsE does not using dog id as a pairing variable, and results need to be checked using paired-wilcoxon afterwards.</p>
+<p><em>Deliverables: Goal2/DifferentialAbundance/lefse/lefser_goal2_Probiotic_plot.pdf, Goal2/DifferentialAbundance/lefse/boxplots/Species_vs_Timepoint_Probiotic_Goal2.pdf, Goal2/DifferentialAbundance/lefse/boxplots/paired_Species_vs_Timepoint_Probiotic_Goal2.pdf</em></p>
+<p><img src="figure/04_Goal2.Rmd/Timepoint%20DA%20chunk1%20Species-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="placebo-group" class="section level4">
+<h4>Placebo Group</h4>
+<p><em>Deliverables: Goal2/DifferentialAbundance/lefse/lefser_goal2_Placebo_plot.pdf, Goal2/DifferentialAbundance/lefse/boxplots/Species_vs_Timepoint_Placebo_Goal2.pdf, Goal2/DifferentialAbundance/lefse/boxplots/paired_Species_vs_Timepoint_Placebo_Goal2.pdf</em></p>
+</div>
+</div>
+<div id="maaslin2" class="section level3">
+<h3>MaasLin2</h3>
+<p>MaasLin2 used generalized linear models to better fit microbiome data distribution and to improve sensitivity/specificity. In addition, MaasLin method allows for the accounting of other variables in the test desing. In particular, we can use dog name variable(<em>Host_name</em>) as a random effect, while <em>Timepoint</em>(M4 vs M1) is used as a fixed effect.e</p>
+<p>Results: Using MaasLin2 there are no significant hits at species nor genus level for neither of the Probiotic or Placebo groups when using BH-corrected qvalues, thus confirming the previous results by paired Wilcoxon tests. However, if using non-corrected p.values, we can see that <em>Blautia_sp_CAG_257</em> and <em>Dorea_sp_CAG_317</em> do increase in the probotic group, while <em>Blautia_hansenii</em> and <em>Firmicutes_bacterium_CAG_424</em> increase in the placebo group. Thus, there is an overlap in differentially abundant species for the probiotic group, reinforcing the plausibility of the increase abundance of these species, although formally the signal is non-significant.</p>
+<div id="probiotic-group-1" class="section level4">
+<h4>Probiotic group</h4>
+<p><em>Deliverables: Goal2/DifferentialAbundance/maaslin/Taxa_M4_vs_M1_probiotic.xlsx, Goal2/DifferentialAbundance/maaslin/Taxa_M4_vs_M1_placebo.xlsx</em></p>
+<table>
+<colgroup>
+<col width="31%" />
+<col width="9%" />
+<col width="5%" />
+<col width="8%" />
+<col width="9%" />
+<col width="9%" />
+<col width="9%" />
+<col width="2%" />
+<col width="10%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Species</th>
+<th align="left">metadata</th>
+<th align="left">value</th>
+<th align="right">coef</th>
+<th align="right">stderr</th>
+<th align="right">pval</th>
+<th align="right">qval</th>
+<th align="right">N</th>
+<th align="right">N.not.zero</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Blautia_sp_CAG_257</td>
+<td align="left">Timepoint</td>
+<td align="left">M4</td>
+<td align="right">1.874435</td>
+<td align="right">0.4056199</td>
+<td align="right">0.0098725</td>
+<td align="right">0.6608482</td>
+<td align="right">10</td>
+<td align="right">10</td>
+</tr>
+<tr class="even">
+<td align="left">Dorea_sp_CAG_317</td>
+<td align="left">Timepoint</td>
+<td align="left">M4</td>
+<td align="right">1.837287</td>
+<td align="right">0.6526782</td>
+<td align="right">0.0480719</td>
+<td align="right">0.6608482</td>
+<td align="right">10</td>
+<td align="right">5</td>
+</tr>
+<tr class="odd">
+<td align="left">Blautia_sp_N6H1_15</td>
+<td align="left">Timepoint</td>
+<td align="left">M4</td>
+<td align="right">2.157018</td>
+<td align="right">1.0097589</td>
+<td align="right">0.0995150</td>
+<td align="right">0.6608482</td>
+<td align="right">10</td>
+<td align="right">6</td>
+</tr>
+<tr class="even">
+<td align="left">Clostridium_sp_CAG_169</td>
+<td align="left">Timepoint</td>
+<td align="left">M4</td>
+<td align="right">1.749999</td>
+<td align="right">0.8980328</td>
+<td align="right">0.1231405</td>
+<td align="right">0.6608482</td>
+<td align="right">10</td>
+<td align="right">5</td>
+</tr>
+<tr class="odd">
+<td align="left">Ruthenibacterium_lactatiformans</td>
+<td align="left">Timepoint</td>
+<td align="left">M4</td>
+<td align="right">1.341139</td>
+<td align="right">0.7448947</td>
+<td align="right">0.1341189</td>
+<td align="right">0.6608482</td>
+<td align="right">10</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">Bacteroides_coprophilus</td>
+<td align="left">Timepoint</td>
+<td align="left">M4</td>
+<td align="right">4.411934</td>
+<td align="right">2.5247981</td>
+<td align="right">0.1434277</td>
+<td align="right">0.6608482</td>
+<td align="right">10</td>
+<td align="right">3</td>
+</tr>
+</tbody>
+</table>
+<pre><code>[1] TRUE</code></pre>
+<p><img src="figure/04_Goal2.Rmd/DA%20species%20maaslin2%20chunk%201-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="placebo-group-1" class="section level4">
+<h4>Placebo group</h4>
+<table>
+<colgroup>
+<col width="29%" />
+<col width="10%" />
+<col width="6%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="3%" />
+<col width="11%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Species</th>
+<th align="left">metadata</th>
+<th align="left">value</th>
+<th align="right">coef</th>
+<th align="right">stderr</th>
+<th align="right">pval</th>
+<th align="right">qval</th>
+<th align="right">N</th>
+<th align="right">N.not.zero</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Blautia_hansenii</td>
+<td align="left">Timepoint</td>
+<td align="left">M4</td>
+<td align="right">1.781913</td>
+<td align="right">0.3094076</td>
+<td align="right">0.0045094</td>
+<td align="right">0.2525240</td>
+<td align="right">10</td>
+<td align="right">9</td>
+</tr>
+<tr class="even">
+<td align="left">Firmicutes_bacterium_CAG_424</td>
+<td align="left">Timepoint</td>
+<td align="left">M4</td>
+<td align="right">3.368444</td>
+<td align="right">1.2508118</td>
+<td align="right">0.0273689</td>
+<td align="right">0.5281555</td>
+<td align="right">10</td>
+<td align="right">9</td>
+</tr>
+<tr class="odd">
+<td align="left">Firmicutes_bacterium_CAG_646</td>
+<td align="left">Timepoint</td>
+<td align="left">M4</td>
+<td align="right">3.195987</td>
+<td align="right">1.6101100</td>
+<td align="right">0.0824149</td>
+<td align="right">0.5281555</td>
+<td align="right">10</td>
+<td align="right">8</td>
+</tr>
+<tr class="even">
+<td align="left">Megamonas_funiformis</td>
+<td align="left">Timepoint</td>
+<td align="left">M4</td>
+<td align="right">2.978276</td>
+<td align="right">1.3766860</td>
+<td align="right">0.0965244</td>
+<td align="right">0.5281555</td>
+<td align="right">10</td>
+<td align="right">6</td>
+</tr>
+<tr class="odd">
+<td align="left">Clostridium_sp_CAG_58</td>
+<td align="left">Timepoint</td>
+<td align="left">M4</td>
+<td align="right">1.548434</td>
+<td align="right">0.7250524</td>
+<td align="right">0.0995771</td>
+<td align="right">0.5281555</td>
+<td align="right">10</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="left">Lactobacillus_animalis</td>
+<td align="left">Timepoint</td>
+<td align="left">M4</td>
+<td align="right">-5.568013</td>
+<td align="right">2.7002503</td>
+<td align="right">0.1082024</td>
+<td align="right">0.5281555</td>
+<td align="right">10</td>
+<td align="right">5</td>
+</tr>
+</tbody>
+</table>
+<pre><code>[1] TRUE</code></pre>
+<p><img src="figure/04_Goal2.Rmd/DA%20species%20maaslin2%20chunk%202-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+</div>
+<div id="functional-analysis" class="section level2">
+<h2>Functional Analysis</h2>
+<div id="maaslin2-1" class="section level3">
+<h3>MaasLin2</h3>
+<p>One of the advantages of using metagenomic sequencing is the possibility to profile gene abundance in addition to taxonomical composition. this is done using HUMANN3 software. Briefly, this software performs the analysis in three stages:</p>
+<ul>
+<li>Detection of the bacterial species that are present in the sample above threshold.</li>
+<li>Download of full genomes of detected species and indexes of the sample-specific genomes and gene annotation. In this manner, we obtain a table of relative abundances for UniRef Gene families that are annotated using KEGG and eggNOG ontologies.</li>
+<li>Read mapping to sample-specific full-genome. Quantification of gene relative abundance and annotation to pathways if possible using MetaCyc.</li>
+</ul>
+<p>From these analysis, we’ll use both MetaCYC pathway relative abundance and KEGG Ortholog groups relative abundance quantification to compare sample groups. We run MaasLin2 algorithm both at the MetaCyc pathway and UniRef levels using standard TSS normalization and log transformation. Note thata very high number of gene function features are being tested. No significant hits were found for Timepoint within the Probiotic nor the Placebo Group when using BH corrected q.values.</p>
+<p><em>Deliverables: DifferentialAbundance/maaslin/M4_vs_M1_probiotic_function.xlsx, DifferentialAbundance/maaslin/M4_vs_M1_probiotic_function.xlsx</em></p>
+<div id="probiotic-group-2" class="section level4">
+<h4>Probiotic group</h4>
+<p>There are several Pathways that are either enriched or depleted at M4 in the Probiotic group, when using uncorrected p-values:</p>
+<pre><code>[1] TRUE</code></pre>
+<table>
+<colgroup>
+<col width="53%" />
+<col width="4%" />
+<col width="8%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="2%" />
+<col width="8%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">feature</th>
+<th align="left">value</th>
+<th align="right">coef</th>
+<th align="right">stderr</th>
+<th align="right">pval</th>
+<th align="right">qval</th>
+<th align="right">N</th>
+<th align="right">N.not.zero</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">PWY.7013…S..propane.1.2.diol.degradation</td>
+<td align="left">M4</td>
+<td align="right">-0.8990208</td>
+<td align="right">0.2449257</td>
+<td align="right">0.0213801</td>
+<td align="right">0.9599327</td>
+<td align="right">10</td>
+<td align="right">10</td>
+</tr>
+<tr class="even">
+<td align="left">PWY.1042..glycolysis.IV.unclassified</td>
+<td align="left">M4</td>
+<td align="right">-0.4676434</td>
+<td align="right">0.1312490</td>
+<td align="right">0.0235222</td>
+<td align="right">0.9599327</td>
+<td align="right">10</td>
+<td align="right">10</td>
+</tr>
+<tr class="odd">
+<td align="left">PWY0.1298..superpathway.of.pyrimidine.deoxyribonucleosides.degradation</td>
+<td align="left">M4</td>
+<td align="right">0.2580637</td>
+<td align="right">0.0753090</td>
+<td align="right">0.0266152</td>
+<td align="right">0.9599327</td>
+<td align="right">10</td>
+<td align="right">10</td>
+</tr>
+<tr class="even">
+<td align="left">PWY.7820..teichuronic.acid.biosynthesis..B..subtilis.168.</td>
+<td align="left">M4</td>
+<td align="right">1.4604132</td>
+<td align="right">0.4647997</td>
+<td align="right">0.0270695</td>
+<td align="right">0.9599327</td>
+<td align="right">10</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">PWY.7820..teichuronic.acid.biosynthesis..B..subtilis.168..unclassified</td>
+<td align="left">M4</td>
+<td align="right">1.4677967</td>
+<td align="right">0.4679663</td>
+<td align="right">0.0272294</td>
+<td align="right">0.9599327</td>
+<td align="right">10</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">PWY.5005..biotin.biosynthesis.II</td>
+<td align="left">M4</td>
+<td align="right">1.6809732</td>
+<td align="right">0.7007285</td>
+<td align="right">0.0432513</td>
+<td align="right">0.9599327</td>
+<td align="right">10</td>
+<td align="right">9</td>
+</tr>
+<tr class="odd">
+<td align="left">PWY.801..homocysteine.and.cysteine.interconversion</td>
+<td align="left">M4</td>
+<td align="right">1.6127235</td>
+<td align="right">0.6786036</td>
+<td align="right">0.0447874</td>
+<td align="right">0.9599327</td>
+<td align="right">10</td>
+<td align="right">8</td>
+</tr>
+<tr class="even">
+<td align="left">PWY.6293..superpathway.of.L.cysteine.biosynthesis..fungi.</td>
+<td align="left">M4</td>
+<td align="right">1.5951273</td>
+<td align="right">0.6720828</td>
+<td align="right">0.0450063</td>
+<td align="right">0.9599327</td>
+<td align="right">10</td>
+<td align="right">8</td>
+</tr>
+<tr class="odd">
+<td align="left">PWY.6435..4.hydroxybenzoate.biosynthesis.III..plants..unclassified</td>
+<td align="left">M4</td>
+<td align="right">1.2803322</td>
+<td align="right">0.4497400</td>
+<td align="right">0.0465449</td>
+<td align="right">0.9599327</td>
+<td align="right">10</td>
+<td align="right">6</td>
+</tr>
+<tr class="even">
+<td align="left">PWY.7992..superpathway.of.menaquinol.8.biosynthesis.III</td>
+<td align="left">M4</td>
+<td align="right">1.3911223</td>
+<td align="right">0.4946567</td>
+<td align="right">0.0482041</td>
+<td align="right">0.9599327</td>
+<td align="right">10</td>
+<td align="right">8</td>
+</tr>
+</tbody>
+</table>
+<p><img src="figure/04_Goal2.Rmd/functional%20analysis%20chunk%201-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="placebo-group-2" class="section level4">
+<h4>Placebo group</h4>
+<pre><code>[1] TRUE</code></pre>
+<table>
+<colgroup>
+<col width="52%" />
+<col width="4%" />
+<col width="8%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="2%" />
+<col width="8%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">feature</th>
+<th align="left">value</th>
+<th align="right">coef</th>
+<th align="right">stderr</th>
+<th align="right">pval</th>
+<th align="right">qval</th>
+<th align="right">N</th>
+<th align="right">N.not.zero</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">PWY.841..superpathway.of.purine.nucleotides.de.novo.biosynthesis.I</td>
+<td align="left">M4</td>
+<td align="right">0.1586065</td>
+<td align="right">0.0251587</td>
+<td align="right">0.0032364</td>
+<td align="right">0.9203004</td>
+<td align="right">10</td>
+<td align="right">10</td>
+</tr>
+<tr class="even">
+<td align="left">PWY.7208..superpathway.of.pyrimidine.nucleobases.salvage</td>
+<td align="left">M4</td>
+<td align="right">0.3701569</td>
+<td align="right">0.0615504</td>
+<td align="right">0.0038498</td>
+<td align="right">0.9203004</td>
+<td align="right">10</td>
+<td align="right">10</td>
+</tr>
+<tr class="odd">
+<td align="left">PWY.5030..L.histidine.degradation.III</td>
+<td align="left">M4</td>
+<td align="right">2.9342264</td>
+<td align="right">0.7903814</td>
+<td align="right">0.0059357</td>
+<td align="right">0.9203004</td>
+<td align="right">10</td>
+<td align="right">8</td>
+</tr>
+<tr class="even">
+<td align="left">PWY.8131..5..deoxyadenosine.degradation.II</td>
+<td align="left">M4</td>
+<td align="right">3.0562024</td>
+<td align="right">0.9696466</td>
+<td align="right">0.0135601</td>
+<td align="right">0.9203004</td>
+<td align="right">10</td>
+<td align="right">8</td>
+</tr>
+<tr class="odd">
+<td align="left">PWY.621..sucrose.degradation.III..sucrose.invertase..unclassified</td>
+<td align="left">M4</td>
+<td align="right">0.9403785</td>
+<td align="right">0.2426616</td>
+<td align="right">0.0179131</td>
+<td align="right">0.9203004</td>
+<td align="right">10</td>
+<td align="right">10</td>
+</tr>
+<tr class="even">
+<td align="left">PWY.5484..glycolysis.II..from.fructose.6.phosphate.</td>
+<td align="left">M4</td>
+<td align="right">-0.3773792</td>
+<td align="right">0.0994106</td>
+<td align="right">0.0191668</td>
+<td align="right">0.9203004</td>
+<td align="right">10</td>
+<td align="right">10</td>
+</tr>
+</tbody>
+</table>
+<p><img src="figure/04_Goal2.Rmd/functional%20analysis%20chunk%202-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -709,72 +1392,75 @@ locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
-[1] stats     graphics  grDevices utils     datasets  methods   base     
+[1] stats4    stats     graphics  grDevices utils     datasets  methods  
+[8] base     
 
 other attached packages:
-[1] metar_0.1.5     ggforce_0.3.3   ggplot2_3.3.6   testthat_3.1.4 
-[5] dplyr_1.0.9     patchwork_1.1.1 phyloseq_1.38.0
+ [1] Maaslin2_1.8.0              lefser_1.4.0               
+ [3] SummarizedExperiment_1.24.0 Biobase_2.54.0             
+ [5] GenomicRanges_1.46.1        GenomeInfoDb_1.30.1        
+ [7] IRanges_2.28.0              S4Vectors_0.32.4           
+ [9] BiocGenerics_0.40.0         MatrixGenerics_1.6.0       
+[11] matrixStats_0.62.0          ggforce_0.3.3              
+[13] ggplot2_3.3.6               dplyr_1.0.10               
+[15] patchwork_1.1.1             phyloseq_1.38.0            
+[17] workflowr_1.7.0            
 
 loaded via a namespace (and not attached):
-  [1] utf8_1.2.2             tidyselect_1.1.2       lme4_1.1-30           
-  [4] htmlwidgets_1.5.4      grid_4.1.1             devtools_2.4.4        
-  [7] munsell_0.5.0          ragg_1.2.2             effectsize_0.7.0      
- [10] codetools_0.2-18       future_1.27.0          miniUI_0.1.1.1        
- [13] withr_2.5.0            colorspace_2.0-3       Biobase_2.54.0        
- [16] highr_0.9              logger_0.2.2           knitr_1.39            
- [19] rstudioapi_0.13        stats4_4.1.1           ggsignif_0.6.3        
- [22] rJava_1.0-6            listenv_0.8.0          labeling_0.4.2        
- [25] git2r_0.30.1           GenomeInfoDbData_1.2.7 polyclip_1.10-0       
- [28] bit64_4.0.5            farver_2.1.1           datawizard_0.4.1      
- [31] rhdf5_2.38.1           rprojroot_2.0.3        coda_0.19-4           
- [34] parallelly_1.32.1      vctrs_0.4.1            generics_0.1.3        
- [37] afex_1.1-1             xfun_0.31              R6_2.5.1              
- [40] GenomeInfoDb_1.30.1    arm_1.12-2             reshape_0.8.9         
- [43] bitops_1.0-7           rhdf5filters_1.6.0     cachem_1.0.6          
- [46] assertthat_0.2.1       promises_1.2.0.1       networkD3_0.4         
- [49] scales_1.2.1           vroom_1.5.7            merTools_0.5.2        
- [52] gtable_0.3.1           globals_0.15.1         processx_3.7.0        
- [55] xlsx_0.6.5             workflowr_1.7.0        rlang_1.0.6           
- [58] zeallot_0.1.0          systemfonts_1.0.4      splines_4.1.1         
- [61] rstatix_0.7.0          prismatic_1.1.0        broom_1.0.0           
- [64] yaml_2.3.5             reshape2_1.4.4         abind_1.4-5           
- [67] backports_1.4.1        httpuv_1.6.5           tools_4.1.1           
- [70] usethis_2.1.6          logging_0.10-108       ellipsis_0.3.2        
- [73] jquerylib_0.1.4        biomformat_1.22.0      selbal_0.1.0          
- [76] RColorBrewer_1.1-3     BiocGenerics_0.40.0    sessioninfo_1.2.2     
- [79] Rcpp_1.0.9             plyr_1.8.7             zlibbioc_1.40.0       
- [82] purrr_0.3.4            RCurl_1.98-1.8         ps_1.7.1              
- [85] prettyunits_1.1.1      ggpubr_0.4.0           correlation_0.8.1     
- [88] urlchecker_1.0.1       S4Vectors_0.32.4       ggrepel_0.9.1         
- [91] cluster_2.1.3          fs_1.5.2               here_1.0.1            
- [94] furrr_0.3.0            DataExplorer_0.8.2     magrittr_2.0.3        
- [97] data.table_1.14.2      lmerTest_3.1-3         mvtnorm_1.1-3         
-[100] pkgload_1.3.0          xlsxjars_0.6.1         mime_0.12             
-[103] evaluate_0.15          xtable_1.8-4           broom.mixed_0.2.9.4   
-[106] IRanges_2.28.0         gridExtra_2.3          compiler_4.1.1        
-[109] tibble_3.1.8           ggstatsplot_0.9.3      crayon_1.5.1          
-[112] minqa_1.2.4            htmltools_0.5.3        mgcv_1.8-40           
-[115] later_1.3.0            tzdb_0.3.0             tidyr_1.2.0           
-[118] DBI_1.1.3              tweenr_1.0.2           MASS_7.3-58           
-[121] boot_1.3-28            Matrix_1.4-1           ade4_1.7-19           
-[124] car_3.1-0              wesanderson_0.3.6      permute_0.9-7         
-[127] brio_1.1.3             cli_3.4.1              parallel_4.1.1        
-[130] insight_0.18.0         igraph_1.3.5           forcats_0.5.1         
-[133] pkgconfig_2.0.3        statsExpressions_1.3.2 numDeriv_2016.8-1.1   
-[136] paletteer_1.4.0        foreach_1.5.2          bslib_0.4.0           
-[139] blme_1.0-5             multtest_2.50.0        XVector_0.34.0        
-[142] stringr_1.4.1          callr_3.7.1            digest_0.6.29         
-[145] parameters_0.18.1      vegan_2.6-2            Biostrings_2.62.0     
-[148] rmarkdown_2.14         shiny_1.7.2            nloptr_2.0.3          
-[151] lifecycle_1.0.2        nlme_3.1-158           jsonlite_1.8.0        
-[154] Rhdf5lib_1.16.0        carData_3.0-5          desc_1.4.1            
-[157] fansi_1.0.3            pillar_1.8.1           lattice_0.20-45       
-[160] fastmap_1.1.0          pkgbuild_1.3.1         survival_3.3-1        
-[163] glue_1.6.2             remotes_2.4.2          bayestestR_0.12.1     
-[166] iterators_1.0.14       bit_4.0.4              stringi_1.7.8         
-[169] sass_0.4.2             profvis_0.3.7          performance_0.9.1     
-[172] rematch2_2.1.2         textshaping_0.3.6      memoise_2.0.1         
-[175] ape_5.6-2             </code></pre>
+  [1] systemfonts_1.0.4      plyr_1.8.7             igraph_1.3.5          
+  [4] splines_4.1.1          TH.data_1.1-1          lpsymphony_1.22.0     
+  [7] digest_0.6.29          foreach_1.5.2          htmltools_0.5.3       
+ [10] lmerTest_3.1-3         fansi_1.0.3            memoise_2.0.1         
+ [13] magrittr_2.0.3         xlsx_0.6.5             paletteer_1.4.0       
+ [16] cluster_2.1.3          annotate_1.72.0        Biostrings_2.62.0     
+ [19] sandwich_3.0-2         colorspace_2.0-3       blob_1.2.3            
+ [22] ggrepel_0.9.1          textshaping_0.3.6      xfun_0.31             
+ [25] libcoin_1.0-9          callr_3.7.1            crayon_1.5.1          
+ [28] RCurl_1.98-1.8         prismatic_1.1.0        jsonlite_1.8.0        
+ [31] biglm_0.9-2.1          genefilter_1.76.0      lme4_1.1-30           
+ [34] zeallot_0.1.0          zoo_1.8-10             survival_3.3-1        
+ [37] iterators_1.0.14       ape_5.6-2              glue_1.6.2            
+ [40] polyclip_1.10-0        gtable_0.3.1           zlibbioc_1.40.0       
+ [43] XVector_0.34.0         DelayedArray_0.20.0    statsExpressions_1.3.2
+ [46] car_3.1-0              Rhdf5lib_1.16.0        DEoptimR_1.0-11       
+ [49] abind_1.4-5            scales_1.2.1           mvtnorm_1.1-3         
+ [52] DBI_1.1.3              Rcpp_1.0.9             xtable_1.8-4          
+ [55] performance_0.9.1      bit_4.0.4              getopt_1.20.3         
+ [58] datawizard_0.4.1       httr_1.4.4             RColorBrewer_1.1-3    
+ [61] modeltools_0.2-23      ellipsis_0.3.2         XML_3.99-0.10         
+ [64] pkgconfig_2.0.3        reshape_0.8.9          rJava_1.0-6           
+ [67] farver_2.1.1           sass_0.4.2             utf8_1.2.2            
+ [70] here_1.0.1             AnnotationDbi_1.56.2   tidyselect_1.2.0      
+ [73] labeling_0.4.2         rlang_1.0.6            reshape2_1.4.4        
+ [76] later_1.3.0            effectsize_0.7.0       munsell_0.5.0         
+ [79] tools_4.1.1            cachem_1.0.6           cli_3.4.1             
+ [82] RSQLite_2.2.15         generics_0.1.3         ade4_1.7-19           
+ [85] evaluate_0.15          biomformat_1.22.0      stringr_1.4.1         
+ [88] fastmap_1.1.0          yaml_2.3.5             ragg_1.2.2            
+ [91] rematch2_2.1.2         bit64_4.0.5            processx_3.7.0        
+ [94] knitr_1.39             fs_1.5.2               robustbase_0.95-0     
+ [97] purrr_0.3.5            KEGGREST_1.34.0        coin_1.4-2            
+[100] nlme_3.1-158           whisker_0.4            correlation_0.8.1     
+[103] compiler_4.1.1         rstudioapi_0.13        png_0.1-7             
+[106] tibble_3.1.8           tweenr_1.0.2           afex_1.1-1            
+[109] pcaPP_2.0-2            bslib_0.4.0            stringi_1.7.8         
+[112] highr_0.9              ps_1.7.1               parameters_0.18.1     
+[115] forcats_0.5.1          lattice_0.20-45        Matrix_1.4-1          
+[118] nloptr_2.0.3           vegan_2.6-4            permute_0.9-7         
+[121] multtest_2.50.0        vctrs_0.4.2            pillar_1.8.1          
+[124] lifecycle_1.0.3        rhdf5filters_1.6.0     optparse_1.7.3        
+[127] jquerylib_0.1.4        data.table_1.14.2      bitops_1.0-7          
+[130] insight_0.18.0         httpuv_1.6.5           R6_2.5.1              
+[133] promises_1.2.0.1       codetools_0.2-18       boot_1.3-28           
+[136] MASS_7.3-58            assertthat_0.2.1       rhdf5_2.38.1          
+[139] xlsxjars_0.6.1         rprojroot_2.0.3        withr_2.5.0           
+[142] multcomp_1.4-19        GenomeInfoDbData_1.2.7 mgcv_1.8-40           
+[145] bayestestR_0.12.1      parallel_4.1.1         grid_4.1.1            
+[148] tidyr_1.2.1            minqa_1.2.4            rmarkdown_2.14        
+[151] carData_3.0-5          git2r_0.30.1           getPass_0.2-2         
+[154] numDeriv_2016.8-1.1    ggstatsplot_0.9.3     </code></pre>
+</div>
+</div>
 </div>
 </div>
 

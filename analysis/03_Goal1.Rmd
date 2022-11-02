@@ -21,6 +21,8 @@ output: html_document
 ```{r setup, include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F}
 knitr::opts_chunk$set(echo = FALSE)
 knitr::opts_knit$set(root.dir = here::here())
+set.seed(1234)
+bifido_animals<-c("RUDDY","NANI","LEO","BALOO")
 ```
 
 The goal of this subanalysis is to characterize changes in the gut microbiome of Leishmaniasis-affected dogs after 1 month of treatment with Allopurinol and Glucantime(R). For that, data for 10 different animals is available at BL, prior to treatment, and at M1. All animals underwent Leishamaniasis treatment and there were no control animals nor samples. Thus, we'll work with a subset of 20 samples and the primary variable we will use is *Timepoint*. 
@@ -42,18 +44,16 @@ Results indicate that there are no difference between M1 and BL samples using ei
 suppressMessages(require(phyloseq))
 suppressMessages(require(patchwork))
 suppressMessages(require(dplyr))
-### Load data and create MRE Object
-devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")### Change to require/library/load local package
 
-myMREObject<-readRDS("data/mreObject_goal1.rds")
+ps_metaphlan<-readRDS("data/processed/ps_metaphlan_goal1_sec.rds")
 my_datatable<-readRDS("data/raw/CatalogMapping/IGC/dataTable.rds")
 mymin<-min(my_datatable$NumberMappedReads) #
 my_datatable<-my_datatable %>% 
   dplyr::filter(ReadCountReal==6000000) %>% 
-  dplyr::filter(SampleID %in% get_meta(myMREObject)$SampleID) %>% 
+  dplyr::filter(SampleID %in% sample_data(ps_metaphlan)$SampleID ) %>% 
   dplyr::select(SampleID,GeneNumber)
 
-x.2.0 <- myMREObject@taxa@metaphlan@phyloseq_sec
+x.2.0 <-ps_metaphlan
 x.2.0.species<-x.2.0
 # x.2.0.species = transform_sample_counts(x.2.0.species, function(x) ((x/sum(x))))
 
@@ -63,7 +63,7 @@ x.2.0.species<-x.2.0
 plot_data<-phyloseq::estimate_richness(x.2.0.species) %>% 
   tibble::rownames_to_column() %>% 
   dplyr::mutate(rowname=gsub("X","",rowname)) %>% 
-  dplyr::left_join(get_meta(myMREObject),by=c("rowname"="SampleID")) %>% 
+  dplyr::left_join(sample_data(ps_metaphlan) %>% data.frame(),by=c("rowname"="SampleID")) %>% 
   dplyr::rename(SampleID=rowname) %>% 
   dplyr::select(SampleID, Timepoint, Host_name, Chao1,Shannon) %>% 
   dplyr::left_join(my_datatable,by="SampleID") %>% 
@@ -84,9 +84,7 @@ p0<-
 p0
 # pT<- p0 / p1 / p2
 ggplot2::ggsave(p0,filename="output/Deliverables/Goal1/AlphaDiversity/AlphaDiversity_Timepoint_goal1_only.pdf",height=15,width=7)
-# ggplot2::ggsave(p1,filename="output/Deliverables/AlphaDiversity_treatment_w1_only.pdf",height=15,width=7)
-# ggplot2::ggsave(p2,filename="output/Deliverables/AlphaDiversity_treatment_w2_only.pdf",height=15,width=7)
-# ggplot2::ggsave(pT,filename="output/Deliverables/AlphaDiversity_treatment.pdf",height=15,width=7)
+
 ```
 
 ## Beta-Diversity
@@ -95,11 +93,11 @@ ggplot2::ggsave(p0,filename="output/Deliverables/Goal1/AlphaDiversity/AlphaDiver
 
 We will use the same ordination method than in previous exploratory section but, in this case, only applied to BL and M0 sample to detect significant changes related to the effect of Allopurinol + Glucantime treatment, discarding the effect of other variables that may act as confounders.
 
-*Deliverables: Goal1/BetaDiversity/NMDS_Ordination_vs_Timepoint.pdf*
+*Deliverables: Goal1/BetaDiversity/NMDS_Goal1_StressPlot.pdf, Goal1/BetaDiversity/NMDS_Ordination_vs_Timepoint.pdf, output/Deliverables/Goal1/BetaDiversity/Goal1_Adonis.xls*
 
-No effect of  (*Timepoint*) is observed or significant in the global composition of the gut microbiome of treated animals. Animal identity, however, explains 61% of the microbiome composition. This is expected in longitudinal data.
+No effect of  *Timepoint* is observed or significant(PERMANOVA) in the global composition of the gut microbiome of treated animals. Animal identity, however, explains 61% of the microbiome composition. This is expected in longitudinal (paired-individual) data.
 
-```{r Global Ordination Beta Diversity , include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F}
+```{r Global Ordination Beta Diversity, include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F}
 suppressWarnings(require(phyloseq))
 suppressWarnings(require(dplyr))
 suppressWarnings(require(ggplot2))
@@ -107,18 +105,16 @@ suppressWarnings(require(ggforce))
 suppressWarnings(require(patchwork))
 set.seed(1234)
 
-devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")
-myMREObject<-readRDS("data/mreObject_goal1.rds")
-x.2.0<-myMREObject@taxa@metaphlan@phyloseq_sec
+x.2.0<-readRDS("data/processed/ps_metaphlan_goal1_sec.rds")
 set.seed(1234)
 x.2.0.species<-x.2.0
 x.2.0.species<-transform_sample_counts(x.2.0.species, function(x) ((x/sum(x))))
 sampleData<-data.frame(sample_data(x.2.0.species))
 rownames(sampleData)<-sampleData$SampleID
 sample_data(x.2.0.species)<-sampleData
-suppressWarnings(myOrd<-phyloseq::ordinate(x.2.0.species,method="NMDS",distance="bray",trymax=100))
-
-pdf("output/Deliverables/NMDS_Goal1_StressPlot.pdf")
+capture.output(myOrd<-phyloseq::ordinate(x.2.0.species,method="NMDS",distance="bray",trymax=100),file="/dev/null")
+# capture.output(myOrd<-ordinate(x.2.0.genus,method="NMDS",distance="wunifrac"),file = "/dev/null")
+pdf("output/Deliverables/Goal1/BetaDiversity/NMDS_Goal1_StressPlot.pdf")
 vegan::stressplot(myOrd)
 dev.off()
 
@@ -131,26 +127,19 @@ xlsx::write.xlsx(file = "output/Deliverables/Goal1/BetaDiversity/Goal1_Adonis.xl
 ### Perform ANOVA for non-NA in treatment
 xlsx::write.xlsx(file = "output/Deliverables/Goal1/BetaDiversity/Goal1_Adonis.xls",sheetName = "Host_name",vegan::adonis2(x.6.0.response~Host_name,data=x.6.0.explanatory),append=T)
 
-p.4.0.samples=plot_ordination(x.2.0.species,myOrd)
-
 ### By treatment
-p0<-p.4.0.samples  + geom_point(aes(color=Timepoint)) +ggtitle("Unconstrained NMDS(Bray) by Timepoint | Goal1")+
-  theme(panel.border=element_blank(),panel.grid.major=element_blank(),panel.grid.minor=element_blank(),axis.line=element_line(colour="black"),axis.text.x=element_text(size=16),axis.text.y=element_text(size=16))+
-  theme(axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))+
-  theme(legend.text=element_text(size=12,face="italic"),legend.title=element_text(size=12))+
-  theme(plot.title=element_text(lineheight=1,face="bold",size=15))+stat_ellipse(alpha=1,mapping=aes(color=Timepoint))+
-  theme_classic() + theme(axis.line.x = element_line(colour = "black", 
-                                    size = 1, linetype = "solid"), axis.line.y = element_line(colour = "black", 
-                                    size = 1, linetype = "solid"), axis.text.x = element_text(size = 10), 
-                                    axis.text.y = element_text(size = 10),
-                                    axis.title.x = element_text(size = 10, 
-                                        face = "bold"), axis.title.y = element_text(size = 10, 
-                                        face = "bold"), legend.title = element_text(size = 10, 
-                                        face = "bold"), legend.text = element_text(size = 8), 
-                                        legend.spacing.x = unit(0.005, "npc"), 
-                                        legend.key.size = unit(4,"mm"), legend.background = element_rect(fill = (alpha = 0))) + 
-        labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2") + scale_fill_brewer(palette="Set1")+scale_color_brewer(palette="Set1")+
-        guides(fill = guide_legend(override.aes = list(size = 4)))
+p0<-plot_ordination(x.2.0.species,
+                    myOrd,
+                    color = "Timepoint") + 
+  geom_point(size=5) +
+  ggtitle("Unconstrained NMDS(Bray) by Timepoint")+
+  theme_classic() +
+  stat_ellipse(alpha=1,lwd = 1.2,
+               mapping=aes(color=Timepoint),na.rm = T)+
+  labs(x = "NMDS Dimension 1", y = "NMDS Dimension 2") + 
+        guides(fill = guide_legend(override.aes = list(size = 4)))+ 
+    theme(plot.title = element_text(size = 12, face = "bold"))+
+    scale_color_brewer(palette="Dark2")
 p0
 ggsave(plot=p0,filename="output/Deliverables/Goal1/BetaDiversity/NMDS_Ordination_vs_Timepoint.pdf",height=12,width=7)
 ```
@@ -161,15 +150,16 @@ ggsave(plot=p0,filename="output/Deliverables/Goal1/BetaDiversity/NMDS_Ordination
 We have seen that the is no structural change in the composition related to leishmaniasis treatment. We are interested, now, if there is any change in specific bacterial species that, even if minor and not causing structural changes, may be relevant in relationship with the effect of the treatment. For that purpose we'll use different methods:
 
 - LEFsER: This is the R implementation of LEFsE, a biomarker discovery software designed for microbiome data.
-- MaasLin:
+- MaasLin2: MaAsLin2 relies on general linear models to accommodate most modern epidemiological study designs, including cross-sectional and longitudinal, and offers a variety of data exploration, normalization, and transformation methods.
 - Wilcoxon: Standard Wilcoxon test used on CLR-transformed data.
 
 Note that within this group we have n=10 for each group being compared (10 at samples BL and 10 samples at M1). Therefore, the dataset and design is under-powered to detect small differences. 
 
 ### LEFsE vs. Treatment
 
-LEFsE results show an increase in M1, of three different *Bifidobacterium* species(). One limitation of LEFsE is that, internally, non-parametric tests are non-paired, so it does not take into account the paired design of the study. When the paired design is applied, significance(p<0.05) of these species vs Timepoint is lost (see deliverable boxplots), although trends are mantained. Notably, *Bifodbacterium* species are not foundin any BL samples, but are found in 4 M1 samples. In addition, changes in these species are located in 4 different animals and not the other 6, which also undergo the same treatment, thus pointing at the possiblity that these changes are related to an unobserved factor other than treatment.
+LEFsE results show an increase in M1, of three different *Bifidobacterium* species(). One limitation of LEFsE is that, internally, non-parametric tests are non-paired, so it does not take into account the paired design of the study. When the paired design is applied, significance(p<0.05) of these species vs Timepoint is lost (see deliverable boxplots), although trends are mantained. Notably, *Bifidobacterium* species are not found in any BL samples, but are found in 4 M1 samples. In addition, changes in these species are located in 4 different animals and do not appear in the other 6, which also undergo the same treatment, thus pointing at the possiblity that these changes are related to an unobserved factor other than treatment.
 
+*Deliverables: Goal1/DifferentialAbundance/lefse/lefser_goal1_plot.pdf, Goal1/DifferentialAbundance/lefse/boxplots/Species_vs_Timepoint_Goal1.pdf, Goal1/DifferentialAbundance/lefse/boxplots/paired_Species_vs_Timepoint_Goal1.pdf*
 
 ```{r Timepoint DA chunk1 Species, include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F,eval=T}
 suppressMessages(require(dplyr))
@@ -180,10 +170,7 @@ suppressMessages(require(patchwork))
 
 set.seed(1234)
 ### Species Level
-
-devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")
-myMREObject<-readRDS("data/mreObject_goal1.rds")
-x.2.0<-myMREObject@taxa@metaphlan@phyloseq_sec
+x.2.0<-readRDS("data/processed/ps_metaphlan_goal1_sec.rds")
 set.seed(1234)
 x.2.0.species<-x.2.0
 # x.2.0.species<-transform_sample_counts(x.2.0.species, function(x) ((x/sum(x))))
@@ -193,7 +180,6 @@ x.2.0.species<-x.2.0
 x.2.0 <-x.2.0.species 
   # phyloseq::filter_taxa(., function (x) sum(x > 0) > 2, TRUE) %>%
   # phyloseq::rarefy_even_depth(.) 
-  
 # phyloseq::tax_glom(taxrank="Genus",NArm = F)
   # microbiome::transform(transform="compositional")
 
@@ -298,10 +284,11 @@ table(aux_DF$Diet,aux_DF$Bifido)
 
 ### MaasLin vs Treatment
 
-MaasLin method allows for the accounting of other variables in the test design.
-
+[MaasLin2](https://huttenhower.sph.harvard.edu/maaslin/) is a more advanced method than lefseR and it is better suited to microbiome data and longitudinal design, since this method allows for the accounting of other variables in the test design. In this case, we use MaasLin2 to compare M1 and BL samples (n=10), using dog name as a fixed effect variable in the model to account for the inter-dog variability.
 
 Results: Using MaasLin2 there are no significant hits at species nor genus level
+
+*Deliverables: Goal1/DifferentialAbundance/maaslin/Volcano_M1_vs_BL_taxonomy_species.pdf, Goal1/DifferentialAbundance/maaslin/Volcano_M1_vs_BL_taxonomy_genus.pdf, Goal1/DifferentialAbundance/maaslin/Volcano_M1_vs_BL.xlsx*
 
 ```{r DA species maaslin2, include=TRUE, echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=T,eval=T}
 suppressMessages(require(dplyr))
@@ -312,25 +299,97 @@ suppressMessages(require(patchwork))
 suppressMessages(require(Maaslin2))
 
 set.seed(1234)
+ps_metaphlan<-readRDS("data/processed/ps_metaphlan_goal1.rds")
+tax_df<-tax_table(ps_metaphlan) %>% as.data.frame() %>%  dplyr::select(Species)
+tax_df$feature<-rownames(tax_df)
+
 ### Species Level
+input_data<-ps_metaphlan %>% otu_table() %>% t()
 
-devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")
-myMREObject<-readRDS("data/mreObject_goal1.rds")
-
-### Species Level
-input_data<-myMREObject@taxa@metaphlan@phyloseq %>% otu_table() %>% t()
-
-input_metadata<-metar::get_meta(myMREObject) %>% as.data.frame()
+input_metadata<-sample_data(ps_metaphlan) %>% as.data.frame()
 rownames(input_metadata)<-input_metadata$SampleID
-suppressWarnings(fit_data <- Maaslin2::Maaslin2(input_data=input_data,input_metadata=input_metadata,output="output/Deliverables/Goal1/DifferentialAbundance/maaslin/species",fixed_effects = c("Timepoint"),random_effects = c("Host_name"),cores=4)) ### No siginifcant hits
+dir.create("output/Deliverables/Goal1/DifferentialAbundance/maaslin/", showWarnings = FALSE,recursive = T)
+if(file.exists("output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_taxonomy_species.rds")){
+  fit_data<-readRDS("output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_taxonomy_species.rds")
+}else{
+  suppressWarnings(fit_data <- Maaslin2::Maaslin2(input_data=input_data,input_metadata=input_metadata,output="output/Deliverables/Goal1/DifferentialAbundance/maaslin/species",fixed_effects = c("Timepoint"),random_effects = c("Host_name"),cores=4)) ### No siginifcant hits
+  saveRDS(fit_data,file="output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_taxonomy_species.rds")
+}
+
+plot_data<-fit_data$results %>% 
+  dplyr::mutate('-log(qval)'=-log10(qval)) %>% 
+  dplyr::mutate(significant=ifelse(qval<0.05,"q<0.05","ns")) %>% 
+  dplyr::mutate(labels=ifelse(significant=="ns",FALSE,TRUE)) %>% 
+  dplyr::mutate(feature=ifelse(significant=="ns","",feature)) 
+  
+p0<-ggplot(plot_data)+
+    geom_point(aes(x=coef,y=`-log(qval)`,color=significant))+
+    ggrepel::geom_text_repel(aes(x=coef,y=`-log(qval)`),size=2,
+                                 label = plot_data$feature,max.overlaps = 30,
+                                 box.padding = unit(0.25, "lines"),
+                                  hjust = 1)+
+    ggtitle("M1 vs M0 | Species")
+
+p0
+fit_data$results %>% 
+  dplyr::left_join(tax_df) %>% 
+  dplyr::select(-feature, -name) %>% 
+  dplyr::arrange(pval) %>% 
+  dplyr::relocate(Species,.before = metadata) %>% 
+  head() %>% knitr::kable()
+ggsave(p0,filename="output/Deliverables/Goal1/DifferentialAbundance/maaslin/Volcano_M1_vs_BL_taxonomy_species.pdf")  
+
+fit_data$results %>% 
+  dplyr::left_join(tax_df) %>% 
+  dplyr::select(-feature, -name) %>% 
+  dplyr::relocate(Species,.before = metadata) %>% 
+  xlsx::write.xlsx(.,file="output/Deliverables/Goal1/DifferentialAbundance/maaslin/Volcano_M1_vs_BL.xlsx",sheetName = "Species")
 
 ### Genus Level
-input_data<-myMREObject@taxa@metaphlan@phyloseq %>% tax_glom(.,taxrank="Genus") %>% otu_table() %>% t()
-input_metadata<-metar::get_meta(myMREObject) %>% as.data.frame()
+input_data<-ps_metaphlan %>% tax_glom(.,taxrank="Genus") %>% otu_table() %>% t()
+tax_df<-tax_table(ps_metaphlan %>% tax_glom(.,taxrank="Genus")) %>% as.data.frame() %>%  dplyr::select(Genus)
+tax_df$feature<-rownames(tax_df)
+input_metadata<-phyloseq::sample_data(ps_metaphlan) %>% as.data.frame()
 rownames(input_metadata)<-input_metadata$SampleID
-rownames(input_metadata)
-suppressWarnings(fit_data <- Maaslin2::Maaslin2(input_data=input_data,input_metadata=input_metadata,output="output/Deliverables/Goal1/DifferentialAbundance/maaslin/genus",fixed_effects = c("Timepoint"),random_effects = c("Host_name"),cores=4)) ### No siginifcant hits
 
+
+dir.create("output/Deliverables/Goal1/DifferentialAbundance/maaslin/", showWarnings = FALSE,recursive = T)
+if(file.exists("output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_taxonomy_genus.rds")){
+  fit_data<-readRDS("output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_taxonomy_genus.rds")
+}else{
+  suppressWarnings(fit_data <- Maaslin2::Maaslin2(input_data=input_data,input_metadata=input_metadata,output="output/Deliverables/Goal1/DifferentialAbundance/maaslin/genus",fixed_effects = c("Timepoint"),random_effects = c("Host_name"),cores=4)) ### No siginifcant hits
+  saveRDS(fit_data,file="output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_taxonomy_genus.rds")
+}
+
+
+
+plot_data<-fit_data$results %>% 
+  dplyr::mutate('-log(qval)'=-log10(qval)) %>% 
+  dplyr::mutate(significant=ifelse(qval<0.05,"q<0.05","ns")) %>% 
+  dplyr::mutate(labels=ifelse(significant=="ns",FALSE,TRUE)) %>% 
+  dplyr::mutate(feature=ifelse(significant=="ns","",feature)) 
+  
+p0<-ggplot(plot_data)+
+    geom_point(aes(x=coef,y=`-log(qval)`,color=significant))+
+    ggrepel::geom_text_repel(aes(x=coef,y=`-log(qval)`),size=2,
+                                 label = plot_data$feature,max.overlaps = 30,
+                                 box.padding = unit(0.25, "lines"),
+                                  hjust = 1)+
+    ggtitle("M1 vs M0 | Genus")
+
+p0
+ggsave(p0,filename="output/Deliverables/Goal1/DifferentialAbundance/maaslin/Volcano_M1_vs_BL_taxonomy_genus.pdf")  
+fit_data$results %>% 
+  dplyr::left_join(tax_df) %>% 
+  dplyr::select(-feature, -name) %>%  
+  dplyr::arrange(pval) %>% 
+  dplyr::relocate(Genus,.before = metadata)%>%
+  head() %>% knitr::kable()
+fit_data$results %>% 
+  dplyr::left_join(tax_df) %>% 
+  dplyr::select(-feature, -name) %>% 
+  dplyr::relocate(Genus,.before = metadata) %>% 
+  xlsx::write.xlsx(.,file="output/Deliverables/Goal1/DifferentialAbundance/maaslin/Volcano_M1_vs_BL.xlsx",sheetName = "Genus",append=T)
 ```
 
 ## Functional Analysis
@@ -343,7 +402,9 @@ One of the advantages of using metagenomic sequencing is the possibility to prof
   
 From these analysis, we'll use MetaCYC pathway relative abundance quantification to compare sample groups. We run MaasLin algorithm both at the MetaCyc pathway and UniRef levels using standard TSS normalization and log transformation. No significant hits were found for Timepoint in this dataset.
 
-```{r functional analysis chunk 1,include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F,eval=F}
+*Deliverables: Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_metacyc.pdf, Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_kegg.pdf, Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function.xls *
+
+```{r functional analysis chunk 1,include=TRUE,echo=F, message=FALSE, warning=FALSE, paged.print=FALSE, tidy=F,eval=T}
 suppressMessages(require(dplyr))
 suppressMessages(require(phyloseq))
 suppressMessages(require(lefser))
@@ -352,10 +413,8 @@ suppressMessages(require(patchwork))
 suppressMessages(require(Maaslin2))
 
 set.seed(1234)
-devtools::load_all("~/Documents/Work/Development/WMGSPipeline/")
-myMREObject<-readRDS("data/mreObject_goal1.rds")
-
-### Prepare input_data, 
+ps_metaphlan<-readRDS("data/processed/ps_metaphlan_goal1.rds")
+### Prepare input_data, MetaCyc Pathways
 input_data<-read.delim("data/raw/FunctionalAnnotation/HUMANN3/All_pathabun_relab.tsv")
 colnames(input_data)[1]<-"Pathway"
 colnames(input_data)<-gsub("_Abundance","",colnames(input_data))
@@ -367,15 +426,42 @@ rownames(input_data)<-input_data$Pathway
 input_data$Pathway<-NULL
 
 ### Prepare metadata
-input_metadata<-metar::get_meta(myMREObject) %>% as.data.frame()
+input_metadata<-ps_metaphlan %>% phyloseq::sample_data() %>% as.data.frame()
 rownames(input_metadata)<-input_metadata$SampleID
 
-suppressMessages(fit_data <- Maaslin2::Maaslin2(input_data=input_data,input_metadata=input_metadata,output="output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/pathways",fixed_effects = c("Timepoint"),random_effects = c("Host_name"),cores = 4) )### No siginifcant hits
+dir.create("output/Deliverables/Goal1/DifferentialAbundance/maaslin/", showWarnings = FALSE,recursive = T)
+if(file.exists("output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_metacyc.rds")){
+  fit_data<-readRDS("output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_metacyc.rds")
+}else{
+  suppressMessages(fit_data <- Maaslin2::Maaslin2(input_data=input_data,input_metadata=input_metadata,output="output/Deliverables/Goal1/DifferentialAbundance/maaslin/MetaCyc/",fixed_effects = c("Timepoint"),random_effects = c("Host_name"),cores = 4) )### No siginifcant hits
+  saveRDS(fit_data,file="output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_metacyc.rds")
+}
+file.remove("output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function.xlsx")
+fit_data$results %>% 
+  xlsx::write.xlsx("output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function.xlsx",sheetName = "MetaCyc")
+plot_data<-fit_data$results %>% 
+  dplyr::mutate('-log(qval)'=-log10(qval)) %>% 
+  dplyr::mutate(significant=ifelse(qval<0.05,"q<0.05","ns")) %>% 
+  dplyr::mutate(labels=ifelse(significant=="ns",FALSE,TRUE)) %>% 
+  dplyr::mutate(feature=ifelse(significant=="ns","",feature)) 
+  
+p0<-ggplot(plot_data)+
+    geom_point(aes(x=coef,y=`-log(qval)`,color=significant))+
+    ggrepel::geom_text_repel(aes(x=coef,y=`-log(qval)`),size=2,
+                                 label = plot_data$feature,max.overlaps = 30,
+                                 box.padding = unit(0.25, "lines"),
+                                  hjust = 1)+
+    ggtitle("M1 vs M0 | MetaCyc")
+p0
+ggsave(p0,filename = "output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_metacyc.pdf")
+fit_data$results %>%
+  dplyr::select(-name) %>%
+  dplyr::arrange(pval) %>%
+  head() %>% knitr::kable()
+# fit_data$results %>% head() %>% knitr::kable()
 
-
-
-### Prepare input_data, 
-input_data<-read.delim("data/raw/FunctionalAnnotation/HUMANN3/All_genefam_relab.tsv")
+### Prepare input_data, KEGG families.
+input_data<-read.delim("data/raw/FunctionalAnnotation/HUMANN3/All_genefam_cpm_kegg.tsv")
 colnames(input_data)[1]<-"Gene.Family"
 colnames(input_data)<-gsub("_Abundance.RPKs","",colnames(input_data))
 colnames(input_data)<-gsub("X","",colnames(input_data))
@@ -387,10 +473,40 @@ rownames(input_data)<-input_data$Gene.Family
 input_data$Gene.Family<-NULL
 
 ### Prepare metadata
-input_metadata<-metar::get_meta(myMREObject) %>% as.data.frame()
+input_metadata<-ps_metaphlan %>% phyloseq::sample_data() %>% as.data.frame()
 rownames(input_metadata)<-input_metadata$SampleID
-rownames(input_metadata)
-suppressMessages(fit_data <- Maaslin2::Maaslin2(input_data=input_data,input_metadata=input_metadata,output="output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/genes",fixed_effects = c("Timepoint"),random_effects = c("Host_name"),cores = 4,min_prevalence = 0.4)) ### No siginifcant hits
+# rownames(input_metadata)
+
+dir.create("output/Deliverables/Goal1/DifferentialAbundance/maaslin/", showWarnings = FALSE,recursive = T)
+if(file.exists("output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_kegg.rds")){
+  fit_data<-readRDS("output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_kegg.rds")
+}else{
+  suppressMessages(fit_data <- Maaslin2::Maaslin2(input_data=input_data,input_metadata=input_metadata,output="output/Deliverables/Goal1/DifferentialAbundance/maaslin/kegg",fixed_effects = c("Timepoint"),random_effects = c("Host_name"),cores = 4,min_prevalence = 0.4)) ### No siginifcant hits
+   saveRDS(fit_data,file="output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_kegg.rds")
+}
+file.remove("output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function.xls")
+fit_data$results %>% 
+  xlsx::write.xlsx("output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function.xls",sheetName = "KEGG",append=T)
+
+plot_data<-fit_data$results %>% 
+  dplyr::mutate('-log(qval)'=-log10(qval)) %>% 
+  dplyr::mutate(significant=ifelse(qval<0.05,"q<0.05","ns")) %>% 
+  dplyr::mutate(labels=ifelse(significant=="ns",FALSE,TRUE)) %>% 
+  dplyr::mutate(feature=ifelse(significant=="ns","",feature)) 
+  
+p0<-ggplot(plot_data)+
+    geom_point(aes(x=coef,y=`-log(qval)`,color=significant))+
+    ggrepel::geom_text_repel(aes(x=coef,y=`-log(qval)`),size=2,
+                                 label = plot_data$feature,max.overlaps = 30,
+                                 box.padding = unit(0.25, "lines"),
+                                  hjust = 1)+
+    ggtitle("M1 vs M0 | KEGG")
+# p0
+ggsave(p0,filename = "output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_kegg.pdf")
+# fit_data$results %>% 
+#   dplyr::select(-name) %>%  
+#   dplyr::arrange(pval) %>% 
+#   head() %>% knitr::kable()
 
 
 

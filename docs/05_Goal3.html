@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Marc Noguera-Julian, PhD. TreeTopUnder" />
+
+<meta name="date" content="2022-11-02" />
+
+<title>Leishmaniasis microbiome - BL samples</title>
+
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Purina_N1H_2022</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="01_index.html">Home</a>
+</li>
+<li>
+  <a href="02_Exploratory.html">Exploratory</a>
+</li>
+<li>
+  <a href="03_Goal1.html">Goal 1</a>
+</li>
+<li>
+  <a href="04_Goal2.html">Goal 2</a>
+</li>
+<li>
+  <a href="05_Goal3.html">Goal 3</a>
+</li>
+<li>
+  <a href="06_Conclusions.html">Conclusions</a>
+</li>
+<li>
+  <a href="MetadataExplorer.html">Metadata</a>
+</li>
+<li>
+  <a href="Multiqc_report.html">MultiQC</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Leishmaniasis microbiome - BL samples</h1>
+<h4 class="author">Marc Noguera-Julian, PhD. TreeTopUnder</h4>
+<h4 class="date">2022-11-02</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2022-11-02
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>Purina_N1H_2022/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version 1.7.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20220906code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20220906)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20220906code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20220906)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTreeTopUnderPurinaN1H2022tree74b0908090ff8e0bc963c89a8444a189c23e53datargetblank74b0908a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TreeTopUnder/Purina_N1H_2022/tree/74b0908090ff8e0bc963c89a8444a189c23e53da" target="_blank">74b0908</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomTreeTopUnderPurinaN1H2022tree74b0908090ff8e0bc963c89a8444a189c23e53datargetblank74b0908a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/TreeTopUnder/Purina_N1H_2022/tree/74b0908090ff8e0bc963c89a8444a189c23e53da" target="_blank">74b0908</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    code/001_metadata_check.Rmd
+    Ignored:    code/003_metadata_vars_selection.Rmd
+    Ignored:    code/006_DataPreprocessing.Rmd
+    Ignored:    code/006_DataPreprocessing.html
+    Ignored:    code/008_PopulateMRE.Rmd
+    Ignored:    code/Phylosmith_bug.Rmd
+    Ignored:    code/output/
+    Ignored:    data/.DS_Store
+    Ignored:    data/generichness_goal3.rds
+    Ignored:    data/mreObject_feces.rds
+    Ignored:    data/mreObject_goal1.rds
+    Ignored:    data/mreObject_goal2.rds
+    Ignored:    data/mreObject_goal3.rds
+    Ignored:    data/processed/
+    Ignored:    data/ps_metaphlan_feces.rds
+    Ignored:    data/raw/
+    Ignored:    output/.DS_Store
+    Ignored:    output/Deliverables/.DS_Store
+    Ignored:    output/Deliverables/Exploratory/.DS_Store
+    Ignored:    output/Deliverables/Exploratory/DifferentialAbundance/
+    Ignored:    output/Deliverables/Goal1/.DS_Store
+    Ignored:    output/Deliverables/Goal1/DifferentialAbundance/.DS_Store
+    Ignored:    output/Deliverables/Goal1/DifferentialAbundance/lefse/.DS_Store
+    Ignored:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/.DS_Store
+    Ignored:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/genus/figures/
+    Ignored:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/species/figures/
+    Ignored:    output/Deliverables/Goal2/.DS_Store
+    Ignored:    output/Deliverables/Goal2/DifferentialAbundance/.DS_Store
+    Ignored:    output/Deliverables/Goal2/DifferentialAbundance/lefse/.DS_Store
+    Ignored:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/.DS_Store
+    Ignored:    output/mre_data/.DS_Store
+    Ignored:    output/mre_data/Goal3/
+    Ignored:    output/mre_data/SpeciesQuantification/Metaphlan3/NMDS/
+    Ignored:    output/mre_data/feces/
+
+Untracked files:
+    Untracked:  MetadataExplorer.html
+    Untracked:  analysis/06_Conclusions.Rmd
+    Untracked:  output/Deliverables/Exploratory/BetaDiversity/Ordination_BLSamples.pdf
+    Untracked:  output/Deliverables/Exploratory/DataExport/
+    Untracked:  output/Deliverables/Exploratory/StackedBarplots_Genus.pdf
+    Untracked:  output/Deliverables/Exploratory/TwoSamples_Efaecium.pdf
+    Untracked:  output/Deliverables/ExploratoryHeatmap_allSamples.pdf
+    Untracked:  output/Deliverables/Goal1/BetaDiversity/Goal3_Adonis.xls
+    Untracked:  output/Deliverables/Goal1/BetaDiversity/NMDS_Goal1_StressPlot.pdf
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function.xls
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function.xlsx
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_kegg.pdf
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_kegg.rds
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_kegg.xls
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_metacyc.pdf
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_metacyc.rds
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_function_metacyc.xls
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_taxonomy_genus.rds
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MaasLin2_M1_vs_BL_taxonomy_species.rds
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/MetaCyc/
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/Volcano_M1_vs_BL.xlsx
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/Volcano_M1_vs_BL_taxonomy_genus.pdf
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/Volcano_M1_vs_BL_taxonomy_species.pdf
+    Untracked:  output/Deliverables/Goal1/DifferentialAbundance/maaslin/kegg/
+    Untracked:  output/Deliverables/Goal2/AlphaDiversity/AlphaDiversity_Timepoint_goal2_Probiotic_samples.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Blautia_sp_CAG_257_vs_Timepoint_Probiotic_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Clostridium_sp_CAG_58_vs_Timepoint_Probiotic_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Dorea_sp_CAG_317_vs_Timepoint_Probiotic_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Blautia_sp_CAG_257_vs_Timepoint_Probiotic_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Clostridium_hiranonis_vs_Timepoint_Placebo_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Clostridium_sp_CAG_58_vs_Timepoint_Probiotic_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Collinsella_intestinalis_vs_Timepoint_Placebo_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Dorea_sp_CAG_317_vs_Timepoint_Probiotic_Goal2.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/lefse/lefser_goal2_Probiotic_plot.pdf
+    Untracked:  output/Deliverables/Goal2/DifferentialAbundance/maaslin/
+    Untracked:  output/Deliverables/Goal3/
+    Untracked:  output/Deliverables/NMDS_StressPlot_BL.pdf
+
+Unstaged changes:
+    Modified:   analysis/01_index.Rmd
+    Modified:   analysis/02_Exploratory.Rmd
+    Modified:   analysis/03_Goal1.Rmd
+    Deleted:    analysis/04_Conclusiones.Rmd
+    Modified:   analysis/04_Goal2.Rmd
+    Modified:   analysis/05_Goal3.Rmd
+    Modified:   analysis/_site.yml
+    Deleted:    analysis/about.Rmd
+    Modified:   output/Deliverables/Exploratory/AlphaDiversity/RarefactionCurve_timepoint.pdf
+    Modified:   output/Deliverables/Exploratory/BetaDiversity/Adonis.xls
+    Modified:   output/Deliverables/Exploratory/BetaDiversity/NMDS_StressPlot.pdf
+    Modified:   output/Deliverables/Exploratory/BetaDiversity/Ordination_AllSamples.pdf
+    Modified:   output/Deliverables/Exploratory/ExploratoryHeatmap_allSamples.pdf
+    Modified:   output/Deliverables/Exploratory/FinalMetadata.xlsx
+    Modified:   output/Deliverables/Exploratory/PhylumAbundance_RA.xls
+    Modified:   output/Deliverables/Exploratory/PhylumAbundance_counts.xls
+    Modified:   output/Deliverables/Exploratory/Spaghetti_Efaecium.pdf
+    Modified:   output/Deliverables/Exploratory/Spaghetti_Efaecium_BLexcluded.pdf
+    Modified:   output/Deliverables/Exploratory/SpeciesAbundance_RA.xls
+    Modified:   output/Deliverables/Exploratory/SpeciesAbundance_counts.xls
+    Modified:   output/Deliverables/Exploratory/StackedBarplots_Species.pdf
+    Modified:   output/Deliverables/Exploratory/ps_metaphlan3.biom
+    Modified:   output/Deliverables/Goal1/AlphaDiversity/AlphaDiversity_Timepoint_goal1_only.pdf
+    Modified:   output/Deliverables/Goal1/BetaDiversity/Goal1_Adonis.xls
+    Modified:   output/Deliverables/Goal1/BetaDiversity/NMDS_Ordination_vs_Timepoint.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/Allisonella_histaminiformans_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/Bifidobacterium_longum_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/Bifidobacterium_pseudocatenulatum_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/Bifidobacterium_pullorum_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/Collinsella_tanakaei_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/paired_Allisonella_histaminiformans_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/paired_Bifidobacterium_longum_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/paired_Bifidobacterium_pseudocatenulatum_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/paired_Bifidobacterium_pullorum_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/boxplots/paired_Collinsella_tanakaei_vs_Timepoint_Goal1.pdf
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/lefse/lefser_goal1_plot.pdf
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/all_results.tsv
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/fitted.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/genes/all_results.tsv
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/genes/fitted.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/genes/maaslin2.log
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/genes/ranef.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/genes/residuals.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/genes/significant_results.tsv
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/maaslin2.log
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/pathways/all_results.tsv
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/pathways/fitted.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/pathways/maaslin2.log
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/pathways/ranef.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/pathways/residuals.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/pathways/significant_results.tsv
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/ranef.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/residuals.rds
+    Deleted:    output/Deliverables/Goal1/DifferentialAbundance/maaslin/function/significant_results.tsv
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/maaslin/genus/maaslin2.log
+    Modified:   output/Deliverables/Goal1/DifferentialAbundance/maaslin/species/maaslin2.log
+    Modified:   output/Deliverables/Goal2/AlphaDiversity/AlphaDiversity_Timepoint_goal2_Fortiflora_samples.pdf
+    Modified:   output/Deliverables/Goal2/AlphaDiversity/AlphaDiversity_Timepoint_goal2_Placebo_samples.pdf
+    Modified:   output/Deliverables/Goal2/AlphaDiversity/AlphaDiversity_Timepoint_goal2_all_samples.pdf
+    Modified:   output/Deliverables/Goal2/BetaDiversity/BrayDistance_by_Treatment_goal2.pdf
+    Modified:   output/Deliverables/Goal2/BetaDiversity/Goal2_Adonis.xls
+    Modified:   output/Deliverables/Goal2/BetaDiversity/NMDS_Goal2_StressPlot.pdf
+    Modified:   output/Deliverables/Goal2/BetaDiversity/NMDS_Ordination_vs_Timepoint_and_treatment.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Blautia_sp_CAG_257_vs_Timepoint_Fortiflora_Goal2.pdf
+    Modified:   output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Clostridium_hiranonis_vs_Timepoint_Placebo_Goal2.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Clostridium_sp_CAG_58_vs_Timepoint_Fortiflora_Goal2.pdf
+    Modified:   output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Collinsella_intestinalis_vs_Timepoint_Placebo_Goal2.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/Dorea_sp_CAG_317_vs_Timepoint_Fortiflora_Goal2.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Blautia_sp_CAG_257_vs_Timepoint_Fortiflora_Goal2.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Clostridium_hiranonis_vs_Timepoint_Placebo_Goal1.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Clostridium_sp_CAG_58_vs_Timepoint_Fortiflora_Goal2.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Collinsella_intestinalis_vs_Timepoint_Placebo_Goal1.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/boxplots/paired_Dorea_sp_CAG_317_vs_Timepoint_Fortiflora_Goal2.pdf
+    Deleted:    output/Deliverables/Goal2/DifferentialAbundance/lefse/lefser_goal2_Fortiflora_plot.pdf
+    Modified:   output/Deliverables/Goal2/DifferentialAbundance/lefse/lefser_goal2_Placebo_plot.pdf
+    Modified:   output/Deliverables/NMDS_Goal1_StressPlot.pdf
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/05_Goal3.Rmd</code>) and HTML (<code>docs/05_Goal3.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/TreeTopUnder/Purina_N1H_2022/blob/74b0908090ff8e0bc963c89a8444a189c23e53da/analysis/05_Goal3.Rmd" target="_blank">74b0908</a>
+</td>
+<td>
+Marc Noguera-Julian
+</td>
+<td>
+2022-10-03
+</td>
+<td>
+update
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="leishmaniasis-microbiome" class="section level2">
+<h2>Leishmaniasis microbiome</h2>
+<p>The purpose of this analysis is to provide a description of the gut microbiome of dogs affected with leishmaniasis. Since the sample set being studied is composed only from affected dogs, a healthy vs leishmaniasis comparison can not be performed. However the description will take advantage of all baseline samples, including dogs with no follow up.</p>
+<div id="setup-dataset" class="section level3">
+<h3>Setup dataset</h3>
+</div>
+</div>
+<div id="alpha-diversity" class="section level2">
+<h2>Alpha Diversity</h2>
+<p>We are interested to assess whether alpha diversity is associated to any of the variables considered in this sample set. We select specific variables, and build a multivariate linear model with them, to test with association with Gene Richness. No association is found with selected variables in baseline samples.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">385817</td>
+<td align="right">129434.42</td>
+<td align="right">2.9807914</td>
+<td align="right">0.0965273</td>
+</tr>
+<tr class="even">
+<td align="left">Geographical_locationItaly</td>
+<td align="right">-20681</td>
+<td align="right">87933.37</td>
+<td align="right">-0.2351894</td>
+<td align="right">0.8359491</td>
+</tr>
+<tr class="odd">
+<td align="left">Geographical_locationPortugal</td>
+<td align="right">-24932</td>
+<td align="right">71797.30</td>
+<td align="right">-0.3472554</td>
+<td align="right">0.7615370</td>
+</tr>
+<tr class="even">
+<td align="left">Sexmale</td>
+<td align="right">-125713</td>
+<td align="right">71797.30</td>
+<td align="right">-1.7509434</td>
+<td align="right">0.2220567</td>
+</tr>
+<tr class="odd">
+<td align="left">LeishVet_Stage_stratStageIIB</td>
+<td align="right">-86088</td>
+<td align="right">62178.28</td>
+<td align="right">-1.3845349</td>
+<td align="right">0.3004309</td>
+</tr>
+<tr class="even">
+<td align="left">LeishVet_Stage_stratStageIII</td>
+<td align="right">-172311</td>
+<td align="right">94978.90</td>
+<td align="right">-1.8142030</td>
+<td align="right">0.2113154</td>
+</tr>
+<tr class="odd">
+<td align="left">LeishVet_Stage_stratStageIV</td>
+<td align="right">64580</td>
+<td align="right">94978.90</td>
+<td align="right">0.6799405</td>
+<td align="right">0.5666900</td>
+</tr>
+<tr class="even">
+<td align="left">LifestyleMixed</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">LifestyleOutdoors</td>
+<td align="right">-98098</td>
+<td align="right">139034.87</td>
+<td align="right">-0.7055640</td>
+<td align="right">0.5535675</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="beta-diversity" class="section level2">
+<h2>Beta Diversity</h2>
+<p>We aim to describe the species and genus composition of the gut microbiome of 15 dogs affected by untreated leishmaniasis. First we depict a stacked barplot both at the species and genus level. From the results, it can be seen that there is</p>
+<div id="taxon-barplots" class="section level3">
+<h3>Taxon barplots</h3>
+<p>We can see that both <em>Prevotella Copri</em> and <em>Prevotella_sp_CAG_891</em>, both from the <em>Prevotella</em> genus and <em>Prevotellaceae</em> familiy, and <em>Colinsella intestinalis</em> are dominant through the sample set at baseline. The latter shows lower abundance but higher prevalences that the two <em>Prevotella</em> species. Similarly, <em>Ruminococcus gnavus</em> and <em>Bacteroides intestinalis</em> are frequently found in many of the samples. Of note, <em>Escherichia coli</em> is found &gt;1% in 5/15(33%) of the samples, with no apparent association with any of the considered variables.</p>
+<p><img src="figure/05_Goal3.Rmd/beta%20diversity%20chunk%201-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/05_Goal3.Rmd/beta%20diversity%20chunk%201.5-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="abundance-heatmaps" class="section level3">
+<h3>Abundance Heatmaps</h3>
+<p>In addition to the general description we want to see if the composition creates some clustering of the samples that is related to the variables being considered. Interestingly, 4 and 2 sample cluster, enriched with <em>Prevotella copri</em> are found, but with no association to considered variables. Remaining samples show high content of <em>C intestinalis</em>, <em>B vulgatus</em> and <em>R gnavus</em> and are also diverse in geographical location, Sex, Lifestyle and LeishVet_Stage_strat variables.</p>
+<pre><code>suggested package selbal ✔suggested package DataExplorer ✔suggested package lme4 ✔suggested package merTools ✔</code></pre>
+<p><img src="figure/05_Goal3.Rmd/beta%20diversity%20chunk%202-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>quartz_off_screen 
+                2 </code></pre>
+</div>
+<div id="ordination-analysis" class="section level3">
+<h3>Ordination Analysis</h3>
+<p>Ordination Analysis and PERMANOVA tests determine the association of categorical variables (<em>Geographical_location</em>, <em>Sex</em>, <em>LeishVet_Stage_strat</em> and <em>Lifestyle</em>) with gut microbiome composition. PERMANOVA tests reveals no statistically significant association of the aforementioned variables with microbiome composition of baseline samples (n=15). In addition, NMDS plots show no apparent clustering of samples considering these variables.</p>
+<p><em>Deliverables: output/Deliverables/Goal3/BetaDiversity/Adonis_BL.xls, output/Deliverables/Goal3/BetaDiversity/Ordination_BLSamples.pdf</em></p>
+<div class="figure" style="text-align: center">
+<img src="figure/05_Goal3.Rmd/ordination%20at%20BL-1.png" alt="Ordination analysis for baseline samples. NMDS on Bray-Curtis distance(Species)" width="672" />
+<p class="caption">
+Ordination analysis for baseline samples. NMDS on Bray-Curtis distance(Species)
+</p>
+</div>
+</div>
+</div>
+<div id="gene-function" class="section level2">
+<h2>Gene Function</h2>
+<div id="clustering" class="section level3">
+<h3>Clustering</h3>
+<p>We are interested in having a general description of gene function for baseline samples. For that we select gene function categories that are detected in at least 10/15 samples and that have a non-zero variance. Of those we select, the 50th highest variance percentile. This is performed in order to maximize signal detection.</p>
+<p>There is a trend of depletion in some functions in a group os samples, but no apparent association with their available information is clearly seen.</p>
+<p><em>Deliverables: output/Deliverables/Goal3/MetaCyc_baselineSamples.pdf</em></p>
+<div class="figure" style="text-align: center">
+<img src="figure/05_Goal3.Rmd/gene%20function%20%20chunk1-1.png" alt="Clustering by Gene Function MetaCyc pathways. Ward.D2 algorithm. Euclidean distance on the log10 scale." width="672" />
+<p class="caption">
+Clustering by Gene Function MetaCyc pathways. Ward.D2 algorithm. Euclidean distance on the log10 scale.
+</p>
+</div>
+</div>
+<div id="alpha-diversity-1" class="section level3">
+<h3>Alpha Diversity</h3>
+<p>We can further check for differences in gene function diversity by calculating a Shannon Index based on diversity for each sample and then compare whether this diversity measure is different for the groups that are formed when considering the variables of interest. Results indicate that there is no signficant difference among groups, although the statistical power to detect differences is ery limited due to the low size of the sample set and the missing information from about half of the animals on Lifestyle, LeishVet_Stage_strat and Sex variables. This is confirmed by the multivariate model, the results of which are shown in the following table.</p>
+<p><em>Deliverables: output/Deliverables/Goal3/AlphaDiversity/GeneFunction_Metacyc_vs_variables.pdf</em></p>
+<p><img src="figure/05_Goal3.Rmd/gene%20function%20chunk%202-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="beta-diversity-1" class="section level3">
+<h3>Beta Diversity</h3>
+<p>We can also calculate inter-sample pairwise distances, based on gene function data matrices. In this cas, we will MetaCyc Pathway abundance to calculate Euclidean distance matrices. With these matrices we will performe NMDS ordination and use results to project variables of interest. We will also use the distance matrices to perform PERMANOVA on them, and statistically assess the effect of each of the variables on the Pathway-based characterization of the baseline animals’ gut microbiome.</p>
+<p>NMDS ordinations shows no apparent clustering, based on MetaCyc pathways, for the considered variables (<em>Geographical location</em>, <em>Sex</em>, <em>LeishVet_Stage</em> and <em>Lifestyle</em>). These results are confirmed by the PERMANOVA/adonis2 test.</p>
+<p><em>Deliverables: Goal3/BetaDiversity/NMDS_MetaCyc.pdf, Goal3/BetaDiversity/Goal3_Adonis.xls</em></p>
+<p><img src="figure/05_Goal3.Rmd/gene%20function%20beta%20chunk2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre><code>R version 4.1.1 (2021-08-10)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Big Sur 10.16
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats4    stats     graphics  grDevices utils     datasets  methods  
+[8] base     
+
+other attached packages:
+ [1] Maaslin2_1.8.0              lefser_1.4.0               
+ [3] SummarizedExperiment_1.24.0 Biobase_2.54.0             
+ [5] GenomicRanges_1.46.1        GenomeInfoDb_1.30.1        
+ [7] IRanges_2.28.0              S4Vectors_0.32.4           
+ [9] BiocGenerics_0.40.0         MatrixGenerics_1.6.0       
+[11] matrixStats_0.62.0          ggforce_0.3.3              
+[13] vegan_2.6-4                 lattice_0.20-45            
+[15] permute_0.9-7               phylosmith_1.0.6           
+[17] circlize_0.4.15             RColorBrewer_1.1-3         
+[19] metar_0.1.5                 testthat_3.1.4             
+[21] ggplot2_3.3.6               dplyr_1.0.10               
+[23] patchwork_1.1.1             phyloseq_1.38.0            
+
+loaded via a namespace (and not attached):
+  [1] coda_0.19-4            ragg_1.2.2             tidyr_1.2.1           
+  [4] bit64_4.0.5            knitr_1.39             multcomp_1.4-19       
+  [7] DelayedArray_0.20.0    wesanderson_0.3.6      data.table_1.14.2     
+ [10] DataExplorer_0.8.2     RCurl_1.98-1.8         doParallel_1.0.17     
+ [13] generics_0.1.3         TH.data_1.1-1          callr_3.7.1           
+ [16] microbiome_1.17.41     usethis_2.1.6          proxy_0.4-27          
+ [19] future_1.27.0          correlation_0.8.1      bit_4.0.4             
+ [22] tzdb_0.3.0             httpuv_1.6.5           assertthat_0.2.1      
+ [25] viridis_0.6.2          xfun_0.31              jquerylib_0.1.4       
+ [28] rJava_1.0-6            evaluate_0.15          promises_1.2.0.1      
+ [31] DEoptimR_1.0-11        fansi_1.0.3            igraph_1.3.5          
+ [34] DBI_1.1.3              htmlwidgets_1.5.4      kSamples_1.2-9        
+ [37] Rmpfr_0.8-9            paletteer_1.4.0        purrr_0.3.5           
+ [40] ellipsis_0.3.2         ggpubr_0.4.0           backports_1.4.1       
+ [43] insight_0.18.0         prismatic_1.1.0        RcppParallel_5.1.5    
+ [46] libcoin_1.0-9          vctrs_0.4.2            remotes_2.4.2         
+ [49] here_1.0.1             abind_1.4-5            cachem_1.0.6          
+ [52] withr_2.5.0            robustbase_0.95-0      vroom_1.5.7           
+ [55] prettyunits_1.1.1      getopt_1.20.3          cluster_2.1.3         
+ [58] ape_5.6-2              crayon_1.5.1           SuppDists_1.1-9.7     
+ [61] pkgconfig_2.0.3        labeling_0.4.2         units_0.8-0           
+ [64] tweenr_1.0.2           statsExpressions_1.3.2 nlme_3.1-158          
+ [67] pkgload_1.3.0          blme_1.0-5             devtools_2.4.4        
+ [70] rlang_1.0.6            globals_0.15.1         lifecycle_1.0.3       
+ [73] miniUI_0.1.1.1         MatrixModels_0.5-0     sandwich_3.0-2        
+ [76] selbal_0.1.0           rprojroot_2.0.3        polyclip_1.10-0       
+ [79] datawizard_0.4.1       Matrix_1.4-1           lpsymphony_1.22.0     
+ [82] carData_3.0-5          zoo_1.8-10             Rhdf5lib_1.16.0       
+ [85] boot_1.3-28            whisker_0.4            GlobalOptions_0.1.2   
+ [88] processx_3.7.0         png_0.1-7              viridisLite_0.4.1     
+ [91] rjson_0.2.21           PMCMRplus_1.9.5        parameters_0.18.1     
+ [94] bitops_1.0-7           KernSmooth_2.23-20     rhdf5filters_1.6.0    
+ [97] Biostrings_2.62.0      workflowr_1.7.0        shape_1.4.6           
+[100] classInt_0.4-7         multcompView_0.1-8     stringr_1.4.1         
+[103] coin_1.4-2             arm_1.12-2             parallelly_1.32.1     
+[106] rstatix_0.7.0          ggsignif_0.6.3         scales_1.2.1          
+[109] memoise_2.0.1          magrittr_2.0.3         plyr_1.8.7            
+[112] zlibbioc_1.40.0        compiler_4.1.1         rstantools_2.2.0      
+[115] clue_0.3-61            lme4_1.1-30            cli_3.4.1             
+[118] ade4_1.7-19            XVector_0.34.0         urlchecker_1.0.1      
+[121] listenv_0.8.0          pbapply_1.5-0          ps_1.7.1              
+[124] MASS_7.3-58            mgcv_1.8-40            tidyselect_1.2.0      
+[127] stringi_1.7.8          forcats_0.5.1          textshaping_0.3.6     
+[130] highr_0.9              yaml_2.3.5             ggrepel_0.9.1         
+[133] grid_4.1.1             sass_0.4.2             tools_4.1.1           
+[136] parallel_4.1.1         rstudioapi_0.13        foreach_1.5.2         
+[139] logging_0.10-108       git2r_0.30.1           optparse_1.7.3        
+[142] gridExtra_2.3          farver_2.1.1           Rtsne_0.16            
+[145] ggraph_2.0.5           digest_0.6.29          shiny_1.7.2           
+[148] BWStest_0.2.2          networkD3_0.4          Rcpp_1.0.9            
+[151] car_3.1-0              broom_1.0.0            BayesFactor_0.9.12-4.4
+[154] xlsx_0.6.5             performance_0.9.1      later_1.3.0           
+[157] sf_1.0-7               ComplexHeatmap_2.10.0  effectsize_0.7.0      
+[160] colorspace_2.0-3       brio_1.1.3             fs_1.5.2              
+[163] splines_4.1.1          rematch2_2.1.2         graphlayouts_0.8.0    
+[166] xlsxjars_0.6.1         multtest_2.50.0        sessioninfo_1.2.2     
+[169] systemfonts_1.0.4      gmp_0.6-5              xtable_1.8-4          
+[172] jsonlite_1.8.0         nloptr_2.0.3           tidygraph_1.2.1       
+[175] zeallot_0.1.0          modeltools_0.2-23      R6_2.5.1              
+[178] profvis_0.3.7          broom.mixed_0.2.9.4    pillar_1.8.1          
+[181] htmltools_0.5.3        mime_0.12              glue_1.6.2            
+[184] fastmap_1.1.0          minqa_1.2.4            class_7.3-20          
+[187] codetools_0.2-18       pcaPP_2.0-2            pkgbuild_1.3.1        
+[190] mvtnorm_1.1-3          furrr_0.3.0            utf8_1.2.2            
+[193] bslib_0.4.0            tibble_3.1.8           logger_0.2.2          
+[196] magick_2.7.3           biglm_0.9-2.1          survival_3.3-1        
+[199] rmarkdown_2.14         desc_1.4.1             biomformat_1.22.0     
+[202] merTools_0.5.2         munsell_0.5.0          e1071_1.7-11          
+[205] GetoptLong_1.0.5       rhdf5_2.38.1           GenomeInfoDbData_1.2.7
+[208] iterators_1.0.14       ggstatsplot_0.9.3      reshape2_1.4.4        
+[211] gtable_0.3.1           bayestestR_0.12.1     </code></pre>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
