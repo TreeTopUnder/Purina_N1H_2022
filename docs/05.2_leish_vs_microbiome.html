@@ -11,7 +11,7 @@
 
 <meta name="author" content="Marc Noguera-Julian, PhD. TreeTopUnder" />
 
-<meta name="date" content="2022-12-13" />
+<meta name="date" content="2022-12-15" />
 
 <title>Leishmaniasis improvement vs microbiome</title>
 
@@ -374,7 +374,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Leishmaniasis improvement vs microbiome</h1>
 <h4 class="author">Marc Noguera-Julian, PhD. TreeTopUnder</h4>
-<h4 class="date">2022-12-13</h4>
+<h4 class="date">2022-12-15</h4>
 
 </div>
 
@@ -399,7 +399,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-12-13
+<strong>Last updated:</strong> 2022-12-15
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -490,16 +490,16 @@ This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a> analysi
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTreeTopUnderPurinaN1H2022treeeae12581ae7eda564e755b90283c1b76344f64fbtargetblankeae1258a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TreeTopUnder/Purina_N1H_2022/tree/eae12581ae7eda564e755b90283c1b76344f64fb" target="_blank">eae1258</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTreeTopUnderPurinaN1H2022treec6f4dcf5fc13a1494560c57ce08d83288bbf7f0atargetblankc6f4dcfa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TreeTopUnder/Purina_N1H_2022/tree/c6f4dcf5fc13a1494560c57ce08d83288bbf7f0a" target="_blank">c6f4dcf</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomTreeTopUnderPurinaN1H2022treeeae12581ae7eda564e755b90283c1b76344f64fbtargetblankeae1258a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomTreeTopUnderPurinaN1H2022treec6f4dcf5fc13a1494560c57ce08d83288bbf7f0atargetblankc6f4dcfa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/TreeTopUnder/Purina_N1H_2022/tree/eae12581ae7eda564e755b90283c1b76344f64fb" target="_blank">eae1258</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/TreeTopUnder/Purina_N1H_2022/tree/c6f4dcf5fc13a1494560c57ce08d83288bbf7f0a" target="_blank">c6f4dcf</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -525,15 +525,58 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/05.2_leish_vs_microbiome.Rmd</code>) and HTML (<code>docs/05.2_leish_vs_microbiome.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/TreeTopUnder/Purina_N1H_2022/c6f4dcf5fc13a1494560c57ce08d83288bbf7f0a/docs/05.2_leish_vs_microbiome.html" target="_blank">c6f4dcf</a>
+</td>
+<td>
+Marc Noguera-Julian
+</td>
+<td>
+2022-12-13
+</td>
+<td>
+update lish vs microbiome
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
 </div>
-<div id="goal" class="section level2">
-<h2>Goal</h2>
+<div id="leishmaniasis-evolution" class="section level2">
+<h2>Leishmaniasis evolution</h2>
 <p>In this sub-analysis we aim to detect, for each animal, improvement in the leishmaniasis stage, and see if these are related to changes in the microbiome.</p>
 <p>First, for each animal, we need to characterize how Leishmaniasis treatment performs, through Leish_stage longitudinal changes.</p>
 <p>For this purpose, we give each value of LeishVet_Stage_strat a numeric value, and calculate the differences of these values for each animal at each time point vs. baseline.</p>
@@ -546,10 +589,165 @@ There are no past versions. Publish this analysis with <code>wflow_publish()</co
 <li>StageIV=4</li>
 </ul>
 <p>In this way, for instance, if at baseline, a dog is classified as StageIV(4) and at M1 is classified as StageIIB(2), there will be a decrement 2(StageIIB)-4(StageIV)=-2. So the large the value of the difference in absolute value the large the improvement in termes of LeishVet_stage_strat. We can use this as a proxy to compare Leishmaniasis improvement between groups.</p>
-<p>We will first calculate whether there is a better improvement at M1, M4 and M6 when comparing probiotic vs placebo groups.</p>
-<p><img src="figure/05.2_leish_vs_microbiome.Rmd/changes%20in%20leishvet%20stage-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/05.2_leish_vs_microbiome.Rmd/changes%20in%20leishvet%20stage-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/05.2_leish_vs_microbiome.Rmd/changes%20in%20leishvet%20stage-3.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="probiotic-vs-placebo" class="section level3">
+<h3>Probiotic vs Placebo</h3>
+<p>We will first calculate whether there is a better improvement at M1, M4 and M6 when comparing probiotic vs placebo groups. Using the numerica Leish Stage variable, we can compare Prob/Placebo groups at each time point. No significant difference is observed.</p>
+<p><img src="figure/05.2_leish_vs_microbiome.Rmd/changes%20in%20leishvet%20stage-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-changes-in-leishvet-stage-1">
+Past versions of "changes in leishvet stage-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-changes-in-leishvet-stage-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TreeTopUnder/Purina_N1H_2022/blob/c6f4dcf5fc13a1494560c57ce08d83288bbf7f0a/docs/figure/05.2_leish_vs_microbiome.Rmd/changes in leishvet stage-1.png" target="_blank">c6f4dcf</a>
+</td>
+<td>
+Marc Noguera-Julian
+</td>
+<td>
+2022-12-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/05.2_leish_vs_microbiome.Rmd/changes%20in%20leishvet%20stage-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-changes-in-leishvet-stage-2">
+Past versions of "changes in leishvet stage-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-changes-in-leishvet-stage-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TreeTopUnder/Purina_N1H_2022/blob/c6f4dcf5fc13a1494560c57ce08d83288bbf7f0a/docs/figure/05.2_leish_vs_microbiome.Rmd/changes in leishvet stage-2.png" target="_blank">c6f4dcf</a>
+</td>
+<td>
+Marc Noguera-Julian
+</td>
+<td>
+2022-12-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/05.2_leish_vs_microbiome.Rmd/changes%20in%20leishvet%20stage-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-changes-in-leishvet-stage-3">
+Past versions of "changes in leishvet stage-3.png"
+</button>
+</p>
+<div id="fig-no-spaces-changes-in-leishvet-stage-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TreeTopUnder/Purina_N1H_2022/blob/c6f4dcf5fc13a1494560c57ce08d83288bbf7f0a/docs/figure/05.2_leish_vs_microbiome.Rmd/changes in leishvet stage-3.png" target="_blank">c6f4dcf</a>
+</td>
+<td>
+Marc Noguera-Julian
+</td>
+<td>
+2022-12-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="paired-leish-vs-beta-diversity" class="section level3">
+<h3>Paired Leish vs Beta-diversity</h3>
 <p>Now we will try to check association between Beta-diversity measures (paired by animal id) and differences in LeishVet_Stage_Strat, as calculated. REsults show no significant statistical association between paired difference in these two measures.</p>
 <p><img src="figure/05.2_leish_vs_microbiome.Rmd/leish%20vs%20beta-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-leish-vs-beta-1">
+Past versions of "leish vs beta-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-leish-vs-beta-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TreeTopUnder/Purina_N1H_2022/blob/c6f4dcf5fc13a1494560c57ce08d83288bbf7f0a/docs/figure/05.2_leish_vs_microbiome.Rmd/leish vs beta-1.png" target="_blank">c6f4dcf</a>
+</td>
+<td>
+Marc Noguera-Julian
+</td>
+<td>
+2022-12-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -579,7 +777,7 @@ loaded via a namespace (and not attached):
   [1] colorspace_2.0-3       ellipsis_0.3.2         rprojroot_2.0.3       
   [4] XVector_0.34.0         parameters_0.18.1      fs_1.5.2              
   [7] rstudioapi_0.13        farver_2.1.1           MatrixModels_0.5-0    
- [10] ggrepel_0.9.1          fansi_1.0.3            mvtnorm_1.1-3         
+ [10] ggrepel_0.9.1          mvtnorm_1.1-3          fansi_1.0.3           
  [13] codetools_0.2-18       splines_4.1.1          cachem_1.0.6          
  [16] knitr_1.39             polyclip_1.10-0        zeallot_0.1.0         
  [19] ade4_1.7-19            jsonlite_1.8.0         workflowr_1.7.0       
@@ -608,14 +806,15 @@ loaded via a namespace (and not attached):
  [88] labeling_0.4.2         tidyselect_1.2.0       here_1.0.1            
  [91] plyr_1.8.7             magrittr_2.0.3         R6_2.5.1              
  [94] IRanges_2.28.0         generics_0.1.3         DBI_1.1.3             
- [97] pillar_1.8.1           withr_2.5.0            mgcv_1.8-40           
-[100] survival_3.3-1         datawizard_0.4.1       RCurl_1.98-1.8        
-[103] tibble_3.1.8           performance_0.9.1      crayon_1.5.1          
-[106] utf8_1.2.2             correlation_0.8.1      rmarkdown_2.14        
-[109] grid_4.1.1             data.table_1.14.2      git2r_0.30.1          
-[112] vegan_2.6-4            digest_0.6.29          tidyr_1.2.1           
-[115] httpuv_1.6.5           statsExpressions_1.3.2 stats4_4.1.1          
-[118] munsell_0.5.0          bslib_0.4.0           </code></pre>
+ [97] pillar_1.8.1           whisker_0.4            withr_2.5.0           
+[100] mgcv_1.8-40            survival_3.3-1         datawizard_0.4.1      
+[103] RCurl_1.98-1.8         tibble_3.1.8           performance_0.9.1     
+[106] crayon_1.5.1           utf8_1.2.2             correlation_0.8.1     
+[109] rmarkdown_2.14         grid_4.1.1             data.table_1.14.2     
+[112] git2r_0.30.1           vegan_2.6-4            digest_0.6.29         
+[115] tidyr_1.2.1            httpuv_1.6.5           statsExpressions_1.3.2
+[118] stats4_4.1.1           munsell_0.5.0          bslib_0.4.0           </code></pre>
+</div>
 </div>
 </div>
 
